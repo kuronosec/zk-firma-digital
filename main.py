@@ -11,46 +11,92 @@ from PyQt6.QtWidgets import ( QApplication,
                               QVBoxLayout,
                               QLineEdit,
                               QPushButton,
-                              QMessageBox )
+                              QMessageBox,
+                              QTabWidget,
+                              QLabel,
+                              QFileDialog )
+
 from certificate import Certificate
 from verification import Verification
+from signature import Signature
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
         self.certificate_path = "./tmp"
+        self.file_to_sign = ""
 
         self.setWindowTitle("Zero Knowledge - Firma Digital")
-        self.setGeometry(100, 100, 300, 200)
+        self.setGeometry(100, 100, 600, 400)
 
-        # Create a main widget
-        central_widget = QWidget(self)
-        self.setCentralWidget(central_widget)
+        # Create a QTabWidget
+        self.tabs = QTabWidget()
+        self.setCentralWidget(self.tabs)
+
+        # Add tabs
+        self.verification_tab = self.create_verification_tab()
+        self.signing_tab = self.create_signing_tab()
+        self.tabs.addTab(self.verification_tab, "Verificación de certificados")
+        self.tabs.addTab(self.signing_tab, "Firma de archivos")
+
+    def create_verification_tab(self):
+        # Create the first tab's content
+        verification_tab = QWidget(self)
 
         # Create a vertical layout
-        self.layout = QVBoxLayout()
+        self.verification_layout = QVBoxLayout()
 
         # Create the password field
         self.password_field = QLineEdit()
         self.password_field.setEchoMode(QLineEdit.EchoMode.Password)
         self.password_field.setPlaceholderText("Introduzca el PIN de su tarjeta")
-        self.layout.addWidget(self.password_field)
+        self.verification_layout.addWidget(self.password_field)
 
         # Create the "Obtener certificados Firma Digital" button
         self.get_certificate_button = QPushButton("Obtener certificados Firma Digital")
         self.get_certificate_button.clicked.connect(self.on_submit_get_certificate)
-        self.layout.addWidget(self.get_certificate_button)
+        self.verification_layout.addWidget(self.get_certificate_button)
 
         # Create the "Verificar certificados Firma Digital" button
-        self.verifiy_button = QPushButton("Verificar certificados Firma Digital")
-        self.verifiy_button.clicked.connect(self.on_submit_verify_certificate)
+        self.verify_button = QPushButton("Verificar certificados Firma Digital")
+        self.verify_button.clicked.connect(self.on_submit_verify_certificate)
 
         if os.path.exists(self.certificate_path):
-            self.layout.addWidget(self.verifiy_button)
+            self.verification_layout.addWidget(self.verify_button)
 
         # Set the layout for the central widget
-        central_widget.setLayout(self.layout)
+        verification_tab.setLayout(self.verification_layout)
+        return verification_tab
+
+    def create_signing_tab(self):
+        # Create the signature tab's content
+        self.signature_tab = QWidget()
+        self.signature_layout = QVBoxLayout()
+        self.signature_layout.addWidget(QLabel("Firmar archivo JSON"))
+
+        # Create the password field
+        self.password_field_sign = QLineEdit()
+        self.password_field_sign.setEchoMode(QLineEdit.EchoMode.Password)
+        self.password_field_sign.setPlaceholderText("Introduzca el PIN de su tarjeta")
+        self.signature_layout.addWidget(self.password_field_sign)
+
+        # Create a button to open the file dialog
+        button_browser = QPushButton("Escoger archivo a firmar")
+        button_browser.clicked.connect(self.browse_files)
+        self.signature_layout.addWidget(button_browser)
+
+        # Label to display the selected file
+        self.browser_label = QLabel("Selected file: None")
+        self.signature_layout.addWidget(self.browser_label)
+        self.signature_tab.setLayout(self.signature_layout)
+
+        # Create a button to sign the file
+        button_sign = QPushButton("Firmar archivo")
+        button_sign.clicked.connect(self.sign_files)
+        self.signature_layout.addWidget(button_sign)
+
+        return self.signature_tab
 
     def on_submit_get_certificate(self):
         # Get the certificates from the card
@@ -61,7 +107,7 @@ class MainWindow(QMainWindow):
         # If the certificates were stored in disk then provide the option
         # to verify them
         if os.path.exists(self.certificate_path):
-            self.layout.addWidget(self.verifiy_button)
+            self.verification_layout.addWidget(self.verify_button)
 
     def on_submit_verify_certificate(self):
         # Verify the stored certificates using the Goverment chain of trust
@@ -76,12 +122,39 @@ class MainWindow(QMainWindow):
             else:
                 QMessageBox.information(self, "Validación", f"{info}\n\n Firma de certificado inválida!!!")
 
-# Create the application
-app = QApplication(sys.argv)
+    def browse_files(self):
+        # Open a file dialog and select a file
+        file_name, _ = QFileDialog.getOpenFileName(self,
+                                                   "Open File",
+                                                   "",
+                                                   "JSON Files (*.json)")
 
-# Create and show the main window
-window = MainWindow()
-window.show()
+        if file_name:
+            self.browser_label.setText(f"Selected file: {file_name}")
+            self.file_to_sign = file_name
+        else:
+            self.browser_label.setText("No file selected")
 
-# Run the application event loop
-sys.exit(app.exec())
+    def sign_files(self):
+        # Sign selected file
+        password = self.password_field_sign.text()
+        if self.file_to_sign:
+            signature = Signature(password)
+            signature.load_library()
+            file_name = os.path.basename(self.file_to_sign)
+            file_only_path = os.path.dirname(self.file_to_sign)
+            signed_name = file_only_path+"/"+"signed-"+file_name
+            info = signature.sign_file(self.file_to_sign)
+            QMessageBox.information(self, "Firma de archivo JSON",
+                                    f"{info}\n\nArchivo JSON firmado:\n\n {signed_name}")
+            self.browser_label.setText(f"Archivo JSON firmado: {signed_name}")
+        else:
+            self.browser_label.setText("No file selected")
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+
+    window = MainWindow()
+    window.show()
+
+    sys.exit(app.exec())
