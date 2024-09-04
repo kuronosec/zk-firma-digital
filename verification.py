@@ -1,3 +1,7 @@
+import base64
+import json
+
+from utils import splitToWords
 from asn1crypto import pem
 from certvalidator import CertificateValidator, ValidationContext, errors
 
@@ -28,7 +32,36 @@ class Verification:
                 for rdn in subject.chosen:
                     for attr in rdn:
                         info= info + f"{attr['type'].native}: {attr['value'].native}\n"
-                # print(cert['tbs_certificate'])
+
+                # Get to be signed data
+                tbs_certificate = cert['tbs_certificate']
+                tbs_bytes = tbs_certificate.dump()
+                byte_array = list(tbs_bytes)
+
+                # Get the public key info
+                public_key_info = cert['tbs_certificate']['subject_public_key_info']
+                public_key_bytes = public_key_info['public_key'].native
+                modulus = public_key_bytes['modulus']
+
+                # Get signature
+                signature_bytes = cert['signature_value'].native
+                # Convert the signature to a big integer
+                signature_int = int(signature_bytes.hex(), 16)
+                # Print the big integer in chunks
+                signature_str = splitToWords(signature_int, 121, 17)
+                public_key_str = splitToWords(modulus, 121, 17)
+
+                if signature_str is not None:
+                    json_data = {
+                         "qrDataPadded": byte_array,
+                         "signature": signature_str,
+                          "pubKey": public_key_str
+                    }
+                    json_data = json.dumps(json_data, indent=4)
+                    with open('./aux/certificate_bytes.json', 'w') as json_file:
+                        json_file.write(json_data)
+                else:
+                    print("Number does not fit")
             return (True, info)
         except errors.PathValidationError as error:
             print("Certificate signature is not valid!"+" "+error)

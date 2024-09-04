@@ -1,1 +1,10 @@
 tmp*
+build*
+node_modules*
+/bin/
+.classpath
+.project
+.pydevproject
+.settings/
+__pycache__
+aux/
