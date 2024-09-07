@@ -12,16 +12,19 @@ print("Get info")
 print(circuit.get_info())
 # print("Print constraints")
 # print(circuit.print_constraints())
-# circuit.gen_witness("./example_circuits/input.json")
-# circuit.setup(PLONK, ptau)
-# circuit.prove(PLONK)
-# circuit.export_vkey()
-# circuit.verify(PLONK, vkey_file="vkey.json", public_file="public.json", proof_file="proof.json")
 
 print("Power of Tau ceremony")
-ptau = PTau(ptau_file="466b3077-c267-42ec-9a9a-e0e7cfa6cb04.ptau",
-                       working_dir="./circuits/build/")
+ptau = PTau(ptau_file="./circuits/build/46be33b5-3a8b-48a8-be69-01ade9154593.ptau",
+                       working_dir="./")
 ptau.start()
 ptau.contribute()
 ptau.beacon()
 ptau.prep_phase2()
+
+circuit.gen_witness("./aux/input.json")
+circuit.setup(PLONK, ptau)
+circuit.prove(PLONK)
+circuit.export_vkey()
+circuit.verify(PLONK, vkey_file="vkey.json",
+               public_file="public.json",
+               proof_file="proof.json")

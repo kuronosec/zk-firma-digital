@@ -8,3 +8,4 @@ node_modules*
 .settings/
 __pycache__
 aux/
+*.pyc
