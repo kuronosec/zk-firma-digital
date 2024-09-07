@@ -1,7 +1,7 @@
 import base64
 import json
 
-from utils import splitToWords
+from utils import splitToWords, preprocess_message_for_sha256
 from asn1crypto import pem
 from certvalidator import CertificateValidator, ValidationContext, errors
 
@@ -20,7 +20,6 @@ class Verification:
             end_entity_cert = f.read()
 
         context = ValidationContext(trust_roots=trust_roots)
-        validator = CertificateValidator(end_entity_cert, validation_context=context)
 
         try:
             validator = CertificateValidator(end_entity_cert, validation_context=context)
@@ -34,9 +33,11 @@ class Verification:
                         info= info + f"{attr['type'].native}: {attr['value'].native}\n"
 
                 # Get to be signed data
+                maxDataLength = 512 * 6
                 tbs_certificate = cert['tbs_certificate']
                 tbs_bytes = tbs_certificate.dump()
-                byte_array = list(tbs_bytes)
+                byte_array, qr_data_padded_length = preprocess_message_for_sha256(list(tbs_bytes),
+                                                                                  maxDataLength)
 
                 # Get the public key info
                 public_key_info = cert['tbs_certificate']['subject_public_key_info']
@@ -54,11 +55,15 @@ class Verification:
                 if signature_str is not None:
                     json_data = {
                          "qrDataPadded": byte_array,
+                         "qrDataPaddedLength": qr_data_padded_length,
                          "signature": signature_str,
-                          "pubKey": public_key_str
+                         "pubKey": public_key_str,
+                         "nullifierSeed": "12345678",
+                         "signalHash": "10010552857485068401460384516712912466659718519570795790728634837432493097374",
+                         "revealAgeAbove18": "1"
                     }
                     json_data = json.dumps(json_data, indent=4)
-                    with open('./aux/certificate_bytes.json', 'w') as json_file:
+                    with open('./aux/input.json', 'w') as json_file:
                         json_file.write(json_data)
                 else:
                     print("Number does not fit")
