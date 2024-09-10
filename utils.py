@@ -1,14 +1,16 @@
 import struct
 
-def splitToWords(number, wordsize, numberElement):
+def splitToWords(number, wordsize, number_element):
   t = number
   words = []
-  baseTwo = 2
-  for i in range(0, numberElement):
-    words.append(t % pow(baseTwo, wordsize))
-    t = t // pow(baseTwo, wordsize)
+  base_two = 2
+
+  for i in range(number_element):
+    words.append(str(t % pow(base_two, wordsize)))
+    t = t // pow(base_two, wordsize)
+
   if (t != 0):
-    return None
+    raise ValueError(f"Number {number} does not fit in {wordsize * number_element} bits")
 
   return words
 

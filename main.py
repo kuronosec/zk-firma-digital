@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.certificate_path = "./tmp"
+        self.certificate_path = "./tmp/certificado.cert"
         self.file_to_sign = ""
 
         self.setWindowTitle("Zero Knowledge - Firma Digital")
@@ -113,14 +113,12 @@ class MainWindow(QMainWindow):
         # Verify the stored certificates using the Goverment chain of trust
         password = self.password_field.text()
         verification = Verification(password)
-        files = [file for file in listdir(self.certificate_path) if isfile(join(self.certificate_path, file))]
-        for file in files:
-            file = join(self.certificate_path, file)
-            (valid, info) = verification.verify_certificate(file)
-            if valid:
-                QMessageBox.information(self, "Validación", f"{info}\n\n Firma de certificado válida!!!")
-            else:
-                QMessageBox.information(self, "Validación", f"{info}\n\n Firma de certificado inválida!!!")
+
+        (valid, info) = verification.verify_certificate(self.certificate_path)
+        if valid:
+            QMessageBox.information(self, "Validación", f"{info}\n\n Firma de certificado válida!!!")
+        else:
+            QMessageBox.information(self, "Validación", f"{info}\n\n Firma de certificado inválida!!!")
 
     def browse_files(self):
         # Open a file dialog and select a file

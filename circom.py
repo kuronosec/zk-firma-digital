@@ -21,7 +21,7 @@ ptau.contribute()
 ptau.beacon()
 ptau.prep_phase2()
 
-circuit.gen_witness("./aux/input.json")
+circuit.gen_witness("./tmp/input.json")
 circuit.setup(PLONK, ptau)
 circuit.prove(PLONK)
 circuit.export_vkey()
