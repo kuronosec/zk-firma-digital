@@ -43,24 +43,24 @@ class Certificate:
 
         result = []
         certs = session.findObjects([(CKA_CLASS, CKO_CERTIFICATE)])
-        index = 0
 
         for cert in certs:
             cka_value, cka_id = session.getAttributeValue(cert, [CKA_VALUE, CKA_ID])
             cert_der = bytes(cka_value)
             cert = x509.Certificate.load(cert_der)
-            result.append(cert.native["tbs_certificate"]["subject"]["common_name"])
+            common_name = cert.native["tbs_certificate"]["subject"]["common_name"]
+            if "AUTENTICACION" in common_name:
+                result.append(common_name)
 
-            directory = "./tmp"
-            if not os.path.exists(directory):
-               os.makedirs(directory)
+                directory = "./tmp"
+                if not os.path.exists(directory):
+                    os.makedirs(directory)
 
-            # cert is an instance of x509.Certificate
-            with open("./tmp/certificado%s.cert" % index, 'wb') as f:
-                pprint.pprint(cert.native["tbs_certificate"]["subject"])
-                der_bytes = cert.dump()
-                pem_bytes = pem.armor('CERTIFICATE', der_bytes)
-                f.write(pem_bytes)
-                index += 1
+                # cert is an instance of x509.Certificate
+                with open("./tmp/certificado.cert", 'wb') as f:
+                    pprint.pprint(cert.native["tbs_certificate"]["subject"])
+                    der_bytes = cert.dump()
+                    pem_bytes = pem.armor('CERTIFICATE', der_bytes)
+                    f.write(pem_bytes)
 
         return result
