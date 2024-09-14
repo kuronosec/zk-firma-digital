@@ -3,7 +3,6 @@ pragma circom 2.1.9;
 include "circomlib/circuits/bitify.circom";
 include "circomlib/circuits/poseidon.circom";
 include "./helpers/signature.circom";
-include "./helpers/extractor.circom";
 include "./helpers/nullifier.circom";
 
 
@@ -12,8 +11,8 @@ include "./helpers/nullifier.circom";
 /// @param n RSA pubic key size per chunk
 /// @param k Number of chunks the RSA public key is split into
 /// @param maxDataLength Maximum length of the data
-/// @input qrDataPadded QR data without the signature; assumes elements to be bytes; remaining space is padded with 0
-/// @input qrDataPaddedLength Length of padded QR data
+/// @input certDataPadded cert data without the signature; assumes elements to be bytes; remaining space is padded with 0
+/// @input certDataPaddedLength Length of padded cert data
 /// @input signature RSA signature
 /// @input pubKey RSA public key (of the government)
 /// @input revealAgeAbove18 Flag to reveal age is above 18
@@ -27,8 +26,8 @@ include "./helpers/nullifier.circom";
 /// @output pinCode Pin code of the address as int; 0 if not revealed
 /// @output state State packed as int (reverse order); 0 if not revealed
 template FirmaDigitalCRVerifier(n, k, maxDataLength) {
-    signal input qrDataPadded[maxDataLength];
-    signal input qrDataPaddedLength;
+    signal input certDataPadded[maxDataLength];
+    signal input certDataPaddedLength;
     signal input signature[k];
     signal input pubKey[k];
     signal input revealAgeAbove18;
@@ -41,20 +40,20 @@ template FirmaDigitalCRVerifier(n, k, maxDataLength) {
     signal output nullifier;
     signal output ageAbove18;
 
-    // Assert `qrDataPaddedLength` fits in `ceil(log2(maxDataLength))`
+    // Assert `certDataPaddedLength` fits in `ceil(log2(maxDataLength))`
     component n2bHeaderLength = Num2Bits(log2Ceil(maxDataLength));
-    n2bHeaderLength.in <== qrDataPaddedLength;
+    n2bHeaderLength.in <== certDataPaddedLength;
 
     // Verify the RSA signature
     component signatureVerifier = SignatureVerifier(n, k, maxDataLength);
-    signatureVerifier.qrDataPadded <== qrDataPadded;
-    signatureVerifier.qrDataPaddedLength <== qrDataPaddedLength;
+    signatureVerifier.certDataPadded <== certDataPadded;
+    signatureVerifier.certDataPaddedLength <== certDataPaddedLength;
     signatureVerifier.pubKey <== pubKey;
     signatureVerifier.signature <== signature;
     pubkeyHash <== signatureVerifier.pubkeyHash;
 
-    // Assert data between qrDataPaddedLength and maxDataLength is zero
-    AssertZeroPadding(maxDataLength)(qrDataPadded, qrDataPaddedLength);
+    // Assert data between certDataPaddedLength and maxDataLength is zero
+    AssertZeroPadding(maxDataLength)(certDataPadded, certDataPaddedLength);
     
     // Reveal extracted data
     revealAgeAbove18 * (revealAgeAbove18 - 1) === 0;
@@ -63,6 +62,7 @@ template FirmaDigitalCRVerifier(n, k, maxDataLength) {
     nullifier <== Nullifier()(nullifierSeed);
 
     
-    // Dummy square to prevent signal tampering (in rare cases where non-constrained inputs are ignored)
+    // Dummy square to prevent signal tampering
+    // (in rare cases where non-constrained inputs are ignored)
     signal signalHashSquare <== signalHash * signalHash;
 }
