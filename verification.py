@@ -53,7 +53,7 @@ class Verification:
         maxDataLength = 512 * 6
         tbs_certificate = cert['tbs_certificate']
         tbs_bytes = tbs_certificate.dump()
-        byte_array, qr_data_padded_length = preprocess_message_for_sha256(list(tbs_bytes),
+        byte_array, cert_data_padded_length = preprocess_message_for_sha256(list(tbs_bytes),
                                                                             maxDataLength)
 
         # Get the public key info from issuer
@@ -72,8 +72,8 @@ class Verification:
 
         if signature_str is not None:
             json_data = {
-                    "qrDataPadded": byte_array,
-                    "qrDataPaddedLength": qr_data_padded_length,
+                    "certDataPadded": byte_array,
+                    "certDataPaddedLength": cert_data_padded_length,
                     "signature": signature_str,
                     "pubKey": public_key_str,
                     "nullifierSeed": "12345678",

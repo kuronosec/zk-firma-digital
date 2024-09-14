@@ -10,14 +10,14 @@ include "@zk-email/circuits/lib/sha.circom";
 /// @param n - RSA pubic key size per chunk
 /// @param k - Number of chunks the RSA public key is split into
 /// @param maxDataLength - Maximum length of the data
-/// @input qrDataPadded - QR data without the signature; each number represent ascii byte; remaining space is padded with 0
-/// @input qrDataPaddedLength - Length of padded QR data
+/// @input certDataPadded - cert data without the signature; each number represent ascii byte; remaining space is padded with 0
+/// @input certDataPaddedLength - Length of padded cert data
 /// @input signature - RSA signature
 /// @input pubKey - RSA public key
 /// @output pubkeyHash - Poseidon hash of the public key
 template SignatureVerifier(n, k, maxDataLength) {
-  signal input qrDataPadded[maxDataLength];
-  signal input qrDataPaddedLength;
+  signal input certDataPadded[maxDataLength];
+  signal input certDataPaddedLength;
   signal input signature[k];
   signal input pubKey[k];
 
@@ -26,8 +26,8 @@ template SignatureVerifier(n, k, maxDataLength) {
 
   // Hash the data and verify RSA signature - 917344 constraints
   component shaHasher = Sha256Bytes(maxDataLength);
-  shaHasher.paddedIn <== qrDataPadded;
-  shaHasher.paddedInLength <== qrDataPaddedLength;
+  shaHasher.paddedIn <== certDataPadded;
+  shaHasher.paddedInLength <== certDataPaddedLength;
   signal sha[256];
   sha <== shaHasher.out;
   
