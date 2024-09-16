@@ -64,7 +64,7 @@ template FirmaDigitalCRVerifier(n, k, maxDataLength) {
 
     // TODO: create an actual Nullifier
     // Calculate nullifier
-    nullifier <== Nullifier()(nullifierSeed);
+    nullifier <== Nullifier(n, k)(nullifierSeed, signature);
     
     // Dummy square to prevent signal tampering
     // (in rare cases where non-constrained inputs are ignored)
