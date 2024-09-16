@@ -58,9 +58,13 @@ template FirmaDigitalCRVerifier(n, k, maxDataLength) {
     // Reveal extracted data
     revealAgeAbove18 * (revealAgeAbove18 - 1) === 0;
 
+    // TODO: do something smarter here
+    // For Firma CR, age is always above 18
+    ageAbove18 <== revealAgeAbove18 * 1;
+
+    // TODO: create an actual Nullifier
     // Calculate nullifier
     nullifier <== Nullifier()(nullifierSeed);
-
     
     // Dummy square to prevent signal tampering
     // (in rare cases where non-constrained inputs are ignored)
