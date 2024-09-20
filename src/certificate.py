@@ -27,7 +27,7 @@ class Certificate:
         except PyKCS11Error as error:
             message = "Hubo un error al cargar la libreria de la smart card"
             print(message+" "+str(error))
-            return message
+            return False, message
 
         session = None
 
@@ -39,7 +39,7 @@ class Certificate:
                          por favor verifique que esta conectada correctamente\
                          y que ingreso el pin correcto."""
             print(message+" "+str(error))
-            return message
+            return False, message
 
         result = []
         certs = session.findObjects([(CKA_CLASS, CKO_CERTIFICATE)])
@@ -63,4 +63,4 @@ class Certificate:
                     pem_bytes = pem.armor('CERTIFICATE', der_bytes)
                     f.write(pem_bytes)
 
-        return result
+        return True, result

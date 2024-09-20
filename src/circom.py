@@ -1,3 +1,5 @@
+#!python
+
 import os.path
 
 from zkpy.circuit import Circuit, GROTH, PLONK, FFLONK
@@ -6,7 +8,7 @@ from zkpy.ptau import PTau
 class Circom():
     def __init__(self) -> None:
         # define variables
-        self.circ_file="../firma-verifier.circom"
+        self.circ_file="../circuits/firma-verifier.circom"
 
         self.output_dir="../build/"
 
@@ -39,10 +41,10 @@ class Circom():
 
     def compile_circuit(self) -> None:
         print("Compile circuit")
-        print(self.circuit.compile())
-        print(self.circuit.check_circ_compiled())
+        self.circuit.compile()
+        self.circuit.check_circ_compiled()
         print("Get info")
-        print(self.circuit.get_info())
+        self.circuit.get_info()
 
     def power_of_tau(self) -> None:
         print("Power of Tau ceremony")
@@ -81,3 +83,9 @@ class Circom():
             self.circuit.verify(GROTH, vkey_file=self.vkey_file,
                         public_file=self.public_file,
                         proof_file=self.proof_file)
+
+if __name__ == "__main__":
+    circom = Circom()
+    circom.compile_circuit()
+    circom.power_of_tau()
+    circom.setup()
