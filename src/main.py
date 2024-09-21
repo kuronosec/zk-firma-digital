@@ -117,6 +117,8 @@ class MainWindow(QMainWindow):
             circom.generate_witness()
             circom.prove()
             circom.verify()
+            QMessageBox.information(self, "Creación de credencial válida", "Encontrar credencial en el directorio build.")
+
 
     def browse_files(self):
         # Open a file dialog and select a file

@@ -1,0 +1,7 @@
+asn1crypto==1.5.1
+certvalidator==0.11.1
+PyKCS11==1.5.16
+PyKCS11==1.5.16
+PyQt6==6.7.1
+PyQt6_sip==13.8.0
+zkpy==0.2.0

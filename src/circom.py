@@ -12,10 +12,10 @@ class Circom():
 
         self.output_dir="../build/"
 
-        self.js_dir=self.output_dir+"firma-verifier_js"
+        self.js_dir=self.output_dir+"firma-verifier_js/"
         self.r1cs=self.output_dir+"firma-verifier.r1cs"
         self.sym_file=self.output_dir+"firma-verifier.sym"
-        self.wasm=self.output_dir+"firma-verifier.wasm"
+        self.wasm=self.output_dir+self.js_dir+"firma-verifier.wasm"
         self.witness=self.output_dir+"witness.wtns"
         self.zkey=self.output_dir+"firma-verifier.zkey"
         self.ptau_file=self.output_dir+"firma-verifier-final.ptau"
