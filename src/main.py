@@ -1,4 +1,4 @@
-#!/home/kurono/miniconda3/envs/firma/bin/python
+#!python
 
 import sys
 import os
@@ -95,8 +95,10 @@ class MainWindow(QMainWindow):
         # Get the certificates from the card
         password = self.password_field.text()
         certificate = Certificate(password)
-        certificate_text = certificate.get_certificates()
-        QMessageBox.information(self, "Certificados", f"{certificate_text}")
+        (valid, info) = certificate.get_certificates()
+        QMessageBox.information(self, "Certificados", f"{info}")
+        if not valid:
+            return
         # If the certificates were stored in disk then provide the option
         # to verify them
         if not os.path.exists(self.certificate_path):
@@ -115,6 +117,8 @@ class MainWindow(QMainWindow):
             circom.generate_witness()
             circom.prove()
             circom.verify()
+            QMessageBox.information(self, "Creación de credencial válida", "Encontrar credencial en el directorio build.")
+
 
     def browse_files(self):
         # Open a file dialog and select a file
