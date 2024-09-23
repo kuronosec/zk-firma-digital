@@ -25,7 +25,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.certificate_path = "../build/certificado.cert"
+        self.build_path="../build/"
+        self.credentials_path="../credentials/"
+        self.certificate_path = self.build_path+"certificado.cert"
         self.file_to_sign = ""
 
         self.setWindowTitle("Zero Knowledge - Firma Digital")
@@ -56,6 +58,7 @@ class MainWindow(QMainWindow):
         # Create the "Obtener certificados Firma Digital" button
         self.generate_credential_button = QPushButton("Generar credencial JSON")
         self.generate_credential_button.clicked.connect(self.on_submit_generate_credential)
+        self.generate_credential_button.setStyleSheet("background-color : green")
         self.verification_layout.addWidget(self.generate_credential_button)
 
         # Set the layout for the central widget
@@ -92,17 +95,23 @@ class MainWindow(QMainWindow):
         return self.signature_tab
 
     def on_submit_generate_credential(self):
+        self.generate_credential_button.setEnabled(False)
+        self.generate_credential_button.setStyleSheet("background-color : gray")
         # Get the certificates from the card
         password = self.password_field.text()
         certificate = Certificate(password)
         (valid, info) = certificate.get_certificates()
         QMessageBox.information(self, "Certificados", f"{info}")
         if not valid:
+            self.generate_credential_button.setEnabled(True)
+            self.generate_credential_button.setStyleSheet("background-color : green")
             return
         # If the certificates were stored in disk then provide the option
         # to verify them
         if not os.path.exists(self.certificate_path):
             QMessageBox.information(self, "Certificado", "No se pudo obtener el certificado")
+            self.generate_credential_button.setEnabled(True)
+            self.generate_credential_button.setStyleSheet("background-color : green")
             return
         # Verify the stored certificates using the Goverment chain of trust
         password = self.password_field.text()
@@ -117,7 +126,11 @@ class MainWindow(QMainWindow):
             circom.generate_witness()
             circom.prove()
             circom.verify()
-            QMessageBox.information(self, "Creación de credencial válida", "Encontrar credencial en el directorio build.")
+            os.replace(self.build_path+"public.json", self.credentials_path+"public.json")
+            os.replace(self.build_path+"proof.json", self.credentials_path+"proof.json")
+            QMessageBox.information(self, "Creación de credencial válida", "Encontrar credenciales en el directorio credentials.")
+        self.generate_credential_button.setEnabled(True)
+        self.generate_credential_button.setStyleSheet("background-color : green")
 
 
     def browse_files(self):
