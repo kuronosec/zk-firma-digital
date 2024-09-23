@@ -53,8 +53,11 @@ class Certificate:
                 result.append(common_name)
 
                 directory = "../build"
+                credentials_dir="../credentials"
                 if not os.path.exists(directory):
                     os.makedirs(directory)
+                if not os.path.exists(credentials_dir):
+                    os.makedirs(credentials_dir)
 
                 # cert is an instance of x509.Certificate
                 with open("../build/certificado.cert", 'wb') as f:
