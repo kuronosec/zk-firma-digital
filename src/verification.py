@@ -1,5 +1,7 @@
 import base64
 import json
+import os
+import sys
 
 from utils import splitToWords, preprocess_message_for_sha256
 from asn1crypto import pem, x509
@@ -70,13 +72,16 @@ class Verification:
         signature_str = splitToWords(signature_int, 121, 17)
         public_key_str = splitToWords(modulus, 121, 17)
 
+        # Nullifier seed
+        nullifier_seed = int.from_bytes(os.urandom(4), sys.byteorder)
+
         if signature_str is not None:
             json_data = {
                     "certDataPadded": byte_array,
                     "certDataPaddedLength": cert_data_padded_length,
                     "signature": signature_str,
                     "pubKey": public_key_str,
-                    "nullifierSeed": "12345678",
+                    "nullifierSeed": str(nullifier_seed),
                     "signalHash": "10010552857485068401460384516712912466659718519570795790728634837432493097374",
                     "revealAgeAbove18": "1"
             }
