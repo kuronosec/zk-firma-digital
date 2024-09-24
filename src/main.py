@@ -2,6 +2,7 @@
 
 import sys
 import os
+import json
 
 from os import listdir
 from os.path import isfile, join
@@ -29,6 +30,16 @@ class MainWindow(QMainWindow):
         self.credentials_path="../credentials/"
         self.certificate_path = self.build_path+"certificado.cert"
         self.file_to_sign = ""
+
+        # Create a QLabel
+        self.file_label = QLabel()
+        # HTML link to the local file
+        current_directory = os.getcwd()
+        file_path = current_directory+"/"+self.credentials_path+"credential.json"
+        self.file_label.setText(f'<a href="{file_path}">Haga click aquí para ver el archivo de credencial generado</a>')
+
+        # Allow the QLabel to open external links
+        self.file_label.setOpenExternalLinks(True)
 
         self.setWindowTitle("Zero Knowledge - Firma Digital")
         self.setGeometry(600, 400, 600, 400)
@@ -126,8 +137,29 @@ class MainWindow(QMainWindow):
             circom.generate_witness()
             circom.prove()
             circom.verify()
-            os.replace(self.build_path+"public.json", self.credentials_path+"public.json")
-            os.replace(self.build_path+"proof.json", self.credentials_path+"proof.json")
+
+            # Create credential
+            public_input_data = None
+            proof_data = None
+
+            with open(self.build_path+"public.json", 'r') as json_file:
+                public_input_data = json.load(json_file)
+
+            with open(self.build_path+"proof.json", 'r') as json_file:
+                proof_data = json.load(json_file)
+
+            # Structure json credential data
+            credential_json_data = {
+                "public": public_input_data,
+                "proof": proof_data
+            }
+
+            # Create credential and store it in a file for the user to utilize
+            with open(self.credentials_path+"credential.json", 'w', encoding='utf-8') as json_file:
+                json.dump(credential_json_data, json_file, ensure_ascii=False, indent=4)
+
+            self.verification_layout.addWidget(self.file_label)
+
             QMessageBox.information(self, "Creación de credencial válida", "Encontrar credenciales en el directorio credentials.")
         self.generate_credential_button.setEnabled(True)
         self.generate_credential_button.setStyleSheet("background-color : green")
