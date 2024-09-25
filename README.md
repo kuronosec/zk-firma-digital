@@ -10,13 +10,13 @@ to generate and verify proofs, authenticate users and verify proofs off/on-chain
 
 To install the software and be able to generate proofs from your Firma Digital card, please execute:
 
-'''bash
+```bash
 ./install.sh
-'''
+```
 
 To run the program please exeute the following commands:
 
-'''bash
+```bash
 cd src
 ./main.py
-'''
+```
