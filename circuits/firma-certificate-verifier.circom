@@ -19,12 +19,9 @@ include "./helpers/nullifier.circom";
 /// @input nullifierSeed A random value used as an input to compute the nullifier; for example: applicationId, actionId
 /// @input public signalHash Any message to commit to (to make it part of the proof)
 /// @output pubkeyHash Poseidon hash of the RSA public key (after merging nearby chunks)
-/// @output nullifier A unique value derived from nullifierSeed and Aadhaar data to nullify the proof/user
+/// @output nullifier A unique value derived from nullifierSeed and Firma Digital data to nullify the proof/user
 /// @output timestamp Timestamp of when the data was signed - extracted and converted to Unix timestamp
 /// @output ageAbove18 Boolean flag indicating age is above 18; 0 if not revealed
-/// @output gender Gender 70(F) or 77(M); 0 if not revealed
-/// @output pinCode Pin code of the address as int; 0 if not revealed
-/// @output state State packed as int (reverse order); 0 if not revealed
 template FirmaDigitalCRVerifier(n, k, maxDataLength) {
     signal input certDataPadded[maxDataLength];
     signal input certDataPaddedLength;

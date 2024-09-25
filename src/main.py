@@ -1,11 +1,15 @@
 #!python
 
+# IMport the required libraries
 import sys
 import os
 import json
 
 from os import listdir
 from os.path import isfile, join
+
+# We will use the PyQt6 to provide a grafical interface for the user
+# TODO: test that it works on Windows
 from PyQt6.QtWidgets import ( QApplication,
                               QMainWindow,
                               QWidget,
@@ -17,6 +21,7 @@ from PyQt6.QtWidgets import ( QApplication,
                               QLabel,
                               QFileDialog )
 
+# Import our own libraries
 from certificate import Certificate
 from verification import Verification
 from signature import Signature
@@ -178,6 +183,8 @@ class MainWindow(QMainWindow):
         else:
             self.browser_label.setText("No file selected")
 
+    # This code is not being used at the moment
+    # Do we really need it?
     def sign_files(self):
         # Sign selected file
         password = self.password_field_sign.text()
@@ -194,6 +201,7 @@ class MainWindow(QMainWindow):
         else:
             self.browser_label.setText("No file selected")
 
+# Main entry point for our app
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 

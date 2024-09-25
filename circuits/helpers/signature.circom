@@ -6,7 +6,7 @@ include "@zk-email/circuits/lib/sha.circom";
 
 
 /// @title SignatureVerifier
-/// @notice Verifies Aadhaar signature
+/// @notice Verifies Firma Digital autentication certificate signature
 /// @param n - RSA pubic key size per chunk
 /// @param k - Number of chunks the RSA public key is split into
 /// @param maxDataLength - Maximum length of the data

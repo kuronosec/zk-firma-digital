@@ -1,9 +1,11 @@
+# Import necessary libraries
 import pprint
 import os
 
 from asn1crypto import pem, x509
 from PyKCS11 import *
 
+# This class interacts with the Smart Card and extracts the autentication certificate
 class Certificate:
     def __init__(self, pin):
         """
@@ -12,8 +14,10 @@ class Certificate:
         self.pin = pin
 
         # Check what operation system we re running on
+        # TODO: Windows
         if os.name == 'nt':
             self.library_path = 'todo'
+        # Linux
         else:
             self.library_path = '/usr/lib/x64-athena/libASEP11.so'
 
@@ -44,6 +48,7 @@ class Certificate:
         result = []
         certs = session.findObjects([(CKA_CLASS, CKO_CERTIFICATE)])
 
+        # Extract the certificates to be used later
         for cert in certs:
             cka_value, cka_id = session.getAttributeValue(cert, [CKA_VALUE, CKA_ID])
             cert_der = bytes(cka_value)

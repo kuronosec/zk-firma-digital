@@ -4,6 +4,9 @@ include "circomlib/circuits/poseidon.circom";
 
 /// @title Nullifier
 /// @notice Computes the nullifier
+/// A nullifier is a value that helps making the proof unique so
+/// others cannot reuse it or in applications such as voting systems
+/// to avoid the same user to vote several times
 template Nullifier(n, k) {
     signal input nullifierSeed;
     signal input signature[k];

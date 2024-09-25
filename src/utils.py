@@ -1,5 +1,7 @@
 import struct
 
+# Some utility libraries to process the input data as the
+# Circom circuit requires
 def splitToWords(number, wordsize, number_element):
   t = number
   words = []

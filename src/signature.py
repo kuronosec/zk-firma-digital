@@ -1,3 +1,4 @@
+# Import required libraries
 import json
 import hashlib
 import base64
@@ -5,6 +6,8 @@ import os
 
 from PyKCS11 import *
 
+# This class helps us to check the Firma Digital certificate signature
+# before even trying to create a ZK proof based on it
 class Signature():
     def __init__(self, pin):
         """
@@ -13,6 +16,7 @@ class Signature():
         self.pin = pin
 
         # Check what operation system we re running on
+        # TODO: make it work on windows
         if os.name == 'nt':
             self.library_path = 'todo'
         else:

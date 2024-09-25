@@ -1,3 +1,4 @@
+# Import the required libraries
 import base64
 import json
 import os
@@ -7,17 +8,23 @@ from utils import splitToWords, preprocess_message_for_sha256
 from asn1crypto import pem, x509
 from certvalidator import CertificateValidator, ValidationContext, errors
 
+# This class helps to validate the certificate extracted from the smart card
+# to see if it actually was signed by the goverment chain of trust
 class Verification:
     def __init__(self, pin):
         self.pin = pin
+        # We have a folder with the goverment certificates
         self.root_CA_path = '../CA-certificates/certificado-cadena-confianza.pem'
 
+    # Actually carry our the signature verification process
     def verify_certificate(self, user_certificate_path):
         trust_roots = []
+        # Load goverment chain of trust
         with open(self.root_CA_path, 'rb') as f:
             for _, _, der_bytes in pem.unarmor(f.read(), multiple=True):
                 trust_roots.append(der_bytes)
 
+        # Load user certificate
         with open(user_certificate_path, 'rb') as f:
             end_entity_cert = f.read()
             if pem.detect(end_entity_cert):
@@ -25,6 +32,7 @@ class Verification:
         
         root_cert = x509.Certificate.load(trust_roots[2])
         subject = root_cert.subject
+        # Show certificate info
         info = "Datos del certificado Root:\n"
         for rdn in subject.chosen:
             for attr in rdn:
@@ -34,6 +42,7 @@ class Verification:
         user_cert = x509.Certificate.load(end_entity_cert)
         context = ValidationContext(trust_roots=trust_roots)
 
+        # Finally proceed with the validation
         try:
             validator = CertificateValidator(end_entity_cert, validation_context=context)
             path = validator.validate_usage(set(['digital_signature']))
@@ -43,6 +52,7 @@ class Verification:
             print("Certificate signature is not valid!"+" "+error)
             return (False, None)
  
+    # Get info from the certificate
     def get_certificate_info(self, cert, root_cert):
         # Subject
         subject = cert.subject
