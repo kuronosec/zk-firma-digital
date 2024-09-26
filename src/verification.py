@@ -14,7 +14,7 @@ class Verification:
     def __init__(self, pin):
         self.pin = pin
         # We have a folder with the goverment certificates
-        self.root_CA_path = '../CA-certificates/certificado-cadena-confianza.pem'
+        self.root_CA_path = 'CA-certificates/certificado-cadena-confianza.pem'
 
     # Actually carry our the signature verification process
     def verify_certificate(self, user_certificate_path):

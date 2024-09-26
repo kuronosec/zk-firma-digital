@@ -1,0 +1,23 @@
+FROM python:3.11.5-bookworm
+ENV PYTHONUNBUFFERED 1
+ENV DEBIAN_FRONTEND noninteractive
+
+MAINTAINER Andres Gomez Ramirez @kuronosec
+
+RUN apt-get update && \
+    apt-get install -y  build-essential libssl3 libssl-dev libffi-dev libnss3-dev dh-make alien
+
+RUN pip install --trusted-host pypi.python.org --no-cache-dir  --upgrade pip && \
+    pip install pyinstaller
+
+COPY src/requirements.txt /tmp/requirements.txt
+RUN pip install --trusted-host pypi.python.org --no-cache-dir -r /tmp/requirements.txt
+RUN mkdir /packages && chmod 777 /packages
+
+COPY src /zk_firma_digital_base
+
+COPY builder/debian/copyright /tmp/copyright
+COPY builder/debian/postinst /tmp/postinst
+
+COPY builder/entrypoint_debian.sh  /entrypoint.sh
+CMD /entrypoint.sh

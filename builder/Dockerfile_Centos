@@ -1,0 +1,32 @@
+FROM centos:latest
+
+ENV PYTHONUNBUFFERED 1
+
+RUN dnf -y groupinstall 'Development Tools'
+RUN dnf -y install  rpmdevtools rpm-build yum-utils sudo nano
+RUN sed -i.bak -n -e '/^Defaults.*requiretty/ { s/^/# /;};/^%wheel.*ALL$/ { s/^/# / ;} ;/^#.*wheel.*NOPASSWD/ { s/^#[ ]*//;};p' /etc/sudoers
+#USER 1001
+RUN dnf -y install python3-devel python3-pip python3-setuptools
+
+RUN mkdir /packages && chmod 777 /packages
+
+RUN useradd -s /bin/bash -G adm,wheel,systemd-journal -m rpm
+WORKDIR /home/rpm
+
+USER rpm
+ENV PATH="/home/rpm/.local/bin:${PATH}"
+
+RUN pip3 install --trusted-host pypi.python.org --user  --no-cache-dir  --upgrade pip pyinstaller
+COPY src/requirements.txt /tmp/requirements.txt
+RUN pip3 install --trusted-host pypi.python.org --user --no-cache-dir -r /tmp/requirements.txt
+RUN chmod +x /home/rpm/.local/lib/python3.6/site-packages/PyQt5/*.so
+COPY src source
+
+RUN rpmdev-setuptree
+ADD builder/rpm_builder.sh /home/rpm/builder.sh
+ADD builder/rpm/fva_client.spec rpmbuild/SPECS/fva_client.spec
+USER root
+RUN chown -R rpm: /home/rpm
+USER rpm
+
+CMD /home/rpm/builder.sh
