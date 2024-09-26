@@ -4,3 +4,4 @@ PyKCS11==1.5.16
 PyQt6==6.7.1
 PyQt6_sip==13.8.0
 zkpy==0.2.0
+https://github.com/wbond/oscrypto/archive/d5f3437ed24257895ae1edd9e503cfb352e635a8.zip
