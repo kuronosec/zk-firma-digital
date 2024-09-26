@@ -1,0 +1,12 @@
+#https://hub.docker.com/r/stefanscherer/chocolatey
+
+FROM python:3.9-windowsservercore
+FROM stefanscherer/chocolatey
+#RUN choco install -y visualstudio2019buildtools
+RUN choco install -y python --version=3.7
+RUN export PATH=/c/Python37:/c/Python37/Scripts:$PATH
+
+RUN pip install setuptools-scm==6.0.1
+RUN pip install pyinstaller
+#RUN pip install -r requirements.txt
+

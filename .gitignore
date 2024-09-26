@@ -1,6 +1,6 @@
-tmp*
-build*
-node_modules*
+tmp/
+build/
+node_modules/
 /bin/
 .classpath
 .project
@@ -10,3 +10,7 @@ __pycache__
 aux/
 *.pyc
 credentials/
+deb/
+rpm/
+release/
+

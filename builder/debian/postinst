@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = configure ]; then
+    [ \! -e /etc/Athena/IDPClientDB.xml -o -L /etc/Athena/IDPClientDB.xml ] && cp /etc/Athena/zk_firma_digital_IDPClientDB.xml /etc/Athena/IDPClientDB.xml 
+    [ \! -e /usr/lib/libASEP11.so -o -L /usr/lib/libASEP11.so ] && cp /usr/share/zk_firma_digital/os_libs/linux/ARCH/libASEP11.so /usr/lib/libASEP11.so
+    [ \! -e /usr/lib/x64-athena/libASEP11.so -o -L /usr/lib/x64-athena/libASEP11.so ] && cp /usr/share/zk_firma_digital/os_libs/linux/ARCH/libASEP11.so /usr/lib/x64-athena/libASEP11.so
+    [ \! -e /usr/lib/ARCH-linux-gnu/libASEP11.so -o -L /usr/lib/ARCH-linux-gnu/libASEP11.so ] && cp /usr/share/zk_firma_digital/os_libs/linux/ARCH/libASEP11.so /usr/lib/ARCH-linux-gnu/libASEP11.so
+    
+    [ \! -e /usr/lib/x86_64-linux-gnu/libxcb-util.so.1 -o -L /usr/lib/x86_64-linux-gnu/libxcb-util.so.1 ] && [ -e /usr/lib/x86_64-linux-gnu/libxcb-util.so.0 -o -L /usr/lib/x86_64-linux-gnu/libxcb-util.so.0 ]  && ln -s /usr/lib/x86_64-linux-gnu/libxcb-util.so.0 /usr/lib/x86_64-linux-gnu/libxcb-util.so.1
+    
+fi
+exit 0
