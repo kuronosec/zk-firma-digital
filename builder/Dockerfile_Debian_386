@@ -14,7 +14,7 @@ RUN pip install --trusted-host pypi.python.org --no-cache-dir  --upgrade pip && 
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install --trusted-host pypi.python.org --no-cache-dir -r /tmp/requirements.txt
 
-COPY src /zk_firma_digital_base
+COPY src /zk-firma-digital_base
 
 COPY builder/debian/copyright /tmp/copyright
 COPY builder/debian/postinst /tmp/postinst
