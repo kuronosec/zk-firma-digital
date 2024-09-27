@@ -25,23 +25,22 @@ from PyQt6.QtWidgets import ( QApplication,
 from certificate import Certificate
 from verification import Verification
 from signature import Signature
+from configuration import Configuration
 from circom import Circom
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.build_path="../build/"
-        self.credentials_path="../credentials/"
-        self.certificate_path = self.build_path+"certificado.cert"
+        self.config = Configuration()
+        if not os.path.exists(self.config.output_dir):
+            os.makedirs(self.config.output_dir)
         self.file_to_sign = ""
 
         # Create a QLabel
         self.file_label = QLabel()
         # HTML link to the local file
-        current_directory = os.getcwd()
-        file_path = current_directory+"/"+self.credentials_path+"credential.json"
-        self.file_label.setText(f'<a href="{file_path}">Haga click aquí para ver el archivo de credencial generado</a>')
+        self.file_label.setText(f'<a href="{self.config.credential_file}">Haga click aquí para ver el archivo de credencial generado</a>')
 
         # Allow the QLabel to open external links
         self.file_label.setOpenExternalLinks(True)
@@ -124,7 +123,7 @@ class MainWindow(QMainWindow):
             return
         # If the certificates were stored in disk then provide the option
         # to verify them
-        if not os.path.exists(self.certificate_path):
+        if not os.path.exists(self.config.certificate_path):
             QMessageBox.information(self, "Certificado", "No se pudo obtener el certificado")
             self.generate_credential_button.setEnabled(True)
             self.generate_credential_button.setStyleSheet("background-color : green")
@@ -133,7 +132,7 @@ class MainWindow(QMainWindow):
         password = self.password_field.text()
         verification = Verification(password)
 
-        (valid, info) = verification.verify_certificate(self.certificate_path)
+        (valid, info) = verification.verify_certificate(self.config.certificate_path)
         if not valid:
             QMessageBox.information(self, "Validación", f"{info}\n\n Firma de certificado inválida!!!")
         else:
@@ -147,10 +146,10 @@ class MainWindow(QMainWindow):
             public_input_data = None
             proof_data = None
 
-            with open(self.build_path+"public.json", 'r') as json_file:
+            with open(self.config.public_signals_file, 'r') as json_file:
                 public_input_data = json.load(json_file)
 
-            with open(self.build_path+"proof.json", 'r') as json_file:
+            with open(self.config.proof_file, 'r') as json_file:
                 proof_data = json.load(json_file)
 
             # Structure json credential data
@@ -160,7 +159,7 @@ class MainWindow(QMainWindow):
             }
 
             # Create credential and store it in a file for the user to utilize
-            with open(self.credentials_path+"credential.json", 'w', encoding='utf-8') as json_file:
+            with open(self.config.credential_file, 'w', encoding='utf-8') as json_file:
                 json.dump(credential_json_data, json_file, ensure_ascii=False, indent=4)
 
             self.verification_layout.addWidget(self.file_label)

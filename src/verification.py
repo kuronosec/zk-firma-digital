@@ -7,14 +7,19 @@ import sys
 from utils import splitToWords, preprocess_message_for_sha256
 from asn1crypto import pem, x509
 from certvalidator import CertificateValidator, ValidationContext, errors
+from configuration import Configuration
 
 # This class helps to validate the certificate extracted from the smart card
 # to see if it actually was signed by the goverment chain of trust
 class Verification:
     def __init__(self, pin):
         self.pin = pin
+        self.config = Configuration()
+        self.user_path = self.config.user_path
+        self.credentials_path=self.config.credentials_path
+
         # We have a folder with the goverment certificates
-        self.root_CA_path = 'CA-certificates/certificado-cadena-confianza.pem'
+        self.root_CA_path = self.config.root_CA_path
 
     # Actually carry our the signature verification process
     def verify_certificate(self, user_certificate_path):
@@ -96,7 +101,7 @@ class Verification:
                     "revealAgeAbove18": "1"
             }
             json_data = json.dumps(json_data, indent=4)
-            with open('../build/input.json', 'w') as json_file:
+            with open(self.config.input_file, 'w') as json_file:
                 json_file.write(json_data)
         else:
             print("Number does not fit")

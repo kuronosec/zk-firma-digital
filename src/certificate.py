@@ -4,6 +4,7 @@ import os
 
 from asn1crypto import pem, x509
 from PyKCS11 import *
+from configuration import Configuration
 
 # This class interacts with the Smart Card and extracts the autentication certificate
 class Certificate:
@@ -11,6 +12,9 @@ class Certificate:
         """
             Initialize stuff
         """
+        self.config = Configuration()
+        self.user_path = self.config.user_path
+        self.credentials_path = self.config.credentials_path
         self.pin = pin
 
         # Check what operation system we re running on
@@ -57,15 +61,11 @@ class Certificate:
             if "AUTENTICACION" in common_name:
                 result.append(common_name)
 
-                directory = "../build"
-                credentials_dir="../credentials"
-                if not os.path.exists(directory):
-                    os.makedirs(directory)
-                if not os.path.exists(credentials_dir):
-                    os.makedirs(credentials_dir)
+                if not os.path.exists(self.credentials_path):
+                    os.makedirs(self.credentials_path)
 
                 # cert is an instance of x509.Certificate
-                with open("../build/certificado.cert", 'wb') as f:
+                with open(self.config.certificate_path, 'wb') as f:
                     pprint.pprint(cert.native["tbs_certificate"]["subject"])
                     der_bytes = cert.dump()
                     pem_bytes = pem.armor('CERTIFICATE', der_bytes)
