@@ -28,7 +28,7 @@ e785cbe5deb0fcebae53f6f1ff025531884ec630923db4b322040ffdff657d77  zk-firma-digit
 ```bash
     sudo dpkg -i zk-firma-digital_0.1_amd64.deb
 ```
-* Move the firma-verifier.zkey to the required directory:
+* Then, move the firma-verifier.zkey to the required directory:
 ```bash
     sudo mv firma-verifier.zkey /usr/share/zk-firma-digital/zk-artifacts/
 ```
