@@ -37,3 +37,11 @@ e785cbe5deb0fcebae53f6f1ff025531884ec630923db4b322040ffdff657d77  zk-firma-digit
 ```bash
     /usr/share/zk-firma-digital/zk-firma-digital.bin
 ```
+
+## Build
+
+If you want to build the current installer, execute the following command:
+
+```bash
+./builder/build_linux.sh
+```
