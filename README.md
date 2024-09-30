@@ -18,6 +18,20 @@ However, there is a significant privacy concern related to sensitive data in Cos
 
 Our project aims to address these privacy issues by developing a zero-knowledge proof infrastructure using blockchain technology and ZK circuits. This solution will enable citizens to verify their identity and provide specific information without revealing actual personal details. By minimizing the distribution of sensitive data across various institutions and companies, we can significantly reduce the risk of data theft. Additionally, this system can authenticate users for diverse services, ensuring they are real individuals and not bots, without requiring sensitive information such as email addresses or phone numbers.
 
+## Potential use cases
+
+* Anonymous authentication
+* Descentralized anonymous voting
+* Anonymous proof of humanity
+* Health data privacy
+* Know Your Customer
+* Privacy-Preserving Verification
+* Anti-Sybil Mechanisms
+* DAO Governance
+* Quadratic Funding (QF)
+* Wallet Recovery
+* And many more
+
 ## Installation
 
 To install the software and be able to generate proofs from your Firma Digital card, please follow these steps:
