@@ -71,3 +71,7 @@ If you want to build the current installer, execute the following command:
 ```bash
 ./builder/build_linux.sh
 ```
+
+## Warning
+
+This project is still in the proof-of-concept phase and under heavy development and therefore still not recommended for production environments.
