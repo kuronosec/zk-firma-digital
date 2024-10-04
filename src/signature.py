@@ -81,13 +81,32 @@ class Signature():
                 "signatureValue": signature_value
             }
 
+            # Create the Verifiable Presentation
+            verifiable_presentation_signed_json = {
+                "@context": ["https://www.w3.org/2018/credentials/v1"],
+                "type": ["VerifiablePresentation"],
+                "verifiableCredential": [verifiable_credential_signed_json],
+                "holder": "did:example:holder",
+                "proof": {
+                    "type": "RsaSignature2018",
+                    "created": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    "proofPurpose": "authentication",
+                    "verificationMethod": "https://example.com/keys/holder-key",
+                    "signatureValue": signature_value
+                }
+            }
+
             # Save the signed JSON to a new file
             file_name = os.path.basename(file_path)
             file_only_path = os.path.dirname(file_path)
             verifiable_credential_signed_json_file_path = file_only_path+"/"+"signed-"+file_name
+            verifiable_presentation_signed_json_file_path = file_only_path+"/"+"signed-vp-"+file_name
 
             with open(verifiable_credential_signed_json_file_path, "w") as f:
                 json.dump(verifiable_credential_signed_json, f, indent=4, default=str)
+
+            with open(verifiable_presentation_signed_json_file_path, "w") as f:
+                json.dump(verifiable_presentation_signed_json, f, indent=4, default=str)
 
             # Logout and close the session
             session.logout()
