@@ -55,7 +55,8 @@ class MainWindow(QMainWindow):
         # Add tabs
         self.verification_tab = self.create_verification_tab()
         self.signing_tab = self.create_signing_tab()
-        self.tabs.addTab(self.verification_tab, "Creación de credencial de prueba de conocimiento zero")
+        self.tabs.addTab(self.verification_tab, "Creación de credencial ZK")
+        self.tabs.addTab(self.signing_tab, "Firma de credenciales verificables")
 
     def create_verification_tab(self):
         # Create the first tab's content
