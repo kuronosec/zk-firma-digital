@@ -3,6 +3,8 @@ import json
 import hashlib
 import base64
 import os
+import datetime
+import binascii
 
 from PyKCS11 import *
 
@@ -57,29 +59,35 @@ class Signature():
             json_file_path = file_path
 
             with open(json_file_path, "r") as f:
-                json_data = f.read()
+                verifiable_credential_data = f.read()
 
             # Canonicalize and hash the JSON data (using SHA-256)
-            hashed_data = hashlib.sha256(json_data.encode('utf-8')).digest()
+            hashed_data = hashlib.sha256(verifiable_credential_data.encode('utf-8')).digest()
 
             # Sign the hash using the private key
             mechanism = PyKCS11.Mechanism(PyKCS11.CKM_SHA256_RSA_PKCS, None)
             signature = session.sign(private_key, hashed_data, mechanism)
 
             # Base64 encode the signature
-            signature_base64 = base64.b64encode(bytearray(signature)).decode('utf-8')
+            signature_value = binascii.hexlify(bytearray(signature))
 
             # Add the signature back into the JSON data
-            signed_json = json.loads(json_data)
-            signed_json['signature'] = signature_base64
+            verifiable_credential_signed_json = json.loads(verifiable_credential_data)
+            verifiable_credential_signed_json['proof'] = {
+                "type": "RsaSignature2018",
+                "created": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                "proofPurpose": "assertionMethod",
+                "verificationMethod": "https://example.com/keys/1",
+                "signatureValue": signature_value
+            }
 
             # Save the signed JSON to a new file
             file_name = os.path.basename(file_path)
             file_only_path = os.path.dirname(file_path)
-            signed_json_file_path = file_only_path+"/"+"signed-"+file_name
+            verifiable_credential_signed_json_file_path = file_only_path+"/"+"signed-"+file_name
 
-            with open(signed_json_file_path, "w") as f:
-                json.dump(signed_json, f, indent=4)
+            with open(verifiable_credential_signed_json_file_path, "w") as f:
+                json.dump(verifiable_credential_signed_json, f, indent=4, default=str)
 
             # Logout and close the session
             session.logout()
