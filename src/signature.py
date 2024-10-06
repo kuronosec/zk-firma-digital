@@ -72,8 +72,8 @@ class Signature():
             signature_value = binascii.hexlify(bytearray(signature))
 
             # Add the signature back into the JSON data
-            verifiable_credential_signed_json = json.loads(verifiable_credential_data)
-            verifiable_credential_signed_json['proof'] = {
+            verifiable_credential_json = json.loads(verifiable_credential_data)
+            verifiable_credential_json['proof'] = {
                 "type": "RsaSignature2018",
                 "created": datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 "proofPurpose": "assertionMethod",
@@ -82,31 +82,42 @@ class Signature():
             }
 
             # Create the Verifiable Presentation
-            verifiable_presentation_signed_json = {
+            verifiable_presentation = {
                 "@context": ["https://www.w3.org/2018/credentials/v1"],
                 "type": ["VerifiablePresentation"],
-                "verifiableCredential": [verifiable_credential_signed_json],
+                "verifiableCredential": [verifiable_credential_json],
                 "holder": "did:example:holder",
-                "proof": {
+            }
+            verifiable_presentation_json = json.dumps(verifiable_presentation,
+                                                      indent = 4,
+                                                      default=str)
+
+            # Canonicalize and hash the JSON data (using SHA-256)
+            hashed_data = hashlib.sha256(verifiable_presentation_json.encode('utf-8')).digest()
+            signature = session.sign(private_key, hashed_data, mechanism)
+
+            # Base64 encode the signature
+            signature_value = binascii.hexlify(bytearray(signature))
+
+            verifiable_presentation['proof'] = {
                     "type": "RsaSignature2018",
                     "created": datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     "proofPurpose": "authentication",
                     "verificationMethod": "https://example.com/keys/holder-key",
                     "signatureValue": signature_value
-                }
             }
-
+            
             # Save the signed JSON to a new file
             file_name = os.path.basename(file_path)
             file_only_path = os.path.dirname(file_path)
-            verifiable_credential_signed_json_file_path = file_only_path+"/"+"signed-"+file_name
+            verifiable_credential_json_file_path = file_only_path+"/"+"signed-"+file_name
             verifiable_presentation_signed_json_file_path = file_only_path+"/"+"signed-vp-"+file_name
 
-            with open(verifiable_credential_signed_json_file_path, "w") as f:
-                json.dump(verifiable_credential_signed_json, f, indent=4, default=str)
+            with open(verifiable_credential_json_file_path, "w") as f:
+                json.dump(verifiable_credential_json, f, indent=4, default=str)
 
             with open(verifiable_presentation_signed_json_file_path, "w") as f:
-                json.dump(verifiable_presentation_signed_json, f, indent=4, default=str)
+                json.dump(verifiable_presentation, f, indent=4, default=str)
 
             # Logout and close the session
             session.logout()
