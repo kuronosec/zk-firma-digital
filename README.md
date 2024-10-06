@@ -72,7 +72,7 @@ If you want to build the current installer, execute the following command:
 ./builder/build_linux.sh
 ```
 
-## Test it
+## See it working
 When you generate a Zk credential from your Firma Digital, which is a JSON file, you can test it by authenticating in this PoC website:
 
 * http://app.sakundi.io:8080/
