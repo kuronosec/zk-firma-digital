@@ -72,6 +72,13 @@ If you want to build the current installer, execute the following command:
 ./builder/build_linux.sh
 ```
 
+## Try it out
+When you generate a Zk credential from your Firma Digital, a JSON file, you can test it by authenticating in this PoC Web site:
+
+* http://app.sakundi.io:8080/
+
+You can find the source code here: https://github.com/kuronosec/zk-firma-web
+
 ## Warning
 
 This project is still in the proof-of-concept phase and under heavy development and therefore still not recommended for production environments.
