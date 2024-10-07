@@ -52,7 +52,7 @@ This should be equal to:
 ```
 * If the hash sums are correct, then install the zk-firma-digital Debian package:
 ```bash
-    sudo dpkg -i zk-firma-digital_0.1_amd64.deb
+    sudo dpkg -i zk-firma-digital_0.2_amd64.deb
 ```
 * Then, move the firma-verifier.zkey to the required directory:
 ```bash
