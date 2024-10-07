@@ -42,7 +42,7 @@ To install the software and be able to generate proofs from your Firma Digital c
 ```
 * Verify the sha256 hash sum for both files:
 ```bash
-sha256sum zk-firma-digital_0.1_amd64.deb
+sha256sum zk-firma-digital_0.2_amd64.deb
 sha256sum firma-verifier.zkey
 ```
 This should be equal to:
