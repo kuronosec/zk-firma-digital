@@ -47,7 +47,7 @@ sha256sum firma-verifier.zkey
 ```
 This should be equal to:
 ```bash
-e785cbe5deb0fcebae53f6f1ff025531884ec630923db4b322040ffdff657d77  zk-firma-digital_0.1_amd64.deb
+8608d4330daace89c1573432eddd556b5dfb2608bb24cab0e4a68c2956eddff0  zk-firma-digital_0.2_amd64.deb
 91ad03aa0e33430d29361ae450f01d7a4992e068a7d6dddf954886fc4205aa21  firma-verifier.zkey
 ```
 * If the hash sums are correct, then install the zk-firma-digital Debian package:
@@ -78,6 +78,8 @@ When you generate a Zk credential from your Firma Digital, which is a JSON file,
 * http://app.sakundi.io:8080/
 
 You can find the source code here: https://github.com/kuronosec/zk-firma-web
+
+Also you can find an example of the built verifiable credential here: https://github.com/kuronosec/zk-firma-digital/blob/main/src/examples/residence-credential.json
 
 ## Warning
 
