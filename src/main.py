@@ -4,6 +4,7 @@
 import sys
 import os
 import json
+import datetime
 
 from os import listdir
 from os.path import isfile, join
@@ -46,7 +47,7 @@ class MainWindow(QMainWindow):
         self.file_label.setOpenExternalLinks(True)
 
         self.setWindowTitle("Zero Knowledge - Firma Digital")
-        self.setGeometry(600, 400, 600, 400)
+        self.setGeometry(600, 400, 700, 400)
 
         # Create a QTabWidget
         self.tabs = QTabWidget()
@@ -154,21 +155,59 @@ class MainWindow(QMainWindow):
                 proof_data = json.load(json_file)
 
             # Structure json credential data
-            credential_json_data = {
-                "public": public_input_data,
-                "proof": proof_data
-            }
+            verifiable_credential = self.verifiable_credential_template()
+            verifiable_credential["proof"]["signatureValue"]["public"] = public_input_data
+            verifiable_credential["proof"]["signatureValue"]["proof"] = proof_data
 
             # Create credential and store it in a file for the user to utilize
             with open(self.config.credential_file, 'w', encoding='utf-8') as json_file:
-                json.dump(credential_json_data, json_file, ensure_ascii=False, indent=4)
+                json.dump(verifiable_credential,
+                          json_file,
+                          ensure_ascii=False,
+                          indent=4,
+                          default=str)
 
             self.verification_layout.addWidget(self.file_label)
 
             QMessageBox.information(self, "Creación de credencial válida", "Encontrar credenciales en el directorio credentials.")
         self.generate_credential_button.setEnabled(True)
         self.generate_credential_button.setStyleSheet("background-color : green")
-
+    
+    def verifiable_credential_template(self):
+        verifiable_credential = {
+            "@context": [
+                "https://www.w3.org/ns/credentials/v2",
+                "https://w3id.org/citizenship/v2"
+            ],
+            "type": [
+                "VerifiableCredential",
+                "ResidentCardCredential"
+            ],
+            "name": "Resident Card",
+            "issuer": "http://fdi.sinpe.fi.cr/repositorio/CA%20SINPE%20-%20PERSONA%20FISICA%20v2(2).crt",
+            "validFrom": datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+            "validUntil": datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+            "credentialSubject": {
+                "type": [
+                "Person",
+                "Resident"
+                ],
+                "ResidentCard": {
+                "type": "ResidentCard",
+                "age": 99
+                }
+            },
+            "proof": {
+                "type": "RsaSignature2018",
+                "created": datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+                "verificationMethod": "http://fdi.sinpe.fi.cr/repositorio/CA%20SINPE%20-%20PERSONA%20FISICA%20v2(2).crt",
+                "proofPurpose": "authentication",
+                "signatureValue": {
+                    
+                }
+            }
+        }
+        return verifiable_credential
 
     def browse_files(self):
         # Open a file dialog and select a file
