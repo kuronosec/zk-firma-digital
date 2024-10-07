@@ -37,7 +37,7 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
 To install the software and be able to generate proofs from your Firma Digital card, please follow these steps:
 * Download the installer (Initially only for Linux Debian) and the zkey file:
 ```bash
-    wget http://app.sakundi.io:9090/zk-firma-digital_0.1_amd64.deb
+    wget http://app.sakundi.io:9090/zk-firma-digital_0.2_amd64.deb
     wget http://app.sakundi.io:9090/firma-verifier.zkey
 ```
 * Verify the sha256 hash sum for both files:
