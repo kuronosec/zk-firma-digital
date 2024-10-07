@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 
-VERSION=0.1
+VERSION=0.2
 NAME='zk-firma-digital'
 PACKAGE='zk-firma-digital'
 ARCH='amd64'
