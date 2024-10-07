@@ -75,7 +75,7 @@ class Signature():
             verifiable_credential_json = json.loads(verifiable_credential_data)
             verifiable_credential_json['proof'] = {
                 "type": "RsaSignature2018",
-                "created": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                "created": datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
                 "proofPurpose": "assertionMethod",
                 "verificationMethod": "https://example.com/keys/1",
                 "signatureValue": signature_value
@@ -101,7 +101,7 @@ class Signature():
 
             verifiable_presentation['proof'] = {
                     "type": "RsaSignature2018",
-                    "created": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    "created": datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
                     "proofPurpose": "authentication",
                     "verificationMethod": "https://example.com/keys/holder-key",
                     "signatureValue": signature_value
