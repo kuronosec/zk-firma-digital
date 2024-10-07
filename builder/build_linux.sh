@@ -21,3 +21,4 @@ docker run --rm --env VERSION=$VERSION --env NAME=$NAME --env ARCH=$ARCH --env P
 
 # cp rpm/* release/
 cp deb/* release/
+sha256sum release/*
