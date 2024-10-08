@@ -20,7 +20,7 @@ class Certificate:
         # Check what operation system we re running on
         # TODO: Windows
         if os.name == 'nt':
-            self.library_path = './os_libs/windows/asepkcs.dll'
+            self.library_path = 'C:/Windows/System32/asepkcs.dll'
         # Linux
         else:
             self.library_path = './os_libs/linux/amd64/libASEP11.so'
