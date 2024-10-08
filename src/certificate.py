@@ -18,12 +18,11 @@ class Certificate:
         self.pin = pin
 
         # Check what operation system we re running on
-        # TODO: Windows
         if os.name == 'nt':
             self.library_path = 'C:/Windows/System32/asepkcs.dll'
         # Linux
         else:
-            self.library_path = './os_libs/linux/amd64/libASEP11.so'
+            self.library_path = '/usr/lib/x64-athena/libASEP11.so'
 
     def get_certificates(self):
         """
