@@ -21,7 +21,8 @@ class Configuration:
         self.certificate_path = os.path.join(self.credentials_path, Path('certificado.cert'))
         self.zk_artifacts_path = os.path.join(self.installation_path, Path('zk-artifacts/'))
 
-        self.root_CA_path = os.path.join(self.installation_path, Path('CA-certificates/certificado-cadena-confianza.pem'))
+        self.root_CA_path = os.path.join(self.installation_path,
+                                         Path('CA-certificates/certificado-cadena-confianza.pem'))
         self.output_dir = os.path.join(self.user_path, self.build_path)
         self.credentials_path = self.credentials_path
 
