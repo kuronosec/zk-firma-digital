@@ -29,7 +29,6 @@ class PTau:
         self.ptau_file = ptau_file
         # Check what operation system we re running on
         self.snarkjs_command = "snarkjs"
-        print("aaaaaaaaaaaaa")
         if os.name == 'nt':
             self.snarkjs_command = "snarkjs.cmd"
 

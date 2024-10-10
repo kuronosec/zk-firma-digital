@@ -62,7 +62,6 @@ class Circuit:
         self.vkey_file = vkey
         # Check what operation system we re running on
         self.snarkjs_command = "snarkjs"
-        print("aaaaaaaaaaaaa")
         if os.name == 'nt':
             self.snarkjs_command = "snarkjs.cmd"
 
