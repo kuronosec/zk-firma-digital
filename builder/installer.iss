@@ -25,10 +25,9 @@ ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
 
 [Files]
+Source: "zk-artifacts\*"; DestDir: "{app}\zk-artifacts";
+Source: "CA-certificates\*"; DestDir: "{app}\CA-certificates";
 Source: "zk-firma-digital.exe"; DestDir: "{app}"; DestName: "zk-firma-digital.exe"
-Source: "icon.png"; DestDir: "{app}"; DestName: "icon.png"
-Source: "asepkcs.dll"; DestDir: "{autopf}\System32"; DestName: "asepkcs.dll"; Flags: onlyifdoesntexist 
-Source: "asepkcs.dll"; DestDir: "{app}\os_libs\windows\"; DestName: "asepkcs.dll"; Flags: onlyifdoesntexist recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\ZK Firma Digital"; Filename: "{app}\zk-firma-digital.exe"

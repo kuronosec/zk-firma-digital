@@ -13,4 +13,5 @@ credentials/
 deb/
 rpm/
 release/
-
+dist
+*.spec
