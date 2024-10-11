@@ -1,5 +1,7 @@
 #!/bin/bash -xe
 
+set -xe
+
 VERSION=0.2
 NAME='zk-firma-digital'
 PACKAGE='zk-firma-digital'

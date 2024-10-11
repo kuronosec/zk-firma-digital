@@ -41,7 +41,7 @@ class MainWindow(QMainWindow):
         # Create a QLabel
         self.file_label = QLabel()
         # HTML link to the local file
-        self.file_label.setText(f'<a href="{self.config.credential_file}">Haga click aquí para ver el archivo de credencial generado</a>')
+        self.file_label.setText(f'<a href="file:///{self.config.credential_file}">Haga click aquí para ver el archivo de credencial generado</a>')
 
         # Allow the QLabel to open external links
         self.file_label.setOpenExternalLinks(True)
