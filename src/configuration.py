@@ -5,7 +5,13 @@ from pathlib import Path
 class Configuration:
     def __init__(self) -> None:
         # Define OS specific paths
-        self.installation_path = Path('/usr/share/zk-firma-digital')
+        # Check what operation system we re running on
+        if os.name == 'nt':
+            self.installation_path = Path('C:/Program Files/zk-firma-digital')
+        # Linux
+        else:
+            self.installation_path = Path('/usr/share/zk-firma-digital')
+
         self.user_path = os.path.join(Path.home(), Path('.zk-firma-digital/'))
         self.build_path = Path("build/")
 
@@ -15,7 +21,8 @@ class Configuration:
         self.certificate_path = os.path.join(self.credentials_path, Path('certificado.cert'))
         self.zk_artifacts_path = os.path.join(self.installation_path, Path('zk-artifacts/'))
 
-        self.root_CA_path = os.path.join(self.installation_path, Path('CA-certificates/certificado-cadena-confianza.pem'))
+        self.root_CA_path = os.path.join(self.installation_path,
+                                         Path('CA-certificates/certificado-cadena-confianza.pem'))
         self.output_dir = os.path.join(self.user_path, self.build_path)
         self.credentials_path = self.credentials_path
 

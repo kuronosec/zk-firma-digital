@@ -18,9 +18,8 @@ class Certificate:
         self.pin = pin
 
         # Check what operation system we re running on
-        # TODO: Windows
         if os.name == 'nt':
-            self.library_path = 'todo'
+            self.library_path = 'C:/Windows/System32/asepkcs.dll'
         # Linux
         else:
             self.library_path = '/usr/lib/x64-athena/libASEP11.so'
