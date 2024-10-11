@@ -97,6 +97,13 @@ Before being able to run the app, you need a couple of dependencies:
     npm install -g snarkjs@latest
 ```
 
+* Finally, to run the program, introduce your smart card in a USB slot and execute the following command:
+
+```bash
+    C:\Program Files\zk-firma-digital\zk-firma-digital.exe
+```
+Or just look for ```Zk Firma Digital``` in the app search.
+
 ## Build
 
 If you want to build the current installer, execute the following command:
