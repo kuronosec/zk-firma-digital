@@ -26,6 +26,7 @@ ArchitecturesInstallIn64BitMode=x64
 
 [Files]
 Source: "zk-artifacts\*"; DestDir: "{app}\zk-artifacts";
+Source: "zk-artifacts\firma-verifier_js\*"; DestDir: "{app}\zk-artifacts\firma-verifier_js";
 Source: "CA-certificates\*"; DestDir: "{app}\CA-certificates";
 Source: "zk-firma-digital.exe"; DestDir: "{app}"; DestName: "zk-firma-digital.exe"
 
