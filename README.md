@@ -82,20 +82,11 @@ certutil -hashfile C:\file\path\zk-firma-digital.exe SHA256
 ```
 This should be equal to:
 ```bash
-333e488fa8f9a7219c2c1ab738974cdb47ced6d5197cfaedf976b36e661a2ee1  ./zk-firma-digital.exe
+20cd4d4d092458ccf16cc47cf00fb2a5e51b8ffa6a3b3dbf0eb2b0df0a6cd678  zk-firma-digital.exe
 ```
 * If the hash sums is correct, then just run the zk-firma-digital installer.
 
-Before being able to run the app, you need a couple of dependencies:
-* Install Nodejs, that you can find in this link:
-```bash
-    https://nodejs.org/en/download/prebuilt-installer
-```
-* After Installing Nodejs, run the following command to install Snarkjs:
-
-```bash
-    npm install -g snarkjs@latest
-```
+The Windows installer also includes a couple of Javascript dependencies, Nodejs and Snarkjs.
 
 * Finally, to run the program, introduce your smart card in a USB slot and execute the following command:
 
