@@ -96,11 +96,17 @@ This should be equal to:
 
 ## Build
 
+**On Linux:**
+
 If you want to build the current installer, execute the following command:
 
 ```bash
 ./builder/build_linux.sh
 ```
+
+**On Windows:**
+
+TODO
 
 ## See it working
 When you generate a Zk credential from your Firma Digital, which is a JSON file, you can test it by authenticating in this PoC website:
