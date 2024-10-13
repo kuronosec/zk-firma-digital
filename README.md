@@ -70,10 +70,10 @@ This should be equal to:
 
 Please follow these steps:
 
-* Download the installer from this address, for instance using the browser:
-```bash
-    http://app.sakundi.io:9090/zk-firma-digital.exe
-```
+* Download the installer from this link, for instance using the browser:
+
+[Windows Installer](http://app.sakundi.io:9090/zk-firma-digital.exe)
+  
 In this case, the installer includes the zkey, which makes it a bit heavy.
 
 * Verify the sha256 hash sum:
