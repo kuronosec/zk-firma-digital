@@ -62,7 +62,7 @@ includes the zkey necessary for generating valid ZK proofs, which makes it a bit
 ```
 Or just look for ```Zk Firma Digital``` in the app search.
 
-**On Linux:**
+**On Linux (At moment only Debian):**
 
 To install the software and be able to generate proofs from your Firma Digital card, please follow these steps:
 * Download the installer and the zkey file:
