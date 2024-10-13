@@ -34,8 +34,10 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
 
 ## Installation
 
+**On Linux:**
+
 To install the software and be able to generate proofs from your Firma Digital card, please follow these steps:
-* Download the installer (Initially only for Linux Debian) and the zkey file:
+* Download the installer and the zkey file:
 ```bash
     wget http://app.sakundi.io:9090/zk-firma-digital_0.2_amd64.deb
     wget http://app.sakundi.io:9090/firma-verifier.zkey
@@ -63,6 +65,44 @@ This should be equal to:
 ```bash
     /usr/share/zk-firma-digital/zk-firma-digital.bin
 ```
+
+**On Windows:**
+
+Please follow these steps:
+
+* Download the installer from this address, for instance using the browser:
+```bash
+    http://app.sakundi.io:9090/zk-firma-digital.exe
+```
+In this case, the installer includes the zkey, which makes it a bit heavy.
+
+* Verify the sha256 hash sum:
+```bash
+certutil -hashfile C:\file\path\zk-firma-digital.exe SHA256
+```
+This should be equal to:
+```bash
+333e488fa8f9a7219c2c1ab738974cdb47ced6d5197cfaedf976b36e661a2ee1  ./zk-firma-digital.exe
+```
+* If the hash sums is correct, then just run the zk-firma-digital installer.
+
+Before being able to run the app, you need a couple of dependencies:
+* Install Nodejs, that you can find in this link:
+```bash
+    https://nodejs.org/en/download/prebuilt-installer
+```
+* After Installing Nodejs, run the following command to install Snarkjs:
+
+```bash
+    npm install -g snarkjs@latest
+```
+
+* Finally, to run the program, introduce your smart card in a USB slot and execute the following command:
+
+```bash
+    C:\Program Files\zk-firma-digital\zk-firma-digital.exe
+```
+Or just look for ```Zk Firma Digital``` in the app search.
 
 ## Build
 
