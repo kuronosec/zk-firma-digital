@@ -34,6 +34,34 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
 
 ## Installation
 
+**On Windows:**
+
+Please follow these steps:
+
+* Download the installer by clicking the following link:
+
+[Windows Installer](http://app.sakundi.io:9090/zk-firma-digital.exe)
+
+* Verify the sha256 hash sum:
+```bash
+certutil -hashfile C:\file\path\zk-firma-digital.exe SHA256
+```
+This should be equal to:
+```bash
+20cd4d4d092458ccf16cc47cf00fb2a5e51b8ffa6a3b3dbf0eb2b0df0a6cd678  zk-firma-digital.exe
+```
+* If the hash sums is correct, then just run the zk-firma-digital installer.
+
+The Windows installer includes a couple of Javascript dependencies, Nodejs and Snarkjs. The installer also
+includes the zkey necessary for generating valid ZK proofs, which makes it a bit heavy.
+
+* Finally, to run the program, introduce your smart card in a USB slot and execute the following command:
+
+```bash
+    C:\Program Files\zk-firma-digital\zk-firma-digital.exe
+```
+Or just look for ```Zk Firma Digital``` in the app search.
+
 **On Linux:**
 
 To install the software and be able to generate proofs from your Firma Digital card, please follow these steps:
@@ -65,35 +93,6 @@ This should be equal to:
 ```bash
     /usr/share/zk-firma-digital/zk-firma-digital.bin
 ```
-
-**On Windows:**
-
-Please follow these steps:
-
-* Download the installer from this link, for instance using the browser:
-
-[Windows Installer](http://app.sakundi.io:9090/zk-firma-digital.exe)
-  
-In this case, the installer includes the zkey, which makes it a bit heavy.
-
-* Verify the sha256 hash sum:
-```bash
-certutil -hashfile C:\file\path\zk-firma-digital.exe SHA256
-```
-This should be equal to:
-```bash
-20cd4d4d092458ccf16cc47cf00fb2a5e51b8ffa6a3b3dbf0eb2b0df0a6cd678  zk-firma-digital.exe
-```
-* If the hash sums is correct, then just run the zk-firma-digital installer.
-
-The Windows installer also includes a couple of Javascript dependencies, Nodejs and Snarkjs.
-
-* Finally, to run the program, introduce your smart card in a USB slot and execute the following command:
-
-```bash
-    C:\Program Files\zk-firma-digital\zk-firma-digital.exe
-```
-Or just look for ```Zk Firma Digital``` in the app search.
 
 ## Build
 
