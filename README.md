@@ -40,7 +40,7 @@ Please follow these steps:
 
 * Download the installer by clicking the following link:
 
-[Windows Installer](http://app.sakundi.io:9090/zk-firma-digital.exe)
+[Windows Installer](https://app.sakundi.io:9090/zk-firma-digital.exe)
 
 * Verify the sha256 hash sum:
 ```bash
