@@ -48,7 +48,7 @@ certutil -hashfile "C:\file\path\zk-firma-digital.exe" SHA256
 ```
 This should be equal to:
 ```bash
-20cd4d4d092458ccf16cc47cf00fb2a5e51b8ffa6a3b3dbf0eb2b0df0a6cd678  zk-firma-digital.exe
+108afe1c5dc6648dc7c133cc424897ea69cb241e96b11d8726f6452c88d32940  zk-firma-digital.exe
 ```
 * If the hash sums is correct, then just run the zk-firma-digital installer.
 
