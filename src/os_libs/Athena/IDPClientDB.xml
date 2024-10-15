@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<IDProtect>
+  <allowUnlock>1</allowUnlock>
+  <aseLeaveMFUnlockedAfterInit>1</aseLeaveMFUnlockedAfterInit>
+  <readOnlyProfiles>0</readOnlyProfiles>
+  <CertRemovePolicy></CertRemovePolicy>
+  <DebugLevel>0</DebugLevel>
+  <DSCreationPolicy>0</DSCreationPolicy>
+  <DSNamePrefix></DSNamePrefix>
+  <DSSynchOption>0</DSSynchOption>
+  <DSVerificationPolicy>0</DSVerificationPolicy>
+  <enableStrongProtected>0</enableStrongProtected>
+  <LogonCertList>0</LogonCertList>
+  <verificationType>1</verificationType>
+  <MDReadOnlyCard></MDReadOnlyCard> 
+  <monS>0</monS>
+  <opsec>0</opsec>
+  <showUnpers>1</showUnpers>
+  <LibName></LibName>
+  <TokenLibs>
+    <ASECard_1_Crypto>
+      <LibName>AsepcosToken.dll</LibName>
+      <Cards>
+        <ASECard755>
+          <ATR type='hexBinary'>3BD6000081B1FE7D1F0341534537353500</ATR>
+          <ATRMask type='hexBinary'>FFFF00FFFFFFFFFFFFFFFFFFFFFFFFFF00</ATRMask>
+        </ASECard755>
+      </Cards>
+    </ASECard_1_Crypto>
+    <ASECard_1_Crypto_1__2_ID_3_>
+      <LibName></LibName>
+      <Cards>
+        <AthenaCNS>
+          <ATR type='hexBinary'>3BDF00008131FE00006B000C0000010001434E5310318000</ATR>
+          <ATRMask type='hexBinary'>FFFF00FFFFFFFF00FFFF00FF0000FF00FFFFFFFFFFFFFF00</ATRMask>
+        </AthenaCNS>
+        <Simense>
+          <ATR type='hexBinary'>3BFF1800FFC10A31FE55006B0508C805010101434E531031801C</ATR>
+          <ATRMask type='hexBinary'>FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</ATRMask>
+        </Simense>
+      </Cards>
+    </ASECard_1_Crypto_1__2_ID_3_>
+    <IDProtect>
+      <LibName></LibName>
+      <Cards>
+        <IDProtectF>
+          <ATR type='hexBinary'>3BD500FF8091FE1FC38073C8211000</ATR>
+          <ATRMask type='hexBinary'>FFFF00FFF0FFFFFFFFFFFFFFFFF000</ATRMask>
+        </IDProtectF>
+	   <IDProtectXF>
+          <ATR type='hexBinary'>3BDC00FF8091FE1FC38073C821106600000000000000</ATR>
+          <ATRMask type='hexBinary'>FFFF00FFF0FFFFFFFFFFFFFFFFF0FF00000000000000</ATRMask>
+        </IDProtectXF>
+	   <TT1>
+          <ATR type='hexBinary'>3B9A008131FE45546963546F6B20312E3000</ATR>
+          <ATRMask type='hexBinary'>FFFF00FFFFFFFFFFFFFFFFFFFFFFFFFFFF00</ATRMask>
+        </TT1>
+	   <TT11>
+          <ATR type='hexBinary'>3BDA00FF80B1FE001FC3546963546F6B20312E0000</ATR>
+          <ATRMask type='hexBinary'>FFFF00FFF0FFFF00FFFFFFFFFFFFFFFFFFFFFF0000</ATRMask>
+        </TT11>
+	   <TT2>
+          <ATR type='hexBinary'>3BDA00FF80B1FE001FC3546963546F6B20322E0000</ATR>
+          <ATRMask type='hexBinary'>FFFF00FFF0FFFF00FFFFFFFFFFFFFFFFFFFFFF0000</ATRMask>
+        </TT2>
+      </Cards>
+    </IDProtect>
+    <LPKI>
+      <LibName></LibName>
+      <Cards>
+        <LPKIOS1>
+          <ATR type='hexBinary'>3BDD18FF8191FE1FC30031B8640C01ECC1739401808221</ATR>
+          <ATRMask type='hexBinary'>FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</ATRMask>
+        </LPKIOS1>
+      </Cards>
+    </LPKI>
+    <ChipDoc>
+      <LibName></LibName>
+      <Cards>
+        <ChipDoc1>
+          <ATR type='hexBinary'>3BDF00FF8191FE1FC30031B8640000EC007394000082900000</ATR>
+          <ATRMask type='hexBinary'>FFFF00FFFFFFFFFFFFFFFFFFFF0000FF00FFFF0000FFFFFF00</ATRMask>
+        </ChipDoc1>
+	   <ChipDocOSA>
+          <ATR type='hexBinary'>3BDC00FF8091FE1FC38073C821106600000000000000</ATR>
+          <ATRMask type='hexBinary'>FFFF00FFF0FFFFFFFFFFFFFFFFF0FF00000000000000</ATRMask>
+        </ChipDocOSA>
+	   <ChipDocEMV>
+          <ATR type='hexBinary'>3BEA00008131FE450031C173C840000090007A</ATR>
+          <ATRMask type='hexBinary'>FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</ATRMask>
+        </ChipDocEMV>
+	<ChipDocNFC>
+		<ATR type='hexBinary'>3B888001002000000000000029</ATR>
+		<ATRMask type='hexBinary'>FFFFFFFFFFFFFFFFFFFFFFFFFF</ATRMask>
+	 </ChipDocNFC>	
+	<ChipDocNFC01>          
+		<ATR type='hexBinary'>3B89800100000000000000000008</ATR>
+		<ATRMask type='hexBinary'>FFFFFFFFFFFFFFFFFFFFFFFFFFFF</ATRMask>
+	</ChipDocNFC01>	
+      </Cards>
+    </ChipDoc>
+<ChipDocLite>
+      <LibName></LibName>
+      <Cards>
+        <ChipDocLite1>
+          <ATR type='hexBinary'>3BDF00FF8191FE1FC30031B8640000EC007394000082900000</ATR>
+          <ATRMask type='hexBinary'>FFFF00FFFFFFFFFFFFFFFFFFFF0000FF00FFFF0000FFFFFF00</ATRMask>
+        </ChipDocLite1>
+	   <P40>
+          <ATR type='hexBinary'>3BDC00FF8091FE1FC38073C821106600000000000000</ATR>
+          <ATRMask type='hexBinary'>FFFF00FFF0FFFFFFFFFFFFFFFFF0FF00000000000000</ATRMask>
+        </P40>
+      </Cards>
+    </ChipDocLite>
+   </TokenLibs>
+  <TraceLogFilename></TraceLogFilename>
+  <TraceLogFilenameApdu></TraceLogFilenameApdu>
+  <useSysDef>0</useSysDef>
+</IDProtect>
