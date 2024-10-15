@@ -44,7 +44,7 @@ Please follow these steps:
 
 * Verify the sha256 hash sum:
 ```bash
-certutil -hashfile C:\file\path\zk-firma-digital.exe SHA256
+certutil -hashfile "C:\file\path\zk-firma-digital.exe" SHA256
 ```
 This should be equal to:
 ```bash
@@ -58,7 +58,7 @@ includes the zkey necessary for generating valid ZK proofs, which makes it a bit
 * Finally, to run the program, introduce your smart card in a USB slot and execute the following command:
 
 ```bash
-    C:\Program Files\zk-firma-digital\zk-firma-digital.exe
+    "C:\Program Files\zk-firma-digital\zk-firma-digital.exe"
 ```
 Or just look for ```Zk Firma Digital``` in the app search.
 
