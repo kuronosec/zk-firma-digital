@@ -1,4 +1,9 @@
 import struct
+import logging
+import os
+import traceback
+
+from pathlib import Path
 
 # Some utility libraries to process the input data as the
 # Circom circuit requires
@@ -40,3 +45,20 @@ def preprocess_message_for_sha256(message: bytearray, max_len: int) -> bytearray
         message += bytearray(max_len - len(message))
 
     return message, message_len
+
+# Create a logs directory if it doesn't exist (cross-platform)
+user_path = os.path.join(Path.home(), Path('.zk-firma-digital/'))
+log_directory = os.path.join(user_path, "logs")
+os.makedirs(log_directory, exist_ok=True)
+
+# Define the path to the log file
+log_file = os.path.join(log_directory, "app.log")
+
+# Configure the logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler(log_file, encoding="utf-8")
+    ]
+)

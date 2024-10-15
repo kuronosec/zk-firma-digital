@@ -5,6 +5,8 @@ import sys
 import os
 import json
 import datetime
+import utils
+import logging
 
 from os import listdir
 from os.path import isfile, join
@@ -139,10 +141,18 @@ class MainWindow(QMainWindow):
             QMessageBox.information(self, "Validación", f"{info}\n\n Firma de certificado inválida!!!")
         else:
             QMessageBox.information(self, "Validación", f"{info}\n\n Firma de certificado válida!!!")
-            circom = Circom()
-            circom.generate_witness()
-            circom.prove()
-            circom.verify()
+            try:
+                circom = Circom()
+                circom.generate_witness()
+                circom.prove()
+                circom.verify()
+            except Exception as error:
+                message ="Hubo un error al crear la credencial verificable"
+                QMessageBox.information(self, "Circom", message)
+                logging.error(message+" "+str(error), exc_info=True)
+                self.generate_credential_button.setEnabled(True)
+                self.generate_credential_button.setStyleSheet("background-color : green")
+                return
 
             # Create credential
             public_input_data = None
@@ -169,7 +179,8 @@ class MainWindow(QMainWindow):
 
             self.verification_layout.addWidget(self.file_label)
 
-            QMessageBox.information(self, "Creación de credencial válida", "Encontrar credenciales en el directorio credentials.")
+            QMessageBox.information(self, "Creación de credencial válida",
+                                    "Encontrar credencial verificable en el enlace.")
         self.generate_credential_button.setEnabled(True)
         self.generate_credential_button.setStyleSheet("background-color : green")
     
@@ -242,9 +253,13 @@ class MainWindow(QMainWindow):
 
 # Main entry point for our app
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    try:
+        app = QApplication(sys.argv)
 
-    window = MainWindow()
-    window.show()
+        window = MainWindow()
+        window.show()
 
-    sys.exit(app.exec())
+        sys.exit(app.exec())
+    except Exception as error:
+        message = "Hubo un error en la aplicacion:"
+        logging.error(message+" "+str(error), exc_info=True)
