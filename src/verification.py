@@ -3,6 +3,7 @@ import base64
 import json
 import os
 import sys
+import logging
 
 from utils import splitToWords, preprocess_message_for_sha256
 from asn1crypto import pem, x509
@@ -54,7 +55,8 @@ class Verification:
             info = self.get_certificate_info(user_cert, root_cert)
             return (True, info)
         except errors.PathValidationError as error:
-            print("Certificate signature is not valid!"+" "+error)
+            message = "Certificate signature is not valid!"
+            logging.error(message+" "+str(error), exc_info=True)
             return (False, None)
  
     # Get info from the certificate

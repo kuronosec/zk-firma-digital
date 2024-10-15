@@ -5,6 +5,7 @@ import base64
 import os
 import datetime
 import binascii
+import logging
 
 from PyKCS11 import *
 
@@ -33,7 +34,7 @@ class Signature():
             self.pkcs11.load(self.library_path)
         except PyKCS11Error as error:
             message = "Hubo un error al cargar la libreria de la smart card"
-            print(message+" "+str(error))
+            logging.error(message+" "+str(error), exc_info=True)
             return message
 
     def sign_file(self, file_path):
@@ -126,6 +127,6 @@ class Signature():
             message = """Hubo un error al leer la tarjeta,\
                          por favor verifique que esta conectada correctamente\
                          y que ingreso el pin correcto."""
-            print(message+" "+str(error))
+            logging.error(message+" "+str(error), exc_info=True)
             return message
         return "Se firmó el archivo correctamente!"
