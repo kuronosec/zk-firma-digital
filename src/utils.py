@@ -2,6 +2,8 @@ import struct
 import logging
 import os
 import traceback
+from web3 import Web3
+import hashlib
 
 from pathlib import Path
 
@@ -45,6 +47,35 @@ def preprocess_message_for_sha256(message: bytearray, max_len: int) -> bytearray
         message += bytearray(max_len - len(message))
 
     return message, message_len
+
+# Helper function to zero pad a message to 32 bytes
+def zero_pad(message, length):
+    return message.rjust(length * 2, '0')
+
+# Hash function using keccak256
+def hash_message(message):
+    # Convert the message to a hex string if it's not already
+    if isinstance(message, (int, bytes)):
+        # If it's an int or bigint, convert to hex
+        message = hex(message)
+    elif isinstance(message, str):
+        # Ensure the message is hex formatted
+        if not message.startswith('0x'):
+            raise ValueError("String message should be in hex format.")
+    else:
+        raise TypeError("Message must be an int, str (hex format), or bytes.")
+
+    # Pad message to 32 bytes (64 hex characters)
+    message = zero_pad(message[2:], 32)  # Remove the '0x' prefix and pad
+
+    # Compute keccak256 hash of the message
+    message_hash = Web3.keccak(hexstr=message)
+
+    # Convert to int and shift right by 3 bits
+    result = int.from_bytes(message_hash, byteorder='big') >> 3
+
+    # Return the result as a string
+    return str(result)
 
 # Create a logs directory if it doesn't exist (cross-platform)
 user_path = os.path.join(Path.home(), Path('.zk-firma-digital/'))

@@ -5,7 +5,7 @@ import os
 import sys
 import logging
 
-from utils import splitToWords, preprocess_message_for_sha256
+from utils import splitToWords, preprocess_message_for_sha256, hash_message
 from asn1crypto import pem, x509
 from certvalidator import CertificateValidator, ValidationContext, errors
 from configuration import Configuration
@@ -88,6 +88,10 @@ class Verification:
         # Print the big integer in chunks
         signature_str = splitToWords(signature_int, 121, 17)
         public_key_str = splitToWords(modulus, 121, 17)
+        # If the user wants to associate an address with
+        # The verifiable credential
+        signal_hash_input = os.getenv("ETHEREUM_ADDRESS", "1")
+        signal_hash = hash_message(signal_hash_input)
 
         # Nullifier seed
         nullifier_seed = int.from_bytes(os.urandom(4), sys.byteorder)
@@ -99,7 +103,7 @@ class Verification:
                     "signature": signature_str,
                     "pubKey": public_key_str,
                     "nullifierSeed": str(nullifier_seed),
-                    "signalHash": "10010552857485068401460384516712912466659718519570795790728634837432493097374",
+                    "signalHash": signal_hash,
                     "revealAgeAbove18": "1"
             }
             json_data = json.dumps(json_data, indent=4)
