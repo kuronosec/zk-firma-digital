@@ -1,0 +1,25 @@
+{
+  "localAddresses": {
+    "Verifier": "0x8464135c8F25Da09e49BC8782676a84730C318bC",
+    "ZKFirmaDigital": "0x71C95911E9a5D330f4D621842EC243EE1343292e",
+    "ZKFirmaDigitalVote": "0x948B3c65b89DF0B4894ABE91E6D02FE579834F8F"
+  },
+  "amoyAddresses": {
+    "ZKFirmaDigitalCredentialIssuer": "0x5EEf72a76863F37ccbC074290503E9c018C3e05B",
+    "Verifier": "0x080232484E9b7F7d5226F6602AFa08a6B897bF84",
+    "ZKFirmaDigital": "0xD870a470FbF33ba5a7364F22aC736384DE46CC7a",
+    "ZKFirmaDigitalVote": "0x92E6d69Bd5CF77A38699A94cC36551Bbb4726Ee3",
+    "state":  "0x1a4cC30f2aA0377b0c3bc9848766D90cb4404124",
+    "poseidon2Elements":  "0x71a802D98EaeBEF6c07FE7A9dC180d9b4276FD08",
+    "poseidon3Elements":  "0x8cd89F20d6a26B52bB58fA36f1B6CBb1fAfD4A94",
+    "poseidon4Elements":  "0xC66669530A9AB387c5ab6C777dF60baE1161bE75",
+    "smtLib":  "0xB9F9AE33395dDB7b994eEBFB9B870a32E79887D6",
+    "claimBuilder":  "0xda0DE98f787A504E5cAEdb1612643a03fa9759F8",
+    "identityLib":	"0xd4266B186A5977F4Cfe6625480b501b310D04b3D"
+  },
+  "productionAddresses": {
+    "Verifier": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+    "ZKFirmaDigital": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+    "ZKFirmaDigitalVote": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
+  }
+}

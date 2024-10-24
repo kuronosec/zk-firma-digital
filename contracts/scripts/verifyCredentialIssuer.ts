@@ -30,9 +30,9 @@ async function main() {
   // 4 - SignalHash
   const verifiableCredential = require('../../build/example-credential/credential.json')
 
-  const { ZKFirmaDigitalVote } = require(
+  const { ZKFirmaDigital } = require(
     `../deployed-contracts/ethereum.json`,
-  ).amoyPublicKey
+  ).localPublicKey
 
   const nullifierSeed = verifiableCredential.proof.signatureValue.public[3]
   const nullifier = verifiableCredential.proof.signatureValue.public[1]
@@ -43,20 +43,19 @@ async function main() {
   // Get proof from credential
   const proof = verifiableCredential.proof.signatureValue.proof
 
-  const ZKFirmaDigitalVoteVerifier = await ethers.getContractAt(
-    'ZKFirmaDigitalVote',
-    ZKFirmaDigitalVote,
+  const ZKFirmaDigitalVerifier = await ethers.getContractAt(
+    'ZKFirmaDigital',
+    ZKFirmaDigital,
   )
 
-  const address = await ZKFirmaDigitalVoteVerifier.getAddress()
-  console.log(`ZKFirmaDigitalVote : ${address}`)
+  const address = await ZKFirmaDigitalVerifier.getAddress()
+  // console.log(`ZKFirmaDigital : ${address}`)
   // console.log(`nullifierSeed : ${nullifierSeed}`)
   // console.log(`nullifier : ${nullifier}`)
   // console.log(`proof : ${packGroth16Proof(proof)}`)
 
   console.log(
-    await ZKFirmaDigitalVoteVerifier.voteForProposal(
-      1,
+    await ZKFirmaDigitalVerifier.verifyZKFirmaDigitalProof(
       nullifierSeed,
       nullifier,
       signal,
@@ -67,7 +66,7 @@ async function main() {
 }
 
 /**
- * Packs a proof into a format compatible with ZKFirmaDigitalVote.sol contract.
+ * Packs a proof into a format compatible with ZKFirmaDigital.sol contract.
  * @param originalProof The proof generated with SnarkJS.
  * @returns The proof compatible with Semaphore.
  */

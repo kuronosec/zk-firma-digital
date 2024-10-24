@@ -1,0 +1,13 @@
+{
+  "title": "ZK Firma Digital",
+  "description": "Proof of Identity through Aadhaar",
+  "issuerName": "ZK Firma Digital",
+  "titleTextColor": "#c55509",
+  "descriptionTextColor": "#ee7108",
+  "issuerTextColor": "#06750c",
+  "backgroundColor": "#ffffff",
+  "logo": {
+    "uri": "https://raw.githubusercontent.com/kuronosec /zk-firma-digital/main/assets/logo.png",
+    "alt": "ZK Firma Digital Logo"
+  }
+}
