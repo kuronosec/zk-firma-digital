@@ -17,7 +17,7 @@ import {IZKFirmaDigital} from '../interfaces/IZKFirmaDigital.sol';
 contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepUpgradeable {
     using IdentityLib for IdentityLib.Data;
     address public ZKFirmaDigitalVerifierAddr;
-    uint256 public constant storedNullifierSeed = 742762287071232;
+    uint256 public constant storedNullifierSeed = 253091582028213;
 
     /// @custom:storage-location erc7201:polygonid.storage.CredentialIssuer
     struct CredentialIssuerStorage {
@@ -33,9 +33,9 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
         mapping(uint256 => INonMerklizedIssuer.SubjectField[]) idToCredentialSubject;
     }
 
-    // keccak256(abi.encode(uint256(keccak256("ZKFirmaDigital.storage.ZKFirmaDigitalCredentialIssuer")) - 1)) & ~bytes32(uint256(0xff))
+    // keccak256(abi.encode(uint256(keccak256("zkfirmadigital.storage.ZKFirmaDigitalCredentialIssuer")) - 1)) & ~bytes32(uint256(0xff))
     bytes32 private constant CredentialIssuerStorageLocation =
-        0x33009af875187a3bcbd4b4a66e5f861007d091075539980f2ae469e83db83e00;
+        0x1786bc6ebe7251c5adf29bd410fbc6767c8f7e53055a55569c691b703559e900;
 
     function _getCredentialIssuerStorage()
         private
@@ -54,7 +54,7 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
 
     // jsonldSchemaHash hash of jsonld schema.
     // More about schema: https://devs.polygonid.com/docs/issuer-node/issuer-node-api/claim/apis/#get-claims
-    uint256 private constant jsonldSchemaHash = 33373039626664303063323863343136;
+    uint256 private constant jsonldSchemaHash = 78462520673154254320111203189905;
     string private constant jsonSchema =
         'https://raw.githubusercontent.com/kuronosec/zk-firma-digital/main/assets/zk-firma-digital.json';
     string private constant jsonldSchema =
@@ -194,10 +194,10 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
             INonMerklizedIssuer.SubjectField({key: 'ageAbove18', value: revealArray[0], rawValue: ''})
         );
         $.idToCredentialSubject[$.countOfIssuedClaims].push(
-            INonMerklizedIssuer.SubjectField({key: 'gender', value: 0, rawValue: ''})
+            INonMerklizedIssuer.SubjectField({key: 'indexDataSlotB', value: 0, rawValue: ''})
         );
         $.idToCredentialSubject[$.countOfIssuedClaims].push(
-            INonMerklizedIssuer.SubjectField({key: 'pincode', value: 0, rawValue: ''})
+            INonMerklizedIssuer.SubjectField({key: 'valueDataSlotA', value: 0, rawValue: ''})
         );
         $.idToCredentialSubject[$.countOfIssuedClaims].push(
             INonMerklizedIssuer.SubjectField({key: 'randomNonce', value: random_nonce, rawValue: ''})
@@ -269,10 +269,6 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
             '[ZKFirmaDigitalCredentialIssuer]: Wrong user signal sent.'
         );
         require(
-            isLessThan3HoursAgo(0),
-            '[ZKFirmaDigitalCredentialIssuer]: Proof must be generated with Firma Digital data signed less than 3 hours ago.'
-        );
-        require(
             storedNullifierSeed == nullifierSeed,
             '[ZKFirmaDigitalCredentialIssuer]: Wrong nullifierSeed, you must generate proof with the right seed.'
         );
@@ -295,14 +291,16 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
         if (userNullifier != 0) {
             uint256[] memory previousClaims = $.userClaims[_userId];
 
-            // Get the latest claim ID from the array
-            uint256 latestClaimId = previousClaims[previousClaims.length - 1];
-            ClaimItem memory latestClaim = $.idToClaim[latestClaimId];
+            if (previousClaims.length > 0) {
+                // Get the latest claim ID from the array
+                uint256 latestClaimId = previousClaims[previousClaims.length - 1];
+                ClaimItem memory latestClaim = $.idToClaim[latestClaimId];
 
-            require(
-                block.timestamp >= latestClaim.claim[4],
-                "[ZKFirmaDigitalCredentialIssuer]: Previous claim not expired."
-            );
+                require(
+                    block.timestamp >= latestClaim.claim[4],
+                    "[ZKFirmaDigitalCredentialIssuer]: Previous claim not expired."
+                );
+            }
         }
     }
 }

@@ -39,21 +39,6 @@
           "description": "Is the age above 18 years old",
           "title": "Age above 18",
           "type": "string"
-        },
-        "gender": {
-          "description": "Gender of the user",
-          "title": "Gender",
-          "type": "string"
-        },
-        "pincode": {
-          "description": "Pincode of the user",
-          "title": "Pincode",
-          "type": "string"
-        },
-        "state": {
-          "description": "Random nonce of the credential",
-          "title": "Random nonce",
-          "type": "string"
         }
       },
       "required": [],
