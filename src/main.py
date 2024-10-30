@@ -28,6 +28,8 @@ from PyQt6.QtWidgets import ( QApplication,
 from certificate import Certificate
 from verification import Verification
 from signature import Signature
+from encryption import Encryption
+from ethereum_utils import EthereumUtils
 from configuration import Configuration
 from circom import Circom
 
@@ -58,8 +60,11 @@ class MainWindow(QMainWindow):
         # Add tabs
         self.verification_tab = self.create_verification_tab()
         self.signing_tab = self.create_signing_tab()
+        self.encryption_tab = self.create_encryption_tab()
+
         self.tabs.addTab(self.verification_tab, "Creación de credencial ZK")
         self.tabs.addTab(self.signing_tab, "Firma de credenciales verificables")
+        self.tabs.addTab(self.encryption_tab, "Solicitar certificado médico")
 
     def create_verification_tab(self):
         # Create the first tab's content
@@ -112,6 +117,25 @@ class MainWindow(QMainWindow):
         self.signature_layout.addWidget(button_sign)
 
         return self.signature_tab
+
+    def create_encryption_tab(self):
+        # Create the encryption tab's content
+        self.encryption_tab = QWidget()
+        self.encryption_layout = QVBoxLayout()
+        self.encryption_layout.addWidget(QLabel("Solicite un certificado médico"))
+
+        # Create the password field
+        self.id_number_field = QLineEdit()
+        self.id_number_field.setPlaceholderText("Introduzca su número de cédula")
+        self.encryption_layout.addWidget(self.id_number_field)
+        self.encryption_tab.setLayout(self.encryption_layout)
+
+        # Create a button to sign the file
+        button_send = QPushButton("Enviar solicitud")
+        button_send.clicked.connect(self.encrypt_files)
+        self.encryption_layout.addWidget(button_send)
+
+        return self.encryption_tab
 
     def on_submit_generate_credential(self):
         self.generate_credential_button.setEnabled(False)
@@ -233,8 +257,6 @@ class MainWindow(QMainWindow):
         else:
             self.browser_label.setText("No file selected")
 
-    # This code is not being used at the moment
-    # Do we really need it?
     def sign_files(self):
         # Sign selected file
         password = self.password_field_sign.text()
@@ -250,6 +272,23 @@ class MainWindow(QMainWindow):
             self.browser_label.setText(f"Archivo JSON firmado: {signed_name}")
         else:
             self.browser_label.setText("No file selected")
+
+    def encrypt_files(self):
+        # Sign selected file
+        id_number = self.id_number_field.text()
+        if id_number:
+            encryption = Encryption("./CA-certificates/public_testing_key.pem")
+            public_key = encryption.load_public_key()
+            encrypted_data = encryption.encrypt(id_number, public_key)
+            eth_utils = EthereumUtils()
+            eth_utils.load_contracts()
+            eth_utils.create_verifiable_credential(
+                "/home/kurono/.zk-firma-digital/credentials/credential.json"
+            )
+            eth_utils.get_credentials()
+            eth_utils.create_medical_credential_request(encrypted_data)
+            QMessageBox.information(self, "Encrypted data",
+                                    f"Petición de certificado enviada")
 
 # Main entry point for our app
 if __name__ == "__main__":
