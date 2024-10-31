@@ -23,6 +23,8 @@ from PyQt6.QtWidgets import ( QApplication,
                               QTabWidget,
                               QLabel,
                               QFileDialog )
+from PyQt6.QtCore import QTimer, Qt
+from PyQt6.QtGui import QCursor
 
 # Import our own libraries
 from certificate import Certificate
@@ -32,6 +34,7 @@ from encryption import Encryption
 from ethereum_utils import EthereumUtils
 from configuration import Configuration
 from circom import Circom
+from pinata import download_from_pinata
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -51,7 +54,7 @@ class MainWindow(QMainWindow):
         self.file_label.setOpenExternalLinks(True)
 
         self.setWindowTitle("Zero Knowledge - Firma Digital")
-        self.setGeometry(600, 400, 700, 400)
+        self.setGeometry(600, 400, 1000, 400)
 
         # Create a QTabWidget
         self.tabs = QTabWidget()
@@ -61,10 +64,15 @@ class MainWindow(QMainWindow):
         self.verification_tab = self.create_verification_tab()
         self.signing_tab = self.create_signing_tab()
         self.encryption_tab = self.create_encryption_tab()
+        self.documents_tab = self.create_document_tab()
 
         self.tabs.addTab(self.verification_tab, "Creación de credencial ZK")
         self.tabs.addTab(self.signing_tab, "Firma de credenciales verificables")
         self.tabs.addTab(self.encryption_tab, "Solicitar certificado médico")
+        self.tabs.addTab(self.documents_tab, "Ver certificados médicos")
+
+        self.eth_utils = EthereumUtils()
+        self.eth_utils.load_contracts()
 
     def create_verification_tab(self):
         # Create the first tab's content
@@ -132,10 +140,27 @@ class MainWindow(QMainWindow):
 
         # Create a button to sign the file
         button_send = QPushButton("Enviar solicitud")
-        button_send.clicked.connect(self.encrypt_files)
+        button_send.clicked.connect(self.encrypt_data)
         self.encryption_layout.addWidget(button_send)
 
         return self.encryption_tab
+
+    def create_document_tab(self):
+        # Create the document tab's content
+        self.document_tab = QWidget()
+        self.document_layout = QVBoxLayout()
+        self.document_layout.addWidget(QLabel("Certificados médicos"))
+
+        self.message_label = QLabel("Checking for resource...")
+        self.message_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.document_layout.addWidget(self.message_label)
+
+        # Timer to check for resource availability every 60 seconds
+        self.check_timer = QTimer(self)
+        self.check_timer.timeout.connect(self.check_resource)
+        self.check_timer.start(60000)  # Check every 5 seconds
+
+        return self.document_tab
 
     def on_submit_generate_credential(self):
         self.generate_credential_button.setEnabled(False)
@@ -273,22 +298,61 @@ class MainWindow(QMainWindow):
         else:
             self.browser_label.setText("No file selected")
 
-    def encrypt_files(self):
-        # Sign selected file
+    def encrypt_data(self):
+        # Sign certificate request number
         id_number = self.id_number_field.text()
+
+        # Check number not empty
         if id_number:
+            # Inititialize encryption object and load public key
             encryption = Encryption("./CA-certificates/public_testing_key.pem")
             public_key = encryption.load_public_key()
-            encrypted_data = encryption.encrypt(id_number, public_key)
-            eth_utils = EthereumUtils()
-            eth_utils.load_contracts()
-            eth_utils.create_verifiable_credential(
+
+            # Encrypt request id with govement's public key
+            encrypted_id = encryption.encrypt(id_number, public_key)
+
+            # Create on-chain (Polygon amoy) standard verifable credential
+            self.eth_utils.create_verifiable_credential(
                 "/home/kurono/.zk-firma-digital/credentials/credential.json"
             )
-            eth_utils.get_credentials()
-            eth_utils.create_medical_credential_request(encrypted_data)
+            # Check for existing credentials
+            credentials = self.eth_utils.get_credentials()
+
+            # If credentials available, create medical certificate request
+            self.eth_utils.create_medical_credential_request(
+                encrypted_id,
+                credentials[0]["revocationNonce"]
+                )
             QMessageBox.information(self, "Encrypted data",
                                     f"Petición de certificado enviada")
+
+    def check_resource(self):
+        # Check if resource is available
+        medical_certificate = self.eth_utils.get_medical_certificate_document()
+        if medical_certificate != None:
+            print(medical_certificate)
+            # Resource available, show clickable link
+            download_from_pinata(
+                medical_certificate["ipfsHash"],
+                "../assets/encrypted_output_pinata.pdf"
+            )
+            encryption = Encryption("./CA-certificates/public_testing_key.pem")
+            private_key = encryption.load_private_key()
+            aes_key = encryption.decrypt(
+                medical_certificate["aesKey"],
+                private_key)
+            encryption.decrypt_pdf_content(
+                "../assets/encrypted_output_pinata.pdf",
+                "../assets/medical-certificate.pdf",
+                aes_key)
+            self.show_link("../assets/medical-certificate.pdf")
+            self.check_timer.stop()  # Stop checking once the resource is found
+
+    def show_link(self, file):
+        self.message_label.setText(f'<a href="file:///{file}">Haga click aquí para ver el archivo de certificado médico</a>')
+        self.message_label.setOpenExternalLinks(True)
+        self.message_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
+        self.message_label.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
 # Main entry point for our app
 if __name__ == "__main__":

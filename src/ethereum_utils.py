@@ -61,7 +61,7 @@ class EthereumUtils:
 
 
     def create_verifiable_credential(self, verifiable_credential_path):
-        # Load the verfiable credential
+        # Load the offline verifiable credential
         with open(verifiable_credential_path, "r") as json_file:
             verifiable_credential = json.load(json_file)
         # Call the function and get the results
@@ -128,12 +128,13 @@ class EthereumUtils:
         except Exception as e:
             print("Error calling contract function:", e)
 
-    def create_medical_credential_request(self, data):
+    def create_medical_credential_request(self, encrypted_request_id, revocation_nonce):
         # Call the function and get the results
         try:
             transaction = self.medical_certificate_issuer_contract.functions.requestMedicalCertificate(
                 int(Web3.to_checksum_address(self.user_id), 16),
-                data
+                encrypted_request_id,
+                revocation_nonce
             ).build_transaction({
                 'from': self.sender_address,
                 'nonce': self.w3.eth.get_transaction_count(self.sender_address),
@@ -161,7 +162,7 @@ class EthereumUtils:
             print("Error calling contract function:", e)
 
     def get_medical_certificate_requests(self):
-        # Call the function and get the results
+        # Check for new medical request from the users
         while True:
             try:
                 print("Getting user request of medical certificates")        
@@ -169,17 +170,72 @@ class EthereumUtils:
                     int(Web3.to_checksum_address(self.user_id), 16)
                 ).call()
 
-                print(number_requests)
+                print("number_requests:" +str(number_requests))
 
                 if int(number_requests) > 0:
-                    user_request = self.medical_certificate_issuer_contract.functions.getUserRequest(
+                    user_request_item = self.medical_certificate_issuer_contract.functions.getUserRequest(
                         int(Web3.to_checksum_address(self.user_id), 16),
                         0
                     ).call()
-                    return user_request
+                    return user_request_item
                 time.sleep(600)
             except Exception as e:
                 print("Error calling contract function:", e)
+
+    def get_medical_certificate_document(self):
+        # Call the function and get the results
+        try:
+            print("Getting created medical certificates")
+            medical_certificates = self.medical_certificate_issuer_contract.functions.getGovernmentReponseCount(
+                int(Web3.to_checksum_address(self.user_id), 16)
+            ).call()
+
+            print(medical_certificates)
+
+            if int(medical_certificates) > 0:
+                medical_certificate = self.medical_certificate_issuer_contract.functions.getGovernmentReponse(
+                    int(Web3.to_checksum_address(self.user_id), 16),
+                    0
+                ).call()
+                return medical_certificate
+            else:
+                return None
+        except Exception as e:
+            print("Error calling contract function:", e)
+
+    def respond_medical_certificate_request(self, ipfs_hash, aes_key, revocation_nonce):
+        # Call the function and get the results
+        try:
+            transaction = self.medical_certificate_issuer_contract.functions.respondMedicalCertificateRequest(
+                int(Web3.to_checksum_address(self.user_id), 16),
+                ipfs_hash,
+                aes_key,
+                revocation_nonce
+            ).build_transaction({
+                'from': self.sender_address,
+                'nonce': self.w3.eth.get_transaction_count(self.sender_address),
+                'gas': 2000000,
+                'gasPrice': self.w3.to_wei('50', 'gwei'),
+                'chainId': 80002
+            })
+
+            # Sign the transaction with the private key
+            signed_tx = self.w3.eth.account.sign_transaction(transaction, self.private_key)
+
+            # Send the signed transaction
+            tx_hash = self.w3.eth.send_raw_transaction(signed_tx.raw_transaction)
+
+            # Print transaction hash
+            print(f"Transaction sent! Hash: {tx_hash.hex()}")
+
+            # Wait for the transaction receipt to confirm it was successful
+            tx_receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
+            if tx_receipt.status == 1:
+                print("Contract call succeeded!")
+            else:
+                print("Contract call failed.")
+        except Exception as e:
+            print("Error calling contract function:", e)
 
     def pack_groth16_proof(self, groth16_proof):
         return [

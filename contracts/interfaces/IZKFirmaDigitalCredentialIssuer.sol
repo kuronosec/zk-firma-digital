@@ -28,4 +28,10 @@ interface IZKFirmaDigitalCredentialIssuer {
             uint256[8] memory,
             INonMerklizedIssuer.SubjectField[] memory
         );
+
+    /**
+     * @dev Revoke claim using it's revocationNonce
+     * @param _revocationNonce  - revocation nonce
+     */
+    function revokeClaimAndTransit(uint64 _revocationNonce) external;
 }
