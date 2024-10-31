@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     # Check if there is a new request
     user_request_item = eth_utils.get_medical_certificate_requests()
-    print(user_request_item)
+    # print(user_request_item)
 
     # Initialize utlities to decrytp and encrypt data with RSA and AES
     encryption = Encryption("./CA-certificates/public_testing_key.pem",
@@ -46,7 +46,7 @@ if __name__ == "__main__":
     )
 
     # Print encrypted AES key for storage/transmission alongside the encrypted file
-    print("Encrypted AES Key:", encrypted_aes_key)
+    # print("Encrypted AES Key:", encrypted_aes_key)
 
     # Publish the encrypted file to a private Pinata location
     # Get the ipfa has to send to the user

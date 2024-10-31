@@ -11,7 +11,6 @@ contract MedicalCertificateIssuer {
     struct UserRequestItem {
         uint256 userId;
         bytes requestNumber;
-        uint64 revocationNonce;
     }
 
     struct GovernmentReponseItem {
@@ -40,8 +39,7 @@ contract MedicalCertificateIssuer {
 
     function requestMedicalCertificate(
         uint256 _userId,
-        bytes calldata _requestNumber,
-        uint64 _revocationNonce) public {
+        bytes calldata _requestNumber) public {
         require(
             _userId == uint256(uint160(msg.sender)),
             "[MedicalCertificateIssuer]: User ID has to be the transaction sender address"
@@ -71,8 +69,7 @@ contract MedicalCertificateIssuer {
         userRequests[_userId].push(
             UserRequestItem({
                 userId: _userId,
-                requestNumber: _requestNumber,
-                revocationNonce: _revocationNonce
+                requestNumber: _requestNumber
             })
         );
         emit UserRequestAdded(_userId);
@@ -103,8 +100,7 @@ contract MedicalCertificateIssuer {
     function respondMedicalCertificateRequest(
         uint256 _userId,
         bytes calldata _ipfsHash,
-        bytes calldata _aesKey,
-        uint64 _revocationNonce) public {
+        bytes calldata _aesKey) public {
         require(
             msg.sender == governmentAddr,
             "[MedicalCertificateIssuer]: Only government address can use this function."
@@ -138,10 +134,6 @@ contract MedicalCertificateIssuer {
             })
         );
 
-        // Then proceed to delete the VC and userRequest
-        credentialIssuer.revokeClaimAndTransit(
-            _revocationNonce
-        );
         this.deleteUserRequest(_userId, 0);
         emit GovernmentReponsetAdded(_userId);
     }

@@ -140,7 +140,7 @@ class MainWindow(QMainWindow):
 
         # Create a button to sign the file
         button_send = QPushButton("Enviar solicitud")
-        button_send.clicked.connect(self.encrypt_data)
+        button_send.clicked.connect(self.send_medical_request)
         self.encryption_layout.addWidget(button_send)
 
         return self.encryption_tab
@@ -298,7 +298,7 @@ class MainWindow(QMainWindow):
         else:
             self.browser_label.setText("No file selected")
 
-    def encrypt_data(self):
+    def send_medical_request(self):
         # Sign certificate request number
         id_number = self.id_number_field.text()
 
@@ -315,14 +315,14 @@ class MainWindow(QMainWindow):
             self.eth_utils.create_verifiable_credential(
                 "/home/kurono/.zk-firma-digital/credentials/credential.json"
             )
+
             # Check for existing credentials
-            credentials = self.eth_utils.get_credentials()
+            credentials = int(self.eth_utils.get_credentials())
 
             # If credentials available, create medical certificate request
             self.eth_utils.create_medical_credential_request(
-                encrypted_id,
-                credentials[0]["revocationNonce"]
-                )
+                encrypted_id
+            )
             QMessageBox.information(self, "Encrypted data",
                                     f"Petición de certificado enviada")
 
@@ -346,6 +346,8 @@ class MainWindow(QMainWindow):
                 "../assets/medical-certificate.pdf",
                 aes_key)
             self.show_link("../assets/medical-certificate.pdf")
+            self.eth_utils.revoke_verifiable_credential(0)
+
             self.check_timer.stop()  # Stop checking once the resource is found
 
     def show_link(self, file):

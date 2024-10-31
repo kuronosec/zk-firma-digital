@@ -35,8 +35,8 @@ class EthereumUtils:
 
     def load_contracts(self):
         # Contract address (replace with the actual address of your contract)
-        medical_certificate_issuer = "0x7a4961179Ad179c80725B80C48F54A693e4226C6"
-        firma_digital_credential_issuer = "0x1dE85080D50490ACC19b10e8c0dC7a6320b8E888"
+        medical_certificate_issuer = "0x3f3b33251e1fE0d9e9855Fd7dF3624bdAA7b3d84"
+        firma_digital_credential_issuer = "0xd119F5E99c06f5B71FC6860A28f60E3d1fc2A7dc"
 
         medical_certificate_issuer_abi = None
         firma_digital_credential_issuer_abi = None
@@ -83,12 +83,6 @@ class EthereumUtils:
             })
 
             print("Estimated gas:", gas_estimate)
-        except Exception as e:
-            print("Gas estimation failed:", e)
-            return
-
-        # Call the function and get the results
-        try:
             # The order of the public data in the credential is the following
             # 0 - PublicKeyHash (Goverment public key hash)
             # 1 - Nullifier
@@ -141,24 +135,18 @@ class EthereumUtils:
                 int(Web3.to_checksum_address(self.user_id), 16),
                 credentials[0]
             ).call()
+            print(credential_data)
 
-            print("credential_data: "+str(credential_data))
-
-            # Just the incremental VC id starting with zero
-            revocation_nonce = credential_data[0]
-            return revocation_nonce
+            return credential_data
         except Exception as e:
             print("Error calling contract function:", e)
 
-    def create_medical_credential_request(self,
-                                          encrypted_request_id,
-                                          revocation_nonce):
+    def create_medical_credential_request(self, encrypted_request_id):
         # Call the function and get the results
         try:
             transaction = self.medical_certificate_issuer_contract.functions.requestMedicalCertificate(
                 int(Web3.to_checksum_address(self.user_id), 16),
-                encrypted_request_id,
-                revocation_nonce
+                encrypted_request_id
             ).build_transaction({
                 'from': self.sender_address,
                 'nonce': self.w3.eth.get_transaction_count(self.sender_address),
@@ -227,14 +215,58 @@ class EthereumUtils:
         except Exception as e:
             print("Error calling contract function:", e)
 
-    def respond_medical_certificate_request(self, ipfs_hash, aes_key, revocation_nonce):
+    def respond_medical_certificate_request(self, ipfs_hash, aes_key):
         # Call the function and get the results
         try:
             # Estimate gas for the transaction
             gas_estimate = self.medical_certificate_issuer_contract.functions.respondMedicalCertificateRequest(
                 int(Web3.to_checksum_address(self.user_id), 16),
                 ipfs_hash,
-                aes_key,
+                aes_key
+            ).estimate_gas({
+                'from': self.sender_address,
+                'nonce': self.w3.eth.get_transaction_count(self.sender_address),
+                'gasPrice': self.w3.to_wei('50', 'gwei'),
+                'chainId': 80002
+            })
+
+            print("Estimated gas:", gas_estimate)
+
+            transaction = self.medical_certificate_issuer_contract.functions.respondMedicalCertificateRequest(
+                int(Web3.to_checksum_address(self.user_id), 16),
+                ipfs_hash,
+                aes_key
+            ).build_transaction({
+                'from': self.sender_address,
+                'nonce': self.w3.eth.get_transaction_count(self.sender_address),
+                'gas': 4000000,
+                'gasPrice': self.w3.to_wei('50', 'gwei'),
+                'chainId': 80002
+            })
+
+            # Sign the transaction with the private key
+            signed_tx = self.w3.eth.account.sign_transaction(transaction, self.private_key)
+
+            # Send the signed transaction
+            tx_hash = self.w3.eth.send_raw_transaction(signed_tx.raw_transaction)
+
+            # Print transaction hash
+            print(f"Transaction sent! Hash: {tx_hash.hex()}")
+
+            # Wait for the transaction receipt to confirm it was successful
+            tx_receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
+            if tx_receipt.status == 1:
+                print("Contract call succeeded!")
+            else:
+                print("Contract call failed.")
+        except Exception as e:
+            print("Error calling contract function:", e)
+
+    def revoke_verifiable_credential(self, revocation_nonce):
+        # Delete the verifiable credential when the medical certificate is delivered
+        try:
+            # Estimate gas for the transaction
+            gas_estimate = self.firma_digital_credential_issuer_contract.functions.revokeClaimAndTransit(
                 revocation_nonce
             ).estimate_gas({
                 'from': self.sender_address,
@@ -244,14 +276,8 @@ class EthereumUtils:
             })
 
             print("Estimated gas:", gas_estimate)
-        except Exception as e:
-            print("Gas estimation failed:", e)
 
-        try:
-            transaction = self.medical_certificate_issuer_contract.functions.respondMedicalCertificateRequest(
-                int(Web3.to_checksum_address(self.user_id), 16),
-                ipfs_hash,
-                aes_key,
+            transaction = self.firma_digital_credential_issuer_contract.functions.revokeClaimAndTransit(
                 revocation_nonce
             ).build_transaction({
                 'from': self.sender_address,
