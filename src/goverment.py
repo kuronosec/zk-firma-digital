@@ -17,6 +17,7 @@ if __name__ == "__main__":
 
     # Check if there is a new request
     user_request_item = eth_utils.get_medical_certificate_requests()
+    print(user_request_item)
 
     # Initialize utlities to decrytp and encrypt data with RSA and AES
     encryption = Encryption("./CA-certificates/public_testing_key.pem",
@@ -28,7 +29,7 @@ if __name__ == "__main__":
     private_key = encryption.load_private_key()
 
     # Decrypt the user request
-    user_id = int(encryption.decrypt(user_request_item["requestNumber"], private_key))
+    user_id = int(encryption.decrypt(user_request_item[1], private_key))
 
     print("Request user medical certificate: "+str(user_id))
     # Encrypt the PDF content with AES and save the output
@@ -62,5 +63,5 @@ if __name__ == "__main__":
     eth_utils.respond_medical_certificate_request(
         encrypted_ipfs_hash,
         encrypted_aes_key,
-        user_request_item["revocationNonce"]
+        0
     )

@@ -31,6 +31,9 @@ export class ZKFirmaDigitalCredentialIssuerDeployHelper {
     ZKFirmaDigitalCredentialIssuer: Contract;
   }> {
     const owner = this.signers[0];
+    const owner_address = await owner.getAddress();
+    this.log("owner_address:");
+    this.log(owner_address);
 
     this.log('======== Credential issuer: deploy started ========');
 
@@ -84,7 +87,7 @@ export class ZKFirmaDigitalCredentialIssuerDeployHelper {
     const _credentialIssuerAddr = ZKFirmaDigitalCredentialIssuer.getAddress()
 
     this.log(
-      `credentialIssuer contract deployed to address ${await _credentialIssuerAddr} from ${await owner.getAddress()}`
+      `credentialIssuer contract deployed to address ${await _credentialIssuerAddr} from ${owner_address}`
     );
 
     this.log('======== Credential issuer: deploy completed ========');
@@ -94,11 +97,12 @@ export class ZKFirmaDigitalCredentialIssuerDeployHelper {
       'MedicalCertificateIssuer'
     );
     const ZKFirmaDigitalVerifierDeployed = await MedicalCertificateIssuer.deploy(
-      _credentialIssuerAddr
+      _credentialIssuerAddr,
+      owner_address
     );
 
     this.log(
-      `Medical Certificate Issuer contract deployed to address ${await ZKFirmaDigitalVerifierDeployed.getAddress()} from ${await owner.getAddress()}`
+      `Medical Certificate Issuer contract deployed to address ${await ZKFirmaDigitalVerifierDeployed.getAddress()} from ${owner_address}`
     );
 
     return {
