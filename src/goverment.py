@@ -62,6 +62,5 @@ if __name__ == "__main__":
     # And the revocation nonce to remove the current user request
     eth_utils.respond_medical_certificate_request(
         encrypted_ipfs_hash,
-        encrypted_aes_key,
-        0
+        encrypted_aes_key
     )

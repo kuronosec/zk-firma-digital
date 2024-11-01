@@ -89,7 +89,6 @@ class Encryption:
                     label=None
                 )
             )
-            print("Decrypted Message:", decrypted_data)
             return decrypted_data
         except Exception as e:
             print("Decryption failed:", e)

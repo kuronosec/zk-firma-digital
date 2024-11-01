@@ -1,6 +1,6 @@
 #!python
 
-# IMport the required libraries
+# Import the required libraries
 import sys
 import os
 import json
@@ -10,6 +10,7 @@ import logging
 
 from os import listdir
 from os.path import isfile, join
+from pathlib import Path
 
 # We will use the PyQt6 to provide a grafical interface for the user
 # TODO: test that it works on Windows
@@ -64,12 +65,12 @@ class MainWindow(QMainWindow):
         self.verification_tab = self.create_verification_tab()
         self.signing_tab = self.create_signing_tab()
         self.encryption_tab = self.create_encryption_tab()
-        self.documents_tab = self.create_document_tab()
+        self.medical_certificate_tab = self.create_medical_certificate_tab()
 
         self.tabs.addTab(self.verification_tab, "Creación de credencial ZK")
         self.tabs.addTab(self.signing_tab, "Firma de credenciales verificables")
         self.tabs.addTab(self.encryption_tab, "Solicitar certificado médico")
-        self.tabs.addTab(self.documents_tab, "Ver certificados médicos")
+        self.tabs.addTab(self.medical_certificate_tab, "Ver certificados médicos")
 
         self.eth_utils = EthereumUtils()
         self.eth_utils.load_contracts()
@@ -132,7 +133,7 @@ class MainWindow(QMainWindow):
         self.encryption_layout = QVBoxLayout()
         self.encryption_layout.addWidget(QLabel("Solicite un certificado médico"))
 
-        # Create the password field
+        # Create the user id field
         self.id_number_field = QLineEdit()
         self.id_number_field.setPlaceholderText("Introduzca su número de cédula")
         self.encryption_layout.addWidget(self.id_number_field)
@@ -145,22 +146,23 @@ class MainWindow(QMainWindow):
 
         return self.encryption_tab
 
-    def create_document_tab(self):
-        # Create the document tab's content
-        self.document_tab = QWidget()
-        self.document_layout = QVBoxLayout()
-        self.document_layout.addWidget(QLabel("Certificados médicos"))
+    def create_medical_certificate_tab(self):
+        # Create the medical certificate tab's content
+        self.medical_certificate_tab = QWidget()
+        self.medical_certificate_layout = QVBoxLayout()
+        self.medical_certificate_layout.addWidget(QLabel("Descarge su certificados médico"))
 
-        self.message_label = QLabel("Checking for resource...")
+        self.message_label = QLabel("Buscando certificados...")
         self.message_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.document_layout.addWidget(self.message_label)
+        self.medical_certificate_layout.addWidget(self.message_label)
+        self.medical_certificate_tab.setLayout(self.medical_certificate_layout)
 
-        # Timer to check for resource availability every 60 seconds
+        # Timer to check for resource availability every 30 seconds
         self.check_timer = QTimer(self)
         self.check_timer.timeout.connect(self.check_resource)
-        self.check_timer.start(60000)  # Check every 5 seconds
+        self.check_timer.start(30000)  # Check every 30 seconds
 
-        return self.document_tab
+        return self.medical_certificate_tab
 
     def on_submit_generate_credential(self):
         self.generate_credential_button.setEnabled(False)
@@ -317,7 +319,7 @@ class MainWindow(QMainWindow):
             )
 
             # Check for existing credentials
-            credentials = int(self.eth_utils.get_credentials())
+            credentials = self.eth_utils.get_credentials()
 
             # If credentials available, create medical certificate request
             self.eth_utils.create_medical_credential_request(
@@ -330,28 +332,47 @@ class MainWindow(QMainWindow):
         # Check if resource is available
         medical_certificate = self.eth_utils.get_medical_certificate_document()
         if medical_certificate != None:
-            print(medical_certificate)
-            # Resource available, show clickable link
-            download_from_pinata(
-                medical_certificate["ipfsHash"],
-                "../assets/encrypted_output_pinata.pdf"
-            )
-            encryption = Encryption("./CA-certificates/public_testing_key.pem")
+            encryption = Encryption(
+                "./CA-certificates/public_testing_key.pem",
+                "./CA-certificates/private_testing_key.pem")
             private_key = encryption.load_private_key()
+
+            # Take ipfs has encryption data and decrypt it
+            ipfs_hash = encryption.decrypt(
+                medical_certificate[1],
+                private_key)
+
+            # Convert the bytes to a string
+            ipfs_hash_str = ipfs_hash.decode("utf-8") if isinstance(
+                ipfs_hash,
+                bytes
+                ) else ipfs_hash
+
+            download_from_pinata(
+                ipfs_hash_str,
+                os.path.join(self.config.user_path,
+                             Path('documents/encrypted_output_pinata.pdf'))
+            )
+
             aes_key = encryption.decrypt(
-                medical_certificate["aesKey"],
+                medical_certificate[2],
                 private_key)
             encryption.decrypt_pdf_content(
-                "../assets/encrypted_output_pinata.pdf",
-                "../assets/medical-certificate.pdf",
+                os.path.join(self.config.user_path,
+                             Path('documents/encrypted_output_pinata.pdf')),
+                os.path.join(self.config.user_path,
+                             Path('documents/medical-certificate.pdf')),
                 aes_key)
-            self.show_link("../assets/medical-certificate.pdf")
+
+            self.show_link(os.path.join(self.config.user_path,
+                             Path('documents/medical-certificate.pdf')))
             self.eth_utils.revoke_verifiable_credential(0)
 
             self.check_timer.stop()  # Stop checking once the resource is found
 
-    def show_link(self, file):
-        self.message_label.setText(f'<a href="file:///{file}">Haga click aquí para ver el archivo de certificado médico</a>')
+    def show_link(self, medical_certificate_file):
+        self.message_label.setText(
+            f'<a href="file:///{medical_certificate_file}">Haga click aquí para ver el archivo de certificado médico</a>')
         self.message_label.setOpenExternalLinks(True)
         self.message_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
         self.message_label.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
@@ -360,7 +381,6 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     try:
         app = QApplication(sys.argv)
-
         window = MainWindow()
         window.show()
 

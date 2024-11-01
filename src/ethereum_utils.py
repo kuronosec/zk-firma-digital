@@ -35,8 +35,8 @@ class EthereumUtils:
 
     def load_contracts(self):
         # Contract address (replace with the actual address of your contract)
-        medical_certificate_issuer = "0x3f3b33251e1fE0d9e9855Fd7dF3624bdAA7b3d84"
-        firma_digital_credential_issuer = "0xd119F5E99c06f5B71FC6860A28f60E3d1fc2A7dc"
+        medical_certificate_issuer = "0x160567b3BEAf67835D99064dcECD11a32c6AcA75"
+        firma_digital_credential_issuer = "0xAa7e4806f594090b67cb319A864261543B883b87"
 
         medical_certificate_issuer_abi = None
         firma_digital_credential_issuer_abi = None
@@ -201,8 +201,6 @@ class EthereumUtils:
             medical_certificates = self.medical_certificate_issuer_contract.functions.getGovernmentReponseCount(
                 int(Web3.to_checksum_address(self.user_id), 16)
             ).call()
-
-            print(medical_certificates)
 
             if int(medical_certificates) > 0:
                 medical_certificate = self.medical_certificate_issuer_contract.functions.getGovernmentReponse(

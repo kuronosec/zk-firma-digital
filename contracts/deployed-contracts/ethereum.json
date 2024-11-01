@@ -5,18 +5,18 @@
     "ZKFirmaDigitalVote": "0x948B3c65b89DF0B4894ABE91E6D02FE579834F8F"
   },
   "amoyAddresses": {
-    "MedicalCertificateIssuer": "0xb0EEA758Cd916E67Df4B402f548586B2298Ba62e",
-    "ZKFirmaDigitalCredentialIssuer": "0x40ec4B22a70c0f0D68C6EFd7feB0f5Dca38224e3",
+    "MedicalCertificateIssuer": "0x160567b3BEAf67835D99064dcECD11a32c6AcA75",
+    "ZKFirmaDigitalCredentialIssuer": "0xAa7e4806f594090b67cb319A864261543B883b87",
     "Verifier": "0x080232484E9b7F7d5226F6602AFa08a6B897bF84",
     "ZKFirmaDigital": "0xD870a470FbF33ba5a7364F22aC736384DE46CC7a",
     "ZKFirmaDigitalVote": "0x92E6d69Bd5CF77A38699A94cC36551Bbb4726Ee3",
     "state":  "0x1a4cC30f2aA0377b0c3bc9848766D90cb4404124",
-    "poseidon2Elements":  "0x6737245f7AC175ccF7b3C4b0C9Ee5bCa25FF06Ff",
-    "poseidon3Elements":  "0xFbd6ef527aD848619D0154e78C2de830EA2BF4BC",
-    "poseidon4Elements":  "0x9Ae5e466E65Fc11C93356816f93537c042046e0f",
-    "smtLib":  "0x4B3bb51b9A1d03493A989eEaBBC31e5A8BbdD7e3",
-    "claimBuilder":  "0x0F82191b339E760B87428F1E621e63574e0f3d1B",
-    "identityLib":	"0xfaa3E8AB9E353F5f8cecb12a54E2121df1bba698"
+    "poseidon2Elements":  "0xbbC23F803317a6Ec30411dd3423d028afdf08Ec6",
+    "poseidon3Elements":  "0x96B25E70de090849D84E35684e0AA913F16Bc5cb",
+    "poseidon4Elements":  "0x9078d479df57Fd5aBDFE586818a7dF15011a1fA8",
+    "smtLib":  "0x4Cf41D6986E615C863f133b6875520c3bA7F3A3b",
+    "claimBuilder":  "0x6D48fC7ceA95A2140553e940cBdA56B66DFA3502",
+    "identityLib":	"0xB25E56d8A17B7e0FcD2266b5D963C98346a88Fa2"
   },
   "productionAddresses": {
     "Verifier": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",

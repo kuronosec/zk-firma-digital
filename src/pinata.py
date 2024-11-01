@@ -36,6 +36,7 @@ def download_from_pinata(ipfs_hash, output_file_path):
 
     # URL to access the file via IPFS (using Pinata's public gateway)
     ipfs_url = f"https://gateway.pinata.cloud/ipfs/{ipfs_hash}"
+    print("ipfs_url: "+ipfs_url)
 
     response = requests.get(ipfs_url, stream=True)
     
@@ -45,4 +46,4 @@ def download_from_pinata(ipfs_hash, output_file_path):
                 file.write(chunk)
         print("File downloaded successfully:", output_file_path)
     else:
-        print("Failed to retrieve file:", response.status_code, response.text)
+        print("Failed to retrieve file:", response.status_code)
