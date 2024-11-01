@@ -315,7 +315,7 @@ class MainWindow(QMainWindow):
 
             # Create on-chain (Polygon amoy) standard verifable credential
             self.eth_utils.create_verifiable_credential(
-                "/home/kurono/.zk-firma-digital/credentials/credential.json"
+                self.credential_file
             )
 
             # Check for existing credentials
