@@ -1,11 +1,18 @@
+import os
+
+from pathlib import Path
 from ethereum_utils import EthereumUtils
 from encryption import Encryption
 from ethereum_utils import EthereumUtils
 from pinata import upload_to_pinata, download_from_pinata
+from configuration import Configuration
 
 # This is a bacth process that checks for user on-chain requests
 # And sends medical certificates through Pinata
 if __name__ == "__main__":
+    # Initialize local configuration
+    config = Configuration()
+
     # Create object to communcate to the blockchain
     # In this case its Polygon
     eth_utils = EthereumUtils()
@@ -35,8 +42,10 @@ if __name__ == "__main__":
     # Encrypt the PDF content with AES and save the output
     # For the moment just lock for the pdf name in a directory
     # TODO: do it in a sensible way
-    input_pdf_path = "../assets/"+str(user_id)+"-medical-certificate.pdf"
-    output_pdf_path = "../assets/encrypted_output.pdf"
+    input_pdf_path = os.path.join(config.user_path,
+                             Path("documents/"+str(user_id)+"-medical-certificate.pdf"))
+    output_pdf_path = os.path.join(config.user_path,
+                             Path('documents/encrypted_output.pdf'))
 
     # Encrypt the certificate and return the AES key to send to the blockchain
     encrypted_aes_key = encryption.encrypt_pdf_content(

@@ -157,10 +157,10 @@ class MainWindow(QMainWindow):
         self.medical_certificate_layout.addWidget(self.message_label)
         self.medical_certificate_tab.setLayout(self.medical_certificate_layout)
 
-        # Timer to check for resource availability every 30 seconds
+        # Timer to check for resource availability every 60 seconds
         self.check_timer = QTimer(self)
         self.check_timer.timeout.connect(self.check_resource)
-        self.check_timer.start(30000)  # Check every 30 seconds
+        self.check_timer.start(60000)  # Check every 60 seconds
 
         return self.medical_certificate_tab
 
@@ -315,7 +315,7 @@ class MainWindow(QMainWindow):
 
             # Create on-chain (Polygon amoy) standard verifable credential
             self.eth_utils.create_verifiable_credential(
-                self.credential_file
+                self.config.credential_file
             )
 
             # Check for existing credentials
