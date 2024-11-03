@@ -401,6 +401,7 @@ class MainWindow(QMainWindow):
             self.check_timer.stop()  # Stop checking once the resource is found
 
     def show_link(self, medical_certificate_file):
+        self.message_label.setStyleSheet("background-color : white")
         self.message_label.setText(
             self.tr(f'<a href="file:///{medical_certificate_file}">Haga click aquí para ver el archivo de certificado médico</a>'))
         self.message_label.setOpenExternalLinks(True)
@@ -418,16 +419,12 @@ def load_language(language_code):
 
 # Main entry point for our app
 if __name__ == "__main__":
-    try:
-        app = QApplication(sys.argv)
-        language_code = "en"
-        translator = load_language(language_code)
-        app.installTranslator(translator)
+    app = QApplication(sys.argv)
+    language_code = "en"
+    translator = load_language(language_code)
+    app.installTranslator(translator)
 
-        window = MainWindow()
-        window.show()
+    window = MainWindow()
+    window.show()
 
-        sys.exit(app.exec())
-    except Exception as error:
-        message = "There was an error in the main app:"
-        logging.error(message+" "+str(error), exc_info=True)
+    sys.exit(app.exec())
