@@ -82,7 +82,7 @@
     <message>
         <location filename="main.py" line="162"/>
         <source>Descarge su certificados médico</source>
-        <translation>Dowlonad your medical certificate</translation>
+        <translation type="unfinished">Download your medical certificate</translation>
     </message>
     <message>
         <location filename="main.py" line="164"/>
