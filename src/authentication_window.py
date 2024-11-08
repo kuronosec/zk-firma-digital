@@ -1,31 +1,23 @@
 #!python
 
-# IMport the required libraries
-import sys
+# Import the required libraries
 import os
 import json
 import datetime
-import utils
 import logging
 import jwt
 import webbrowser
-from urllib.parse import urlparse, parse_qs, quote, urlencode
-
-from os import listdir
-from os.path import isfile, join
+from urllib.parse import urlencode
 
 # We will use the PyQt6 to provide a grafical interface for the user
 # TODO: test that it works on Windows
-from PyQt6.QtWidgets import ( QApplication,
-                              QMainWindow,
+from PyQt6.QtWidgets import ( QMainWindow,
                               QWidget,
                               QVBoxLayout,
                               QLineEdit,
                               QPushButton,
                               QMessageBox,
-                              QTabWidget,
-                              QLabel,
-                              QFileDialog )
+                              QTabWidget)
 
 # Import our own libraries
 from certificate import Certificate
@@ -34,9 +26,6 @@ from signature import Signature
 from configuration import Configuration
 from circom import Circom
 
-# Load the public key from a file
-with open("CA-certificates/JWT_public_key.pem", "r") as f:
-    PUBLIC_KEY = f.read()
 
 class AuthenticationWindow(QMainWindow):
     def __init__(self, _token):
@@ -85,6 +74,7 @@ class AuthenticationWindow(QMainWindow):
     def on_submit_generate_credential(self):
         # Verify the JWT token
         payload = self.verify_kyc_jwt_token(self.token)
+
         if not payload:
             print("KYC validation failed.")
             # Redirect back to the browser with failure status
@@ -209,12 +199,16 @@ class AuthenticationWindow(QMainWindow):
         """
         Verifies the JWT token using the public key.
         """
+        # Load the public key from a file
+        with open(self.config.JWT_cert_path, "r") as f:
+            public_key = f.read()
+
         try:
-            payload = jwt.decode(token, PUBLIC_KEY, algorithms=["RS256"])
+            payload = jwt.decode(token, public_key, algorithms=["RS256"])
             return payload
         except jwt.ExpiredSignatureError:
-            print("Token has expired.")
+            logging.error("Token has expired.", exc_info=True)
             return None
         except jwt.InvalidTokenError:
-            print("Invalid token.")
+            logging.error("Invalid token.", exc_info=True)
             return None

@@ -1,18 +1,13 @@
 #!python
 
-# IMport the required libraries
+# Import the required libraries
 import sys
 import os
 import json
 import datetime
-import utils
 import logging
 import jwt
-import webbrowser
 from urllib.parse import urlparse, parse_qs
-
-from os import listdir
-from os.path import isfile, join
 
 # We will use the PyQt6 to provide a grafical interface for the user
 # TODO: test that it works on Windows
@@ -35,9 +30,6 @@ from configuration import Configuration
 from circom import Circom
 from authentication_window import AuthenticationWindow
 
-# Load the public key from a file
-with open("CA-certificates/JWT_public_key.pem", "r") as f:
-    PUBLIC_KEY = f.read()
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -259,22 +251,11 @@ class MainWindow(QMainWindow):
         else:
             self.browser_label.setText("No file selected")
 
-def verify_kyc_jwt_token(token):
-    """
-    Verifies the JWT token using the public key.
-    """
-    try:
-        payload = jwt.decode(token, PUBLIC_KEY, algorithms=["RS256"])
-        return payload
-    except jwt.ExpiredSignatureError:
-        print("Token has expired.")
-        return None
-    except jwt.InvalidTokenError:
-        print("Invalid token.")
-        return None
-
 # Main entry point for our app
 if __name__ == "__main__":
+
+    logging.info("Starting ZK-Firma-Digital")
+
     if len(sys.argv) > 1:
         uri = sys.argv[1]
 
@@ -294,7 +275,10 @@ if __name__ == "__main__":
 
             sys.exit(app.exec())
         else:
-            print("Invalid KYC request or missing parameters.")
+            logging.error(
+                "Invalid KYC request or missing parameters.",
+                exc_info=True
+            )
     else:
         app = QApplication(sys.argv)
         window = MainWindow()

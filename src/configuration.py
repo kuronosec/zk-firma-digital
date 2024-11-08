@@ -1,16 +1,23 @@
 import os
+import platform
 
 from pathlib import Path
+
+# Get the OS type
+os_type = platform.system()
 
 class Configuration:
     def __init__(self) -> None:
         # Define OS specific paths
         # Check what operation system we re running on
-        if os.name == 'nt':
+        if os_type == 'Windows':
             self.installation_path = Path('C:/Program Files/zk-firma-digital')
-        # Linux
-        else:
+        elif os_type == "Linux":
             self.installation_path = Path('/usr/share/zk-firma-digital')
+        elif os_type == "Darwin":
+            self.installation_path = Path('/usr/local/zk-firma-digital')
+        else:
+            print("Unknown operating system")
 
         self.user_path = os.path.join(Path.home(), Path('.zk-firma-digital/'))
         self.build_path = Path("build/")
@@ -23,6 +30,8 @@ class Configuration:
 
         self.root_CA_path = os.path.join(self.installation_path,
                                          Path('CA-certificates/certificado-cadena-confianza.pem'))
+        self.JWT_cert_path = os.path.join(self.installation_path,
+                                         Path('CA-certificates/JWT_public_key.pem'))
         self.output_dir = os.path.join(self.user_path, self.build_path)
         self.credentials_path = self.credentials_path
 

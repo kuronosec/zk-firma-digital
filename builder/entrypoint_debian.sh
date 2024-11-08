@@ -44,7 +44,7 @@ tee -a $DEB_HOMEDIR/usr/share/applications/zk-firma-digital.desktop << END
 [Desktop Entry]
 Name=ZK Firma Digital
 Comment=Firma Digital para Costa Rica
-Exec=/usr/share/zk-firma-digital/zk-firma-digital.bin
+Exec=/usr/share/zk-firma-digital/zk-firma-digital.bin %u
 Terminal=false
 Type=Application
 Categories=Network;Application;

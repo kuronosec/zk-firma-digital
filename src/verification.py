@@ -43,7 +43,6 @@ class Verification:
         for rdn in subject.chosen:
             for attr in rdn:
                 info= info + f"{attr['type'].native}: {attr['value'].native}\n"
-        print(info)
         
         user_cert = x509.Certificate.load(end_entity_cert)
         context = ValidationContext(trust_roots=trust_roots)
@@ -90,7 +89,10 @@ class Verification:
         public_key_str = splitToWords(modulus, 121, 17)
         # If the user wants to associate an address with
         # The verifiable credential
-        signal_hash_input = os.getenv("ETHEREUM_ADDRESS", "1")
+        signal_hash_input = os.getenv(
+            "ETHEREUM_ADDRESS",
+            "0x000000000000000000000000000001"
+        )
         signal_hash = hash_message(signal_hash_input)
 
         # Nullifier seed
@@ -110,5 +112,5 @@ class Verification:
             with open(self.config.input_file, 'w') as json_file:
                 json_file.write(json_data)
         else:
-            print("Number does not fit")
+            logging.error("Number does not fit", exc_info=True)
         return info
