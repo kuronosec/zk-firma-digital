@@ -49,6 +49,7 @@ Terminal=false
 Type=Application
 Categories=Network;Application;
 StartupNotify=true
+MimeType=x-scheme-handler/zk-firma-digital;
 END
 
 # Add copyright and post installation script
