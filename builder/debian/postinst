@@ -4,6 +4,7 @@ set -e
 
 # Finalize configuration steps
 if [ "$1" = configure ]; then
+    xdg-mime default zk-firma-digital.desktop x-scheme-handler/zk-firma-digital
     [ \! -e /etc/Athena/IDPClientDB.xml -o -L /etc/Athena/IDPClientDB.xml ] \
         && cp /etc/Athena/zk-firma-digital_IDPClientDB.xml /etc/Athena/IDPClientDB.xml
 

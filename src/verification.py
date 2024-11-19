@@ -13,8 +13,9 @@ from configuration import Configuration
 # This class helps to validate the certificate extracted from the smart card
 # to see if it actually was signed by the goverment chain of trust
 class Verification:
-    def __init__(self, pin):
+    def __init__(self, pin, signal_hash=None):
         self.pin = pin
+        self.signal_hash = signal_hash
         self.config = Configuration()
         self.user_path = self.config.user_path
         self.credentials_path=self.config.credentials_path
@@ -43,7 +44,6 @@ class Verification:
         for rdn in subject.chosen:
             for attr in rdn:
                 info= info + f"{attr['type'].native}: {attr['value'].native}\n"
-        print(info)
         
         user_cert = x509.Certificate.load(end_entity_cert)
         context = ValidationContext(trust_roots=trust_roots)
@@ -88,10 +88,13 @@ class Verification:
         # Print the big integer in chunks
         signature_str = splitToWords(signature_int, 121, 17)
         public_key_str = splitToWords(modulus, 121, 17)
-        # If the user wants to associate an address with
-        # The verifiable credential
-        signal_hash_input = os.getenv("ETHEREUM_ADDRESS", "1")
-        signal_hash = hash_message(signal_hash_input)
+        # If the user wants to associate a string with
+        # the verifiable credential (Ethereum addres, email, etc)
+        signal_hash = None
+        try:
+            signal_hash = hash_message(self.signal_hash)
+        except errors as error:
+            logging.error(error, exc_info=True)
 
         # Nullifier seed
         nullifier_seed = int.from_bytes(os.urandom(4), sys.byteorder)
@@ -110,5 +113,5 @@ class Verification:
             with open(self.config.input_file, 'w') as json_file:
                 json_file.write(json_data)
         else:
-            print("Number does not fit")
+            logging.error("Number does not fit", exc_info=True)
         return info
