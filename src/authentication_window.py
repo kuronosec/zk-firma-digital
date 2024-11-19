@@ -76,9 +76,8 @@ class AuthenticationWindow(QMainWindow):
         payload = self.verify_kyc_jwt_token(self.token)
 
         if not payload:
-            print("KYC validation failed.")
             # Redirect back to the browser with failure status
-            return_url = "http://http://127.0.0.1:5000/kyc-failure"
+            return_url = "http://localhost:5000/confirm-authorize"
             webbrowser.open(return_url)
             return
         
@@ -101,8 +100,12 @@ class AuthenticationWindow(QMainWindow):
             self.generate_credential_button.setStyleSheet("background-color : green")
             return
         # Verify the stored certificates using the Goverment chain of trust
+        user_id = payload['user_id']
         password = self.password_field.text()
-        verification = Verification(password)
+        verification = Verification(
+            password,
+            signal_hash = '0x' + bytes(user_id, 'utf-8').hex()
+        )
 
         (valid, info) = verification.verify_certificate(self.config.certificate_path)
         if not valid:
@@ -146,14 +149,16 @@ class AuthenticationWindow(QMainWindow):
             # Dictionary of parameters to include in the URL
             params = {
                 'user_id': payload['user_id'],
-                'vc': json_str
+                'client_id': payload['auth_data']['client_id'],
+                'redirect_uri': payload['auth_data']['redirect_uri'],
+                'verifiable_credential': json_str
             }
 
             # Encode the parameters and append them to the base URL
             query_string = urlencode(params)
 
             # Redirect back to the browser with success status
-            return_url = f"http://127.0.0.1:5000/authentication-success?{query_string}"
+            return_url = f"http://localhost:5000/confirm-authorize?{query_string}"
             webbrowser.open(return_url)
         self.generate_credential_button.setEnabled(True)
         self.generate_credential_button.setStyleSheet("background-color : green")

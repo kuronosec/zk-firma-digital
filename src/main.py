@@ -134,7 +134,11 @@ class MainWindow(QMainWindow):
             return
         # Verify the stored certificates using the Goverment chain of trust
         password = self.password_field.text()
-        verification = Verification(password)
+        ethereum_address = os.getenv(
+            "ETHEREUM_ADDRESS",
+            '0x' + bytes("user", 'utf-8').hex()
+        )
+        verification = Verification(password, signal_hash=ethereum_address)
 
         (valid, info) = verification.verify_certificate(self.config.certificate_path)
         if not valid:
