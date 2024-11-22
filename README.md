@@ -67,8 +67,8 @@ Or just look for ```Zk Firma Digital``` in the app search.
 To install the software and be able to generate proofs from your Firma Digital card, please follow these steps:
 * Download the installer and the zkey file:
 ```bash
-    wget http://app.sakundi.io:9090/zk-firma-digital_0.4_amd64.deb
-    wget http://app.sakundi.io:9090/firma-verifier.zkey
+    wget https://app.sakundi.io:9090/zk-firma-digital_0.4_amd64.deb
+    wget https://app.sakundi.io:9090/firma-verifier.zkey
 ```
 * Verify the sha256 hash sum for both files:
 ```bash
