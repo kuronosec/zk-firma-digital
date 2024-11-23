@@ -17,7 +17,8 @@ from PyQt6.QtWidgets import ( QMainWindow,
                               QLineEdit,
                               QPushButton,
                               QMessageBox,
-                              QTabWidget)
+                              QTabWidget,
+                              QLabel)
 
 # Import our own libraries
 from certificate import Certificate
@@ -35,7 +36,6 @@ class AuthenticationWindow(QMainWindow):
         self.config = Configuration()
         if not os.path.exists(self.config.output_dir):
             os.makedirs(self.config.output_dir)
-        self.file_to_sign = ""
 
         self.setWindowTitle("Zero Knowledge - Firma Digital")
         self.setGeometry(600, 400, 700, 400)
@@ -54,6 +54,13 @@ class AuthenticationWindow(QMainWindow):
 
         # Create a vertical layout
         self.verification_layout = QVBoxLayout()
+        # Verify the JWT token
+        self.payload = self.verify_kyc_jwt_token(self.token)
+
+        # Create a user verification label QLabel
+        user_id = self.payload['user_id']
+        self.verification_label = QLabel(f"Autenticarse como usuario: {user_id}. Por favor verifique que sea correcto.")
+        self.verification_layout.addWidget(self.verification_label)
 
         # Create the password field
         self.password_field = QLineEdit()
@@ -72,15 +79,14 @@ class AuthenticationWindow(QMainWindow):
         return verification_tab
 
     def on_submit_generate_credential(self):
-        # Verify the JWT token
-        payload = self.verify_kyc_jwt_token(self.token)
-
-        if not payload:
+        if not self.payload:
             # Redirect back to the browser with failure status
             return_url = "http://localhost:5000/confirm-authorize"
             webbrowser.open(return_url)
             return
         
+        user_id = self.payload['user_id']
+
         self.generate_credential_button.setEnabled(False)
         self.generate_credential_button.setStyleSheet("background-color : gray")
         # Get the certificates from the card
@@ -100,7 +106,6 @@ class AuthenticationWindow(QMainWindow):
             self.generate_credential_button.setStyleSheet("background-color : green")
             return
         # Verify the stored certificates using the Goverment chain of trust
-        user_id = payload['user_id']
         password = self.password_field.text()
         verification = Verification(
             password,
@@ -148,9 +153,9 @@ class AuthenticationWindow(QMainWindow):
             
             # Dictionary of parameters to include in the URL
             params = {
-                'user_id': payload['user_id'],
-                'client_id': payload['auth_data']['client_id'],
-                'redirect_uri': payload['auth_data']['redirect_uri'],
+                'user_id': self.payload['user_id'],
+                'client_id': self.payload['auth_data']['client_id'],
+                'redirect_uri': self.payload['auth_data']['redirect_uri'],
                 'verifiable_credential': json_str
             }
 
