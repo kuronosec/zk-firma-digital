@@ -77,7 +77,7 @@ sha256sum firma-verifier.zkey
 ```
 This should be equal to:
 ```bash
-d17e7245f6d5130c46377c1b9bc67f26fd98b16d4705eea5f2417144384a9cd6  zk-firma-digital_0.4_amd64.deb
+13da8ca1539d71dc9dc57ee4b1ce7041a20c325a034d0c1ca2c4945545e7fba5  zk-firma-digital_0.4_amd64.deb
 91ad03aa0e33430d29361ae450f01d7a4992e068a7d6dddf954886fc4205aa21  firma-verifier.zkey
 ```
 * If the hash sums are correct, then install the zk-firma-digital Debian package:
