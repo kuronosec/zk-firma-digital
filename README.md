@@ -11,6 +11,8 @@ Costa Rica's digital identity system. Our goal is to strengthen citizen privacy 
 data collection, enabling individuals to access a wide range of valuable services without
 disclosing sensitive information.
 
+Documentation: [https://docs.sakundi.io/](https://docs.sakundi.io/)
+
 ## Rationale
 
 The Costa Rican government offers an advanced digital identity system (Firma Digital) that allows residents or entities to sign documents with a digital identity validated by the central bank as CA and authenticate themselves on various public or private websites and services.
