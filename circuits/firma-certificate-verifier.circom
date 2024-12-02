@@ -19,7 +19,7 @@ include "./helpers/nullifier.circom";
 /// @input nullifierSeed A random value used as an input to compute the nullifier; for example: applicationId, actionId
 /// @input public signalHash Any message to commit to (to make it part of the proof)
 /// @output pubkeyHash Poseidon hash of the RSA public key (after merging nearby chunks)
-/// @output nullifier A unique value derived from nullifierSeed and Firma Digital data to nullify the proof/user
+/// @output nullifier A unique value derived from nullifierSeed and the signature data to nullify the proof/user
 /// @output timestamp Timestamp of when the data was signed - extracted and converted to Unix timestamp
 /// @output ageAbove18 Boolean flag indicating age is above 18; 0 if not revealed
 template FirmaDigitalCRVerifier(n, k, maxDataLength) {
@@ -59,7 +59,6 @@ template FirmaDigitalCRVerifier(n, k, maxDataLength) {
     // For Firma CR, age is always above 18
     ageAbove18 <== revealAgeAbove18 * 1;
 
-    // TODO: create an actual Nullifier
     // Calculate nullifier
     nullifier <== Nullifier(n, k)(nullifierSeed, signature);
     
