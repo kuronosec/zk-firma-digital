@@ -2,6 +2,10 @@
 import pprint
 import os
 import logging
+import platform
+
+# Get the OS type
+os_type = platform.system()
 
 from asn1crypto import pem, x509
 from PyKCS11 import *
@@ -18,12 +22,16 @@ class Certificate:
         self.credentials_path = self.config.credentials_path
         self.pin = pin
 
+        # Define OS specific paths
         # Check what operation system we re running on
-        if os.name == 'nt':
+        if os_type == 'Windows':
             self.library_path = 'C:/Windows/System32/asepkcs.dll'
-        # Linux
-        else:
+        elif os_type == "Linux":
             self.library_path = '/usr/lib/x64-athena/libASEP11.so'
+        elif os_type == "Darwin":
+            self.library_path = '/usr/local/zk-firma-digital/os_libs/macos/libASEP11.dylib'
+        else:
+            print("Unknown operating system")
 
     def get_certificates(self):
         """

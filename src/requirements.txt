@@ -7,3 +7,5 @@ PyQt6_sip==13.8.0
 https://github.com/wbond/oscrypto/archive/d5f3437ed24257895ae1edd9e503cfb352e635a8.zip
 web3==7.4.0
 cryptography
+pyinstaller
+jwt

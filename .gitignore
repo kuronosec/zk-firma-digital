@@ -14,4 +14,4 @@ deb/
 rpm/
 release/
 dist
-*.spec
+.DS_Store
