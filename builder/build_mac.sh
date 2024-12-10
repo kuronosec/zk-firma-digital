@@ -1,19 +1,21 @@
  
 #!/bin/zsh
 
+set -xe
+
 source /etc/profile
 export LC_ALL="en_US.UTF-8"
 
 cd src
 pyinstaller zk-firma-digital.spec
 
-mkdir -p dist/package/usr/local/zk-firma-digital/os_libs/macos/
-mkdir -p dist/package/usr/local/zk-firma-digital/certs
-mkdir -p dist/package/usr/local/zk-firma-digital/etc/Athena/
+mkdir -p dist/package/usr/local/zk-firma-digital/os_libs/macos
+mkdir -p dist/package/usr/local/zk-firma-digital/CA-certificates
+mkdir -p dist/package/usr/local/zk-firma-digital/etc/Athena
 mkdir -p dist/scripts
 
 cp -a dist/zk-firma-digital.app dist/package/usr/local/zk-firma-digital/
-cp -a CA-certificates/ dist/package/usr/local/zk-firma-digital/
+cp -a CA-certificates/ dist/package/usr/local/zk-firma-digital/CA-certificates/
 cp -a os_libs/macos/libASEP11.dylib dist/package/usr/local/zk-firma-digital/os_libs/macos/
 cp -a os_libs/Athena/IDPClientDB.xml  dist/package/usr/local/zk-firma-digital/etc/Athena/
 tar -C dist/ -cf dist/package/usr/local/zk-firma-digital/zk-firma-digital.app.tar zk-firma-digital.app

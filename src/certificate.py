@@ -29,7 +29,7 @@ class Certificate:
         elif os_type == "Linux":
             self.library_path = '/usr/lib/x64-athena/libASEP11.so'
         elif os_type == "Darwin":
-            self.library_path = '/usr/local/zk-firma-digital/os_libs/macos/libASEP11.dylib'
+            self.library_path = '/usr/local/lib/libASEP11.dylib'
         else:
             print("Unknown operating system")
 
