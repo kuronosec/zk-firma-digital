@@ -14,10 +14,15 @@ mkdir -p dist/package/usr/local/zk-firma-digital/CA-certificates
 mkdir -p dist/package/usr/local/zk-firma-digital/etc/Athena
 mkdir -p dist/scripts
 
+wget -qO- https://nodejs.org/dist/v22.12.0/node-v22.12.0-darwin-x64.tar.gz\
+ | tar -xJf - --strip-components=1 -C dist/package/usr/local/zk-firma-digital
+
 cp -a dist/zk-firma-digital.app dist/package/usr/local/zk-firma-digital/
 cp -a CA-certificates/ dist/package/usr/local/zk-firma-digital/CA-certificates/
 cp -a os_libs/macos/libASEP11.dylib dist/package/usr/local/zk-firma-digital/os_libs/macos/
 cp -a os_libs/Athena/IDPClientDB.xml  dist/package/usr/local/zk-firma-digital/etc/Athena/
+cp -R $(npm root -g)/snarkjs dist/package/usr/local/zk-firma-digital/lib/node_modules/
+
 tar -C dist/ -cf dist/package/usr/local/zk-firma-digital/zk-firma-digital.app.tar zk-firma-digital.app
 
 tee -a dist/scripts/postinstall << END
