@@ -9,6 +9,7 @@ from utils import splitToWords, preprocess_message_for_sha256, hash_message
 from asn1crypto import pem, x509
 from certvalidator import CertificateValidator, ValidationContext, errors
 from configuration import Configuration
+from signature import Signature
 
 # This class helps to validate the certificate extracted from the smart card
 # to see if it actually was signed by the goverment chain of trust
@@ -98,6 +99,7 @@ class Verification:
 
         # Nullifier seed
         nullifier_seed = int.from_bytes(os.urandom(4), sys.byteorder)
+        user_signatue = Signature()
 
         if signature_str is not None:
             json_data = {
@@ -107,7 +109,8 @@ class Verification:
                     "pubKey": public_key_str,
                     "nullifierSeed": str(nullifier_seed),
                     "signalHash": signal_hash,
-                    "revealAgeAbove18": "1"
+                    "revealAgeAbove18": "1",
+                    "userSignature": user_signatue.sign_data(tbs_bytes)
             }
             json_data = json.dumps(json_data, indent=4)
             with open(self.config.input_file, 'w') as json_file:

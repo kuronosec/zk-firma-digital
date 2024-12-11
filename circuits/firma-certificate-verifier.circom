@@ -28,6 +28,7 @@ template FirmaDigitalCRVerifier(n, k, maxDataLength) {
     signal input signature[k];
     signal input pubKey[k];
     signal input revealAgeAbove18;
+    signal input userSignature[k];
 
     // Public inputs
     signal input nullifierSeed;
@@ -60,7 +61,7 @@ template FirmaDigitalCRVerifier(n, k, maxDataLength) {
     ageAbove18 <== revealAgeAbove18 * 1;
 
     // Calculate nullifier
-    nullifier <== Nullifier(n, k)(nullifierSeed, signature);
+    nullifier <== Nullifier(n, k)(nullifierSeed, userSignature);
     
     // Dummy square to prevent signal tampering
     // (in rare cases where non-constrained inputs are ignored)
