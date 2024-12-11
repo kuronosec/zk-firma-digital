@@ -151,20 +151,17 @@ class Signature():
             private_key = session.findObjects([(PyKCS11.CKA_CLASS, PyKCS11.CKO_PRIVATE_KEY)])[0]
 
             # Canonicalize and hash the JSON data (using SHA-256)
-            hashed_data = hashlib.sha256(data_to_sign.encode('utf-8')).digest()
+            hashed_data = hashlib.sha256(data_to_sign).hexdigest()
 
             # Sign the hash using the private key
             mechanism = PyKCS11.Mechanism(PyKCS11.CKM_SHA256_RSA_PKCS, None)
             signature = session.sign(private_key, hashed_data, mechanism)
 
-            # Base64 encode the signature
-            signature_value = binascii.hexlify(bytearray(signature))
-
             # Logout and close the session
             session.logout()
             session.closeSession()
 
-            return signature_value
+            return signature
         except PyKCS11Error as error:
             message = """Hubo un error al leer la tarjeta,\
                          por favor verifique que esta conectada correctamente\

@@ -20,6 +20,7 @@ class Verification:
         self.config = Configuration()
         self.user_path = self.config.user_path
         self.credentials_path=self.config.credentials_path
+        self.user_signature = Signature(pin)
 
         # We have a folder with the goverment certificates
         self.root_CA_path = self.config.root_CA_path
@@ -99,7 +100,12 @@ class Verification:
 
         # Nullifier seed
         nullifier_seed = int.from_bytes(os.urandom(4), sys.byteorder)
-        user_signatue = Signature()
+        self.user_signature.load_library()
+        user_signature = self.user_signature.sign_data(tbs_bytes)
+        # Convert the signature to a big integer
+        user_signature_int = int.from_bytes(user_signature, byteorder='big')
+        # Print the big integer in chunks
+        user_signature_str = splitToWords(user_signature_int, 121, 17)
 
         if signature_str is not None:
             json_data = {
@@ -110,7 +116,7 @@ class Verification:
                     "nullifierSeed": str(nullifier_seed),
                     "signalHash": signal_hash,
                     "revealAgeAbove18": "1",
-                    "userSignature": user_signatue.sign_data(tbs_bytes)
+                    "userSignature": user_signature_str
             }
             json_data = json.dumps(json_data, indent=4)
             with open(self.config.input_file, 'w') as json_file:
