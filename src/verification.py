@@ -1,5 +1,4 @@
 # Import the required libraries
-import base64
 import json
 import os
 import sys

@@ -1,7 +1,6 @@
 # Import required libraries
 import json
 import hashlib
-import base64
 import os
 import datetime
 import binascii

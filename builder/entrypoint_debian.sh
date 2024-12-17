@@ -6,8 +6,8 @@ cd /zk-firma-digital/
 
 # Create binary installer for the app
 pyinstaller --clean --onefile -n zk-firma-digital --upx-dir=/usr/local/share/  \
-    --noconfirm --log-level=WARN --windowed --distpath=/data/ --workpath=/tmp/zk-firma-digital_build \
-    --hidden-import 'pkcs11.defaults' main.py
+    --noconfirm --log-level=WARN --windowed --distpath=/data/ \
+    --workpath=/tmp/zk-firma-digital_build main.py
 
 mkdir -p /data/build/
 cd  /data/build/
@@ -66,7 +66,7 @@ cp /zk-firma-digital/os_libs/linux/${ARCH}/libASEP11.so \
 cp -a /zk-firma-digital/CA-certificates/ $DEB_HOMEDIR/usr/share/zk-firma-digital/
 cp -a /zk-artifacts/firma-verifier_js $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-artifacts
 cp -a /zk-artifacts/vkey.json $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-artifacts
-# cp -a /zk-artifacts/firma-verifier.zkey $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-artifacts
+cp -a /zk-artifacts/firma-verifier.zkey $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-artifacts
 
 dpkg-deb --build --root-owner-group $DEB_HOMEDIR
 alien -t $DEB_HOMEDIR.deb --scripts
