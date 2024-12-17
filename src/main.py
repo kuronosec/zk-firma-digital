@@ -6,7 +6,6 @@ import os
 import json
 import datetime
 import logging
-import jwt
 from urllib.parse import urlparse, parse_qs
 
 # We will use the PyQt6 to provide a grafical interface for the user
