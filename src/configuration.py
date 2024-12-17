@@ -7,7 +7,7 @@ from pathlib import Path
 os_type = platform.system()
 
 class Configuration:
-    def __init__(self) -> None:
+    def __init__(self, type="runtime") -> None:
         # Define OS specific paths
         # Check what operation system we re running on
         if os_type == 'Windows':
@@ -20,7 +20,6 @@ class Configuration:
             print("Unknown operating system")
 
         self.user_path = os.path.join(Path.home(), Path('.zk-firma-digital/'))
-        self.build_path = Path("build/")
 
         self.credentials_path = os.path.join(self.user_path, Path('credentials/'))
         self.credential_file = os.path.join(self.credentials_path, Path('credential.json'))
@@ -32,14 +31,19 @@ class Configuration:
                                          Path('CA-certificates/certificado-cadena-confianza.pem'))
         self.JWT_cert_path = os.path.join(self.installation_path,
                                          Path('CA-certificates/JWT_public_key.pem'))
-        self.output_dir = os.path.join(self.user_path, self.build_path)
         self.credentials_path = self.credentials_path
 
         # Define where to find the diferent components
         # of thew compilation process
-
+        if type == "compile":
+            self.build_path = Path("../build/")
+            self.output_dir = self.build_path
+            self.js_dir = os.path.join(self.build_path, Path('firma-verifier_js/'))
+        elif type == "runtime":
+            self.build_path = Path("build/")
+            self.output_dir = os.path.join(self.user_path, self.build_path)
+            self.js_dir = os.path.join(self.zk_artifacts_path, Path('firma-verifier_js/'))
         # Files for proof and verification
-        self.js_dir = os.path.join(self.zk_artifacts_path, Path('firma-verifier_js/'))
         self.vkey_file = os.path.join(self.zk_artifacts_path, Path('vkey.json'))
         self.wasm = os.path.join(self.js_dir, Path('firma-verifier.wasm'))
 
@@ -54,5 +58,5 @@ class Configuration:
         self.r1cs = os.path.join(self.output_dir, Path('firma-verifier.r1cs'))
         self.sym_file = os.path.join(self.output_dir, Path('firma-verifier.sym'))
         self.ptau_file = os.path.join(self.output_dir, Path('firma-verifier-final.ptau'))
-        self.circ_file = '../circuits/firma-verifier.circom'
-
+        self.circ_file = Path('../circuits/firma-verifier.circom')
+        self.node_module_dir = Path('../circuits/node_modules/')
