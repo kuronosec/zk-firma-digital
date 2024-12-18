@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 MAINTAINER Andres Gomez Ramirez @kuronosec
 
 RUN apt-get update && \
-    apt-get install -y  build-essential libssl3 libssl-dev \
+    apt-get install -y  build-essential libssl3 libssl-dev pcscd libxcb-xinerama0 libpcre3 \
     libffi-dev libnss3-dev dh-make alien nodejs npm
 
 RUN npm install -g snarkjs@latest
