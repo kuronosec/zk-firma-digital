@@ -79,7 +79,7 @@ This should be equal to:
 ```bash
 f7924230256b432a755746f7e86455f292f4e2659acc1f46e6db09c08c04b407  zk-firma-digital_0.5_amd64.deb
 ```
-* If the hash sums are correct, then install the zk-firma-digital Debian package:
+* If the hash sums is correct, then install the zk-firma-digital Debian package:
 ```bash
     sudo dpkg -i zk-firma-digital_0.5_amd64.deb
 ```
@@ -94,9 +94,11 @@ Or just look for the app in the search bar.
 
 **On Linux:**
 
-If you want to build the current installer, execute the following command:
+If you want to build the current installer, execute the following commands:
 
 ```bash
+git clone https://github.com/kuronosec/zk-firma-digital
+cd zk-firma-digital
 ./builder/build_linux.sh
 ```
 
