@@ -77,7 +77,7 @@ sha256sum zk-firma-digital_0.5_amd64.deb
 ```
 This should be equal to:
 ```bash
-13da8ca1539d71dc9dc57ee4b1ce7041a20c325a034d0c1ca2c4945545e7fba5  zk-firma-digital_0.5_amd64.deb
+f7924230256b432a755746f7e86455f292f4e2659acc1f46e6db09c08c04b407  zk-firma-digital_0.5_amd64.deb
 ```
 * If the hash sums are correct, then install the zk-firma-digital Debian package:
 ```bash
