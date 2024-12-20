@@ -69,32 +69,26 @@ Or just look for ```Zk Firma Digital``` in the app search.
 To install the software and be able to generate proofs from your Firma Digital card, please follow these steps:
 * Download the installer and the zkey file:
 ```bash
-    wget https://app.sakundi.io:9090/zk-firma-digital_0.4_amd64.deb
-    wget https://app.sakundi.io:9090/firma-verifier.zkey
+    wget https://app.sakundi.io:9090/zk-firma-digital_0.5_amd64.deb
 ```
 * Verify the sha256 hash sum for both files:
 ```bash
-sha256sum zk-firma-digital_0.4_amd64.deb
-sha256sum firma-verifier.zkey
+sha256sum zk-firma-digital_0.5_amd64.deb
 ```
 This should be equal to:
 ```bash
-13da8ca1539d71dc9dc57ee4b1ce7041a20c325a034d0c1ca2c4945545e7fba5  zk-firma-digital_0.4_amd64.deb
-91ad03aa0e33430d29361ae450f01d7a4992e068a7d6dddf954886fc4205aa21  firma-verifier.zkey
+13da8ca1539d71dc9dc57ee4b1ce7041a20c325a034d0c1ca2c4945545e7fba5  zk-firma-digital_0.5_amd64.deb
 ```
 * If the hash sums are correct, then install the zk-firma-digital Debian package:
 ```bash
-    sudo dpkg -i zk-firma-digital_0.4_amd64.deb
-```
-* Then, move the firma-verifier.zkey to the required directory:
-```bash
-    sudo mv firma-verifier.zkey /usr/share/zk-firma-digital/zk-artifacts/
+    sudo dpkg -i zk-firma-digital_0.5_amd64.deb
 ```
 * Finally, to run the program, introduce your smart card in a USB slot and execute the following command:
 
 ```bash
     /usr/share/zk-firma-digital/zk-firma-digital.bin
 ```
+Or just look for the app in the search bar.
 
 ## Build
 
@@ -118,7 +112,3 @@ When you generate a Zk credential from your Firma Digital, which is a JSON file,
 You can find the source code here: https://github.com/kuronosec/zk-firma-web
 
 Also you can find an example of the built verifiable credential here: https://github.com/kuronosec/zk-firma-digital/blob/main/src/examples/residence-credential.json
-
-## Warning
-
-This project is still in the proof-of-concept phase and under heavy development and therefore still not recommended for production environments.
