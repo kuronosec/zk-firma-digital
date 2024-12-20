@@ -71,7 +71,7 @@ To install the software and be able to generate proofs from your Firma Digital c
 ```bash
     wget https://app.sakundi.io:9090/zk-firma-digital_0.5_amd64.deb
 ```
-* Verify the sha256 hash sum for both files:
+* Verify the sha256 hash sum:
 ```bash
 sha256sum zk-firma-digital_0.5_amd64.deb
 ```
