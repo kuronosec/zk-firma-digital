@@ -38,22 +38,16 @@ class Verification:
             if pem.detect(end_entity_cert):
                 _, _, end_entity_cert = pem.unarmor(end_entity_cert)
         
-        root_cert = x509.Certificate.load(trust_roots[2])
-        subject = root_cert.subject
-        # Show certificate info
-        info = "Datos del certificado Root:\n"
-        for rdn in subject.chosen:
-            for attr in rdn:
-                info= info + f"{attr['type'].native}: {attr['value'].native}\n"
-        
         user_cert = x509.Certificate.load(end_entity_cert)
         context = ValidationContext(trust_roots=trust_roots)
 
         # Finally proceed with the validation
         try:
             validator = CertificateValidator(end_entity_cert, validation_context=context)
-            path = validator.validate_usage(set(['digital_signature']))
-            info = self.get_certificate_info(user_cert, root_cert)
+            validated_chain = validator.validate_usage(set(['digital_signature']))
+            # Extract the public key of the signing certificate
+            signing_certificate = validated_chain[0]  # The issuer of the user certificate
+            info = self.get_certificate_info(user_cert, signing_certificate)
             return (True, info)
         except errors.PathValidationError as error:
             message = "Certificate signature is not valid!"
