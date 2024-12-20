@@ -67,7 +67,7 @@ Or just look for ```Zk Firma Digital``` in the app search.
 **On Linux (At moment only Debian):**
 
 To install the software and be able to generate proofs from your Firma Digital card, please follow these steps:
-* Download the installer and the zkey file:
+* Download the installer package:
 ```bash
     wget https://app.sakundi.io:9090/zk-firma-digital_0.5_amd64.deb
 ```
