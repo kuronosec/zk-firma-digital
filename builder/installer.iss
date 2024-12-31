@@ -8,7 +8,7 @@
 
 [Setup]
 AppName=ZK Firma Digital
-AppVersion=0.2
+AppVersion=0.5
 WizardStyle=modern
 DefaultDirName={autopf}\zk-firma-digital
 DefaultGroupName=ZK Firma Digital
