@@ -42,15 +42,15 @@ Please follow these steps:
 
 * Download the installer by clicking the following link:
 
-[Windows Installer](https://app.sakundi.io:9090/zk-firma-digital.exe)
+[Windows Installer](https://app.sakundi.io:9090/zk-firma-digital-0.5.exe)
 
 * Verify the sha256 hash sum:
 ```bash
-certutil -hashfile "C:\file\path\zk-firma-digital.exe" SHA256
+certutil -hashfile "C:\file\path\zk-firma-digital-0.5.exe" SHA256
 ```
 This should be equal to:
 ```bash
-108afe1c5dc6648dc7c133cc424897ea69cb241e96b11d8726f6452c88d32940  zk-firma-digital.exe
+a12d82222533d546b0364a2589ced1ecc024ce49d89881ad94b48c4f2e2b4c61  zk-firma-digital-0.5.exe
 ```
 * If the hash sums is correct, then just run the zk-firma-digital installer.
 
