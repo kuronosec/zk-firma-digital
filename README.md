@@ -104,7 +104,13 @@ cd zk-firma-digital
 
 **On Windows:**
 
-TODO
+Some tooling is needed to build the project in Windows. First of all install [Cygwin](https://cygwin.com/install.html) to be able to use a Linux like development environment. Then, using the Cygwin console run the following commands:
+
+```bash
+git clone https://github.com/kuronosec/zk-firma-digital
+cd zk-firma-digital
+./builder/build_windows.sh
+```
 
 ## See it working
 When you generate a Zk credential from your Firma Digital, which is a JSON file, you can test it by authenticating in this PoC website:
