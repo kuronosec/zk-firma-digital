@@ -120,9 +120,9 @@ To build the installer on windows, first make sure the following necessary prere
 
 5. **Windows Defender Exclusions (or Antivirus Configuration)**: To avoid issues with `.exe` files being flagged as potential threats, you may need to add exclusions for the build directory or temporarily disable your antivirus software during the build process.
 
----
 
-## Step-by-Step Build Process
+
+***Step-by-Step Build Process for Windows***
 
 After installing all the prerequisites proceed to the following steps:
 
