@@ -104,8 +104,59 @@ cd zk-firma-digital
 
 **On Windows:**
 
-TODO
+To build the installer on windows, first make sure the following necessary prerequisites and tools are installed:
 
+
+1. **Git Bash**: A terminal emulator that provides a Unix-like command-line environment on Windows. It is included with [Git for Windows](https://gitforwindows.org/).
+
+2. **Python (version 3.10 or higher)**: Required to run the Python scripts in the project. Download it from [python.org](https://www.python.org/downloads/).
+
+3. **PyInstaller**: A Python package to create standalone executables. Install it using:
+   ```bash
+   pip install pyinstaller
+   ```
+
+4. **Inno Setup**: A tool to create Windows installers. Download and install it from [jrsoftware.org](https://jrsoftware.org/).
+
+5. **Windows Defender Exclusions (or Antivirus Configuration)**: To avoid issues with `.exe` files being flagged as potential threats, you may need to add exclusions for the build directory or temporarily disable your antivirus software during the build process.
+
+
+
+***Step-by-Step Build Process for Windows***
+
+After installing all the prerequisites proceed to the following steps:
+
+### 1. Clone the Repository
+First, clone the repository to your local and cd into the cloned repository:
+```bash
+git clone https://github.com/kuronosec/zk-firma-digital.git
+cd zk-firma-digital
+```
+### 2. Run the Build Script
+While in the root directory of the cloned repository and run the build by executing the Windows build script:
+```bash
+./builder/build_windows.sh
+```
+### 3. Locate the Output Files
+After running the script:
+- The **executable** will be in the `build` directory.
+- The **installer file** will be in the `release` directory as `zk-firma-digital-<version>.exe`.
+### 5. Troubleshooting
+#### Antivirus Issues
+During the process of running the windows build script, you might encounter an error indicating that the `.exe` file contains a virus or potentially unwanted software. To resolve this:
+- Add the `build` and `release` directories to your antivirus exclusion list.
+- If using Windows Defender, follow these steps:
+  1. Open Windows Security.
+  2. Go to **Virus & threat protection**.
+  3. Click on **Manage settings** under **Virus & threat protection settings**
+  4. Toggle **Real Time Protection** off
+  4. Scroll down to **Exclusions** and click on **Add or remove exclusions**.
+  5. Add the paths to the `build` and `release` directories.
+
+#### Missing Tools or Errors
+If you encounter errors such as `command not found` for tools like `pyinstaller` or `iscc`, ensure the tools are properly installed and available in your system's `PATH`.
+
+---
 ## See it working
 When you generate a Zk credential from your Firma Digital, which is a JSON file, you can test it by authenticating in this PoC website:
 
