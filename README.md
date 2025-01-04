@@ -129,23 +129,18 @@ After installing all the prerequisites proceed to the following steps:
 ### 1. Clone the Repository
 First, clone the repository to your local and cd into the cloned repository:
 ```bash
-git clone https://github.com/yourusername/zk-firma-digital.git
+git clone https://github.com/kuronosec/zk-firma-digital.git
 cd zk-firma-digital
 ```
-
-
 ### 2. Run the Build Script
-While in the oot directory of the cloned repository and run the build by executing the Windows build script:
+While in the root directory of the cloned repository and run the build by executing the Windows build script:
 ```bash
 ./builder/build_windows.sh
 ```
-
-
 ### 3. Locate the Output Files
 After running the script:
 - The **executable** will be in the `build` directory.
 - The **installer file** will be in the `release` directory as `zk-firma-digital-<version>.exe`.
-
 ### 5. Troubleshooting
 #### Antivirus Issues
 During the process of running the windows build script, you might encounter an error indicating that the `.exe` file contains a virus or potentially unwanted software. To resolve this:
@@ -162,8 +157,6 @@ During the process of running the windows build script, you might encounter an e
 If you encounter errors such as `command not found` for tools like `pyinstaller` or `iscc`, ensure the tools are properly installed and available in your system's `PATH`.
 
 ---
-
-
 ## See it working
 When you generate a Zk credential from your Firma Digital, which is a JSON file, you can test it by authenticating in this PoC website:
 
