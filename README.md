@@ -125,7 +125,7 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
 4. Locate the output files:
     * Executable: `build` directory.
     * Installer: `release` directory.
-    
+
 ### 5. Troubleshooting
 #### Antivirus Issues
 During the process of running the windows build script, you might encounter an error indicating that the `.exe` file contains a virus or potentially unwanted software. To resolve this:
@@ -143,10 +143,7 @@ If you encounter errors such as `command not found` for tools like `pyinstaller`
 
 ---
 ## See it working
-When you generate a Zk credential from your Firma Digital, which is a JSON file, you can test it by authenticating in this PoC website:
-
-* http://app.sakundi.io:8080/
-
-You can find the source code here: https://github.com/kuronosec/zk-firma-web
-
-Also you can find an example of the built verifiable credential here: https://github.com/kuronosec/zk-firma-digital/blob/main/src/examples/residence-credential.json
+Once you generate a ZK credential (a JSON file) using your Firma Digital card, you can test it by authenticating on this Proof of Concept (PoC) website:
+    * Website: http://app.sakundi.io:8080/
+    * Source code: [GitHub Repository](https://github.com/kuronosec/zk-firma-web)
+    * Example credential: [residence-credential.json](https://github.com/kuronosec/zk-firma-digital/blob/main/src/examples/residence-credential.json)
