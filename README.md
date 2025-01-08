@@ -11,7 +11,7 @@ Costa Rica's digital identity system. Our goal is to strengthen citizen privacy 
 data collection, enabling individuals to access a wide range of valuable services without
 disclosing sensitive information.
 
-Documentation: [https://docs.sakundi.io/](https://docs.sakundi.io/)
+See the [documentation](https://docs.sakundi.io/) for more details.
 
 ## Rationale
 
