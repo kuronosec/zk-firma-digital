@@ -60,7 +60,7 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
         "C:\Program Files\zk-firma-digital\zk-firma-digital.exe"
         ```
     * Alternatively, search for ZK Firma Digital in the Start menu.
-5. If you need more details, please visit the [installation guide]()
+5. If you need more details, please visit the [installation guide]().
 
 ### Linux (Debian)
 
@@ -140,7 +140,7 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
     * Missing Tools or Command Errors: If you encounter errors like `command not found` when running the build script, it may indicate missing tools or misconfigured system paths. Follow these steps:
         1. Review the build script for errors or missing dependencies.
         2. Consult the repository's issues page or documentation for additional support.
-
+6. If you need more details, please visit the [development guide]().
 ## See it working
 Once you generate a ZK credential (a JSON file) using your Firma Digital card, you can test it by authenticating on this Proof of Concept (PoC) website:
 
