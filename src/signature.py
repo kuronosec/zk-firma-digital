@@ -1,7 +1,6 @@
 # Import required libraries
 import json
 import hashlib
-import base64
 import os
 import datetime
 import binascii
@@ -19,9 +18,9 @@ class Signature():
         self.pin = pin
 
         # Check what operation system we re running on
-        # TODO: make it work on windows
         if os.name == 'nt':
-            self.library_path = 'todo'
+            self.library_path = 'C:/Windows/System32/asepkcs.dll'
+        # Linux
         else:
             self.library_path = '/usr/lib/x64-athena/libASEP11.so'
 
@@ -123,6 +122,45 @@ class Signature():
             # Logout and close the session
             session.logout()
             session.closeSession()
+        except PyKCS11Error as error:
+            message = """Hubo un error al leer la tarjeta,\
+                         por favor verifique que esta conectada correctamente\
+                         y que ingreso el pin correcto."""
+            logging.error(message+" "+str(error), exc_info=True)
+            return message
+        return "Se firmó el archivo correctamente!"
+
+    def sign_data(self, data_to_sign):
+        # Open a session with the token
+        slots = self.pkcs11.getSlotList(tokenPresent=True)
+        if not slots:
+            raise Exception("No token found")
+
+        slot = slots[0]
+
+        session = None
+
+        try:
+            session = self.pkcs11.openSession(slot, PyKCS11.CKF_SERIAL_SESSION | PyKCS11.CKF_RW_SESSION)
+
+            # Login with your PIN
+            session.login(self.pin)
+
+            # Find the private key object
+            private_key = session.findObjects([(PyKCS11.CKA_CLASS, PyKCS11.CKO_PRIVATE_KEY)])[0]
+
+            # Canonicalize and hash the JSON data (using SHA-256)
+            hashed_data = hashlib.sha256(data_to_sign).hexdigest()
+
+            # Sign the hash using the private key
+            mechanism = PyKCS11.Mechanism(PyKCS11.CKM_SHA256_RSA_PKCS, None)
+            signature = session.sign(private_key, hashed_data, mechanism)
+
+            # Logout and close the session
+            session.logout()
+            session.closeSession()
+
+            return signature
         except PyKCS11Error as error:
             message = """Hubo un error al leer la tarjeta,\
                          por favor verifique que esta conectada correctamente\

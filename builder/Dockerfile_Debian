@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 MAINTAINER Andres Gomez Ramirez @kuronosec
 
 RUN apt-get update && \
-    apt-get install -y  build-essential libssl3 libssl-dev \
+    apt-get install -y  build-essential libssl3 libssl-dev pcscd libxcb-xinerama0 libpcre3 \
     libffi-dev libnss3-dev dh-make alien nodejs npm
 
 RUN npm install -g snarkjs@latest
@@ -18,7 +18,9 @@ RUN pip install --trusted-host pypi.python.org --no-cache-dir -r /tmp/requiremen
 RUN mkdir /packages && chmod 777 /packages
 
 COPY src /zk-firma-digital_base
-COPY build /zk-artifacts
+COPY build/firma-verifier.zkey /zk-artifacts/firma-verifier.zkey
+COPY build/firma-verifier_js /zk-artifacts/firma-verifier_js
+COPY build/vkey.json /zk-artifacts/vkey.json
 
 COPY builder/debian/copyright /tmp/copyright
 COPY builder/debian/postinst /tmp/postinst

@@ -10,7 +10,8 @@ include "@zk-email/circuits/lib/sha.circom";
 /// @param n - RSA pubic key size per chunk
 /// @param k - Number of chunks the RSA public key is split into
 /// @param maxDataLength - Maximum length of the data
-/// @input certDataPadded - cert data without the signature; each number represent ascii byte; remaining space is padded with 0
+/// @input certDataPadded - cert data without the signature;
+/// each number represent ascii byte; remaining space is padded with 0
 /// @input certDataPaddedLength - Length of padded cert data
 /// @input signature - RSA signature
 /// @input pubKey - RSA public key
@@ -55,8 +56,10 @@ template SignatureVerifier(n, k, maxDataLength) {
 	rsa.signature <== signature;
 
   // Calculate Poseidon hash of the public key (609 constraints)
-  // Poseidon component can take only 16 inputs, so we convert k chunks to k/2 chunks.
-  // We are assuming k is > 16 and <= 32 (i.e we merge two consecutive item in array to bring down the size)
+  // Poseidon component can take only 16 inputs, so we convert k chunks
+  // to k/2 chunks.
+  // We are assuming k is > 16 and <= 32 (i.e we merge two consecutive
+  // item in array to bring down the size)
   var poseidonInputSize = k \ 2;
   if (k % 2 == 1) {
       poseidonInputSize++;

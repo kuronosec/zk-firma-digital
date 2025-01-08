@@ -1,5 +1,4 @@
 # Import the required libraries
-import base64
 import json
 import os
 import sys
@@ -9,15 +8,18 @@ from utils import splitToWords, preprocess_message_for_sha256, hash_message
 from asn1crypto import pem, x509
 from certvalidator import CertificateValidator, ValidationContext, errors
 from configuration import Configuration
+from signature import Signature
 
 # This class helps to validate the certificate extracted from the smart card
 # to see if it actually was signed by the goverment chain of trust
 class Verification:
-    def __init__(self, pin):
+    def __init__(self, pin, signal_hash=None):
         self.pin = pin
+        self.signal_hash = signal_hash
         self.config = Configuration()
         self.user_path = self.config.user_path
         self.credentials_path=self.config.credentials_path
+        self.user_signature = Signature(pin)
 
         # We have a folder with the goverment certificates
         self.root_CA_path = self.config.root_CA_path
@@ -36,23 +38,16 @@ class Verification:
             if pem.detect(end_entity_cert):
                 _, _, end_entity_cert = pem.unarmor(end_entity_cert)
         
-        root_cert = x509.Certificate.load(trust_roots[2])
-        subject = root_cert.subject
-        # Show certificate info
-        info = "Datos del certificado Root:\n"
-        for rdn in subject.chosen:
-            for attr in rdn:
-                info= info + f"{attr['type'].native}: {attr['value'].native}\n"
-        print(info)
-        
         user_cert = x509.Certificate.load(end_entity_cert)
         context = ValidationContext(trust_roots=trust_roots)
 
         # Finally proceed with the validation
         try:
             validator = CertificateValidator(end_entity_cert, validation_context=context)
-            path = validator.validate_usage(set(['digital_signature']))
-            info = self.get_certificate_info(user_cert, root_cert)
+            validated_chain = validator.validate_usage(set(['digital_signature']))
+            # Extract the public key of the signing certificate
+            signing_certificate = validated_chain[0]  # The issuer of the user certificate
+            info = self.get_certificate_info(user_cert, signing_certificate)
             return (True, info)
         except errors.PathValidationError as error:
             message = "Certificate signature is not valid!"
@@ -88,13 +83,22 @@ class Verification:
         # Print the big integer in chunks
         signature_str = splitToWords(signature_int, 121, 17)
         public_key_str = splitToWords(modulus, 121, 17)
-        # If the user wants to associate an address with
-        # The verifiable credential
-        signal_hash_input = os.getenv("ETHEREUM_ADDRESS", "1")
-        signal_hash = hash_message(signal_hash_input)
+        # If the user wants to associate a string with
+        # the verifiable credential (Ethereum addres, email, etc)
+        signal_hash = None
+        try:
+            signal_hash = hash_message(self.signal_hash)
+        except errors as error:
+            logging.error(error, exc_info=True)
 
         # Nullifier seed
         nullifier_seed = int.from_bytes(os.urandom(4), sys.byteorder)
+        self.user_signature.load_library()
+        user_signature = self.user_signature.sign_data(tbs_bytes)
+        # Convert the signature to a big integer
+        user_signature_int = int.from_bytes(user_signature, byteorder='big')
+        # Print the big integer in chunks
+        user_signature_str = splitToWords(user_signature_int, 121, 17)
 
         if signature_str is not None:
             json_data = {
@@ -104,11 +108,12 @@ class Verification:
                     "pubKey": public_key_str,
                     "nullifierSeed": str(nullifier_seed),
                     "signalHash": signal_hash,
-                    "revealAgeAbove18": "1"
+                    "revealAgeAbove18": "1",
+                    "userSignature": user_signature_str
             }
             json_data = json.dumps(json_data, indent=4)
             with open(self.config.input_file, 'w') as json_file:
                 json_file.write(json_data)
         else:
-            print("Number does not fit")
+            logging.error("Number does not fit", exc_info=True)
         return info

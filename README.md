@@ -1,4 +1,4 @@
-# ZK-Firma-Digital
+# ZK Firma Digital
 
 ## Overview
 
@@ -10,6 +10,8 @@ The project aims to develop a zero-knowledge proof infrastructure solution for e
 Costa Rica's digital identity system. Our goal is to strengthen citizen privacy by minimizing
 data collection, enabling individuals to access a wide range of valuable services without
 disclosing sensitive information.
+
+Documentation: [https://docs.sakundi.io/](https://docs.sakundi.io/)
 
 ## Rationale
 
@@ -40,15 +42,15 @@ Please follow these steps:
 
 * Download the installer by clicking the following link:
 
-[Windows Installer](https://app.sakundi.io:9090/zk-firma-digital.exe)
+[Windows Installer](https://app.sakundi.io:9090/zk-firma-digital-0.5.exe)
 
 * Verify the sha256 hash sum:
 ```bash
-certutil -hashfile "C:\file\path\zk-firma-digital.exe" SHA256
+certutil -hashfile "C:\file\path\zk-firma-digital-0.5.exe" SHA256
 ```
 This should be equal to:
 ```bash
-108afe1c5dc6648dc7c133cc424897ea69cb241e96b11d8726f6452c88d32940  zk-firma-digital.exe
+a12d82222533d546b0364a2589ced1ecc024ce49d89881ad94b48c4f2e2b4c61  zk-firma-digital-0.5.exe
 ```
 * If the hash sums is correct, then just run the zk-firma-digital installer.
 
@@ -65,49 +67,96 @@ Or just look for ```Zk Firma Digital``` in the app search.
 **On Linux (At moment only Debian):**
 
 To install the software and be able to generate proofs from your Firma Digital card, please follow these steps:
-* Download the installer and the zkey file:
+* Download the installer package:
 ```bash
-    wget http://app.sakundi.io:9090/zk-firma-digital_0.2_amd64.deb
-    wget http://app.sakundi.io:9090/firma-verifier.zkey
+    wget https://app.sakundi.io:9090/zk-firma-digital_0.5_amd64.deb
 ```
-* Verify the sha256 hash sum for both files:
+* Verify the sha256 hash sum:
 ```bash
-sha256sum zk-firma-digital_0.2_amd64.deb
-sha256sum firma-verifier.zkey
+sha256sum zk-firma-digital_0.5_amd64.deb
 ```
 This should be equal to:
 ```bash
-140671c921f783566ba1eb5fb47a94c037ab1ae8c89323a22d3d3252262929be  zk-firma-digital_0.2_amd64.deb
-91ad03aa0e33430d29361ae450f01d7a4992e068a7d6dddf954886fc4205aa21  firma-verifier.zkey
+f7924230256b432a755746f7e86455f292f4e2659acc1f46e6db09c08c04b407  zk-firma-digital_0.5_amd64.deb
 ```
-* If the hash sums are correct, then install the zk-firma-digital Debian package:
+* If the hash sums is correct, then install the zk-firma-digital Debian package:
 ```bash
-    sudo dpkg -i zk-firma-digital_0.2_amd64.deb
-```
-* Then, move the firma-verifier.zkey to the required directory:
-```bash
-    sudo mv firma-verifier.zkey /usr/share/zk-firma-digital/zk-artifacts/
+    sudo dpkg -i zk-firma-digital_0.5_amd64.deb
 ```
 * Finally, to run the program, introduce your smart card in a USB slot and execute the following command:
 
 ```bash
     /usr/share/zk-firma-digital/zk-firma-digital.bin
 ```
+Or just look for the app in the search bar.
 
 ## Build
 
 **On Linux:**
 
-If you want to build the current installer, execute the following command:
+If you want to build the current installer, execute the following commands:
 
 ```bash
+git clone https://github.com/kuronosec/zk-firma-digital
+cd zk-firma-digital
 ./builder/build_linux.sh
 ```
 
 **On Windows:**
 
-TODO
+To build the installer on windows, first make sure the following necessary prerequisites and tools are installed:
 
+
+1. **Git Bash**: A terminal emulator that provides a Unix-like command-line environment on Windows. It is included with [Git for Windows](https://gitforwindows.org/).
+
+2. **Python (version 3.10 or higher)**: Required to run the Python scripts in the project. Download it from [python.org](https://www.python.org/downloads/).
+
+3. **PyInstaller**: A Python package to create standalone executables. Install it using:
+   ```bash
+   pip install pyinstaller
+   ```
+
+4. **Inno Setup**: A tool to create Windows installers. Download and install it from [jrsoftware.org](https://jrsoftware.org/).
+
+5. **Windows Defender Exclusions (or Antivirus Configuration)**: To avoid issues with `.exe` files being flagged as potential threats, you may need to add exclusions for the build directory or temporarily disable your antivirus software during the build process.
+
+
+
+***Step-by-Step Build Process for Windows***
+
+After installing all the prerequisites proceed to the following steps:
+
+### 1. Clone the Repository
+First, clone the repository to your local and cd into the cloned repository:
+```bash
+git clone https://github.com/kuronosec/zk-firma-digital.git
+cd zk-firma-digital
+```
+### 2. Run the Build Script
+While in the root directory of the cloned repository and run the build by executing the Windows build script:
+```bash
+./builder/build_windows.sh
+```
+### 3. Locate the Output Files
+After running the script:
+- The **executable** will be in the `build` directory.
+- The **installer file** will be in the `release` directory as `zk-firma-digital-<version>.exe`.
+### 5. Troubleshooting
+#### Antivirus Issues
+During the process of running the windows build script, you might encounter an error indicating that the `.exe` file contains a virus or potentially unwanted software. To resolve this:
+- Add the `build` and `release` directories to your antivirus exclusion list.
+- If using Windows Defender, follow these steps:
+  1. Open Windows Security.
+  2. Go to **Virus & threat protection**.
+  3. Click on **Manage settings** under **Virus & threat protection settings**
+  4. Toggle **Real Time Protection** off
+  4. Scroll down to **Exclusions** and click on **Add or remove exclusions**.
+  5. Add the paths to the `build` and `release` directories.
+
+#### Missing Tools or Errors
+If you encounter errors such as `command not found` for tools like `pyinstaller` or `iscc`, ensure the tools are properly installed and available in your system's `PATH`.
+
+---
 ## See it working
 When you generate a Zk credential from your Firma Digital, which is a JSON file, you can test it by authenticating in this PoC website:
 
@@ -116,7 +165,3 @@ When you generate a Zk credential from your Firma Digital, which is a JSON file,
 You can find the source code here: https://github.com/kuronosec/zk-firma-web
 
 Also you can find an example of the built verifiable credential here: https://github.com/kuronosec/zk-firma-digital/blob/main/src/examples/residence-credential.json
-
-## Warning
-
-This project is still in the proof-of-concept phase and under heavy development and therefore still not recommended for production environments.
