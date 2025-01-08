@@ -90,9 +90,9 @@ f7924230256b432a755746f7e86455f292f4e2659acc1f46e6db09c08c04b407  zk-firma-digit
 ```
 Or just look for the app in the search bar.
 
-## Build
+## Set up the project
 
-**On Linux:**
+#### On Linux:
 
 If you want to build the current installer, execute the following commands:
 
