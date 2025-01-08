@@ -141,9 +141,9 @@ During the process of running the windows build script, you might encounter an e
 #### Missing Tools or Errors
 If you encounter errors such as `command not found` for tools like `pyinstaller` or `iscc`, ensure the tools are properly installed and available in your system's `PATH`.
 
----
 ## See it working
 Once you generate a ZK credential (a JSON file) using your Firma Digital card, you can test it by authenticating on this Proof of Concept (PoC) website:
-    * Website: http://app.sakundi.io:8080/
-    * Source code: [GitHub Repository](https://github.com/kuronosec/zk-firma-web)
-    * Example credential: [residence-credential.json](https://github.com/kuronosec/zk-firma-digital/blob/main/src/examples/residence-credential.json)
+
+* Website: http://app.sakundi.io:8080/
+* Source code: [GitHub Repository](https://github.com/kuronosec/zk-firma-web)
+* Example credential: [residence-credential.json](https://github.com/kuronosec/zk-firma-digital/blob/main/src/examples/residence-credential.json)
