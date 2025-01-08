@@ -89,22 +89,22 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
 
 ## Build
 
-**On Linux:**
+### Linux
 
-If you want to build the current installer, execute the following commands:
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/kuronosec/zk-firma-digital
+    cd zk-firma-digital
+    ```
+2. Run the build script:
+    ```bash
+    ./builder/build_linux.sh
+    ```
 
-```bash
-git clone https://github.com/kuronosec/zk-firma-digital
-cd zk-firma-digital
-./builder/build_linux.sh
-```
+### Windows
 
-**On Windows:**
-
-To build the installer on windows, first make sure the following necessary prerequisites and tools are installed:
-
-
-1. **Git Bash**: A terminal emulator that provides a Unix-like command-line environment on Windows. It is included with [Git for Windows](https://gitforwindows.org/).
+1. Install the prerequisites:
+    * [Git for Windows](https://gitforwindows.org/).
 
 2. **Python (version 3.10 or higher)**: Required to run the Python scripts in the project. Download it from [python.org](https://www.python.org/downloads/).
 
