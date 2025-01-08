@@ -57,7 +57,7 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
     * Insert your smart card into a USB port.
     * Run: 
         ```bash
-            "C:\Program Files\zk-firma-digital\zk-firma-digital.exe"
+        "C:\Program Files\zk-firma-digital\zk-firma-digital.exe"
         ```
     * Alternatively, search for ZK Firma Digital in the Start menu.
 
@@ -65,7 +65,7 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
 
 1. Download the installer:
     ```bash
-        wget https://app.sakundi.io:9090/zk-firma-digital_0.5_amd64.deb
+    wget https://app.sakundi.io:9090/zk-firma-digital_0.5_amd64.deb
     ```
 2. Verify the sha256 hash:
     ```bash
@@ -77,13 +77,13 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
     ```
 3. Install the Debian package::
     ```bash
-        sudo dpkg -i zk-firma-digital_0.5_amd64.deb
+    sudo dpkg -i zk-firma-digital_0.5_amd64.deb
     ```
 4. Launch the program:
     * Insert your smart card into a USB port.
     * Run: 
         ```bash
-            /usr/share/zk-firma-digital/zk-firma-digital.bin
+        /usr/share/zk-firma-digital/zk-firma-digital.bin
         ```
     * Alternatively, search for the app in your application launcher.
 
