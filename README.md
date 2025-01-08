@@ -60,6 +60,7 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
         "C:\Program Files\zk-firma-digital\zk-firma-digital.exe"
         ```
     * Alternatively, search for ZK Firma Digital in the Start menu.
+5. If you need more details, please visit the [installation guide]()
 
 ### Linux (Debian)
 
