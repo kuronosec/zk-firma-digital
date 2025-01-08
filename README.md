@@ -38,23 +38,20 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
 
 ### Windows:
 
-Please follow these steps:
-
 1. Download the installer:
 [Windows Installer](https://app.sakundi.io:9090/zk-firma-digital-0.5.exe)
 
 2. Verify the sha256 hash:
-```bash
-certutil -hashfile "C:\file\path\zk-firma-digital-0.5.exe" SHA256
-```
-The result should match:
-```bash
-a12d82222533d546b0364a2589ced1ecc024ce49d89881ad94b48c4f2e2b4c61  zk-firma-digital-0.5.exe
-```
+    ```bash
+    certutil -hashfile "C:\file\path\zk-firma-digital-0.5.exe" SHA256
+    ```
+    The result should match:
+    ```bash
+    a12d82222533d546b0364a2589ced1ecc024ce49d89881ad94b48c4f2e2b4c61  zk-firma-digital-0.5.exe
+    ```
 3. Run the installer if the hash matches.
 
-The Windows installer includes a couple of Javascript dependencies, Nodejs and Snarkjs. The installer also
-includes the zkey necessary for generating valid ZK proofs, which makes it a bit heavy.
+    Note: The Windows installer includes a couple of Javascript dependencies, Nodejs and Snarkjs. The installer also includes the zkey necessary for generating valid ZK proofs, which makes it a bit heavy.
 
 4. Launch the program: 
     * Insert your smart card into a USB port.
