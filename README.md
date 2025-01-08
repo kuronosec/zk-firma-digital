@@ -104,26 +104,16 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
 ### Windows
 
 1. Install the prerequisites:
-    * [Git for Windows](https://gitforwindows.org/).
+    * [Git for Windows](https://gitforwindows.org/)
+    * [Python 3.10+](https://www.python.org/downloads/)
+    * Install PyInstaller:
+        ```bash
+        pip install pyinstaller
+        ```
+    * [Inno Setup](https://jrsoftware.org/)
+    * Configure antivirus to exclude the build and release directories.
 
-2. **Python (version 3.10 or higher)**: Required to run the Python scripts in the project. Download it from [python.org](https://www.python.org/downloads/).
-
-3. **PyInstaller**: A Python package to create standalone executables. Install it using:
-   ```bash
-   pip install pyinstaller
-   ```
-
-4. **Inno Setup**: A tool to create Windows installers. Download and install it from [jrsoftware.org](https://jrsoftware.org/).
-
-5. **Windows Defender Exclusions (or Antivirus Configuration)**: To avoid issues with `.exe` files being flagged as potential threats, you may need to add exclusions for the build directory or temporarily disable your antivirus software during the build process.
-
-
-
-***Step-by-Step Build Process for Windows***
-
-After installing all the prerequisites proceed to the following steps:
-
-### 1. Clone the Repository
+2. Clone the Repository
 First, clone the repository to your local and cd into the cloned repository:
 ```bash
 git clone https://github.com/kuronosec/zk-firma-digital.git
