@@ -31,6 +31,9 @@ export class ZKFirmaDigitalCredentialIssuerDeployHelper {
     ZKFirmaDigitalCredentialIssuer: Contract;
   }> {
     const owner = this.signers[0];
+    const owner_address = await owner.getAddress();
+    this.log("owner_address:");
+    this.log(owner_address);
 
     this.log('======== Credential issuer: deploy started ========');
 
@@ -81,15 +84,29 @@ export class ZKFirmaDigitalCredentialIssuerDeployHelper {
     );
 
     await ZKFirmaDigitalCredentialIssuer.waitForDeployment();
+    const _credentialIssuerAddr = ZKFirmaDigitalCredentialIssuer.getAddress()
 
     this.log(
-      `credentialIssuer contract deployed to address ${await ZKFirmaDigitalCredentialIssuer.getAddress()} from ${await owner.getAddress()}`
+      `credentialIssuer contract deployed to address ${await _credentialIssuerAddr} from ${owner_address}`
     );
 
     this.log('======== Credential issuer: deploy completed ========');
 
+    this.log('======== Medical Certificate Issuer: deploying ========');
+    const MedicalCertificateIssuer = await ethers.getContractFactory(
+      'MedicalCertificateIssuer'
+    );
+    const ZKFirmaDigitalVerifierDeployed = await MedicalCertificateIssuer.deploy(
+      _credentialIssuerAddr,
+      owner_address
+    );
+
+    this.log(
+      `Medical Certificate Issuer contract deployed to address ${await ZKFirmaDigitalVerifierDeployed.getAddress()} from ${owner_address}`
+    );
+
     return {
-      ZKFirmaDigitalCredentialIssuer
+      ZKFirmaDigitalCredentialIssuer,
     };
   }
 

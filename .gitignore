@@ -15,4 +15,6 @@ rpm/
 release/
 dist
 *.spec
+*.qm
 .env*
+*.pem
