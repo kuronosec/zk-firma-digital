@@ -1,13 +1,5 @@
 # ZK Firma Digital
 
-## Table of Contents
-1. [Overview](#overview)
-2. [Rationale](#rationale)
-3. [Potential Use Cases](#potential-use-cases)
-4. [Installation](#installation)
-5. [Build](#build)
-6. [See it Working](#see-it-working)
-
 ## Overview
 
 ZK Firma Digital is a zero-knowledge protocol that allows Costa Rican Firma Digital card 
@@ -40,37 +32,37 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
 * DAO Governance
 * Quadratic Funding (QF)
 * Wallet Recovery
-* And many more
+* And many more!
 
 ## Installation
 
-**On Windows:**
+### Windows:
 
 Please follow these steps:
 
-* Download the installer by clicking the following link:
-
+1. Download the installer:
 [Windows Installer](https://app.sakundi.io:9090/zk-firma-digital-0.5.exe)
 
-* Verify the sha256 hash sum:
+2. Verify the sha256 hash:
 ```bash
 certutil -hashfile "C:\file\path\zk-firma-digital-0.5.exe" SHA256
 ```
-This should be equal to:
+The result should match:
 ```bash
 a12d82222533d546b0364a2589ced1ecc024ce49d89881ad94b48c4f2e2b4c61  zk-firma-digital-0.5.exe
 ```
-* If the hash sums is correct, then just run the zk-firma-digital installer.
+3. Run the installer if the hash matches.
 
 The Windows installer includes a couple of Javascript dependencies, Nodejs and Snarkjs. The installer also
 includes the zkey necessary for generating valid ZK proofs, which makes it a bit heavy.
 
-* Finally, to run the program, introduce your smart card in a USB slot and execute the following command:
-
-```bash
-    "C:\Program Files\zk-firma-digital\zk-firma-digital.exe"
-```
-Or just look for ```Zk Firma Digital``` in the app search.
+4. Launch the program: 
+    * Insert your smart card into a USB port.
+    * Run: 
+        ```bash
+            "C:\Program Files\zk-firma-digital\zk-firma-digital.exe"
+        ```
+    * Alternatively, search for ZK Firma Digital in the Start menu.
 
 **On Linux (At moment only Debian):**
 
