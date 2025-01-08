@@ -75,7 +75,7 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
     ```bash
     f7924230256b432a755746f7e86455f292f4e2659acc1f46e6db09c08c04b407  zk-firma-digital_0.5_amd64.deb
     ```
-3. Install the Debian package::
+3. Install the Debian package:
     ```bash
     sudo dpkg -i zk-firma-digital_0.5_amd64.deb
     ```
@@ -113,21 +113,19 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
     * [Inno Setup](https://jrsoftware.org/)
     * Configure antivirus to exclude the build and release directories.
 
-2. Clone the Repository
-First, clone the repository to your local and cd into the cloned repository:
-```bash
-git clone https://github.com/kuronosec/zk-firma-digital.git
-cd zk-firma-digital
-```
-### 2. Run the Build Script
-While in the root directory of the cloned repository and run the build by executing the Windows build script:
-```bash
-./builder/build_windows.sh
-```
-### 3. Locate the Output Files
-After running the script:
-- The **executable** will be in the `build` directory.
-- The **installer file** will be in the `release` directory as `zk-firma-digital-<version>.exe`.
+2. Clone the Repository:
+    ```bash
+    git clone https://github.com/kuronosec/zk-firma-digital.git
+    cd zk-firma-digital
+    ```
+3. Run the build script:
+    ```bash
+    ./builder/build_windows.sh
+    ```
+4. Locate the output files:
+    * Executable: `build` directory.
+    * Installer: `release` directory.
+    
 ### 5. Troubleshooting
 #### Antivirus Issues
 During the process of running the windows build script, you might encounter an error indicating that the `.exe` file contains a virus or potentially unwanted software. To resolve this:
