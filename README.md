@@ -125,21 +125,20 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
 4. Locate the output files:
     * Executable: `build` directory.
     * Installer: `release` directory.
-
-### 5. Troubleshooting
-#### Antivirus Issues
-During the process of running the windows build script, you might encounter an error indicating that the `.exe` file contains a virus or potentially unwanted software. To resolve this:
-- Add the `build` and `release` directories to your antivirus exclusion list.
-- If using Windows Defender, follow these steps:
-  1. Open Windows Security.
-  2. Go to **Virus & threat protection**.
-  3. Click on **Manage settings** under **Virus & threat protection settings**
-  4. Toggle **Real Time Protection** off
-  4. Scroll down to **Exclusions** and click on **Add or remove exclusions**.
-  5. Add the paths to the `build` and `release` directories.
-
-#### Missing Tools or Errors
-If you encounter errors such as `command not found` for tools like `pyinstaller` or `iscc`, ensure the tools are properly installed and available in your system's `PATH`.
+5. Troubleshooting:
+    * Antivirus or Security Issues: During the build process, your antivirus software (including Windows Defender) may flag the generated `.exe` file as a potential threat. This is a common issue with self-built executables. To resolve it:
+        1. Add Exclusions: Configure your antivirus or security software to exclude the build and release directories.
+            * For Windows Defender:
+                1. Open **Windows Security**.
+                2. Navigate to **Virus & threat protection**.
+                3. Click on **Manage settings** under **Virus & threat protection settings**.
+                4. Toggle **Real Time Protection** off temporarily (if necessary).
+                5. Scroll down to **Exclusions** and click on **Add or remove exclusions**.
+                6. Add the paths for both the `build` and `release` directories to the exclusion list.
+        2. Validate the Executable: After adding exclusions, rerun the build process and verify that the executable runs without being flagged.
+    * Missing Tools or Command Errors: If you encounter errors like `command not found` when running the build script, it may indicate missing tools or misconfigured system paths. Follow these steps:
+        1. Review the build script for errors or missing dependencies.
+        2. Consult the repository's issues page or documentation for additional support.
 
 ## See it working
 Once you generate a ZK credential (a JSON file) using your Firma Digital card, you can test it by authenticating on this Proof of Concept (PoC) website:
