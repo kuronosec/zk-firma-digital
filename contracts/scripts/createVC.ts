@@ -45,8 +45,7 @@ async function main() {
   const owner = (await ethers.getSigners())[0];
   const ownerAddress = await owner.getAddress();
 
-  // const userId = ownerAddress;
-  const userId = BigInt('26591510467413365423581463608483105278265869749887044347635609912909668609');
+  const userId = ownerAddress;
   const nullifierSeed = verifiableCredential.proof.signatureValue.public[3];
   const nullifier = verifiableCredential.proof.signatureValue.public[1];
   // Signal used when generating proof
