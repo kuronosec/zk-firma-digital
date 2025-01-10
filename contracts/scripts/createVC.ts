@@ -6,6 +6,8 @@
 import '@nomiclabs/hardhat-ethers'
 import { Groth16Proof } from 'snarkjs'
 import { ethers } from 'hardhat'
+import * as os from "os"
+import * as path from "path"
 
 type BigNumberish = string | bigint
 
@@ -21,6 +23,10 @@ export type PackedGroth16Proof = [
 ]
 
 async function main() {
+  // Get the home directory
+    const homeDirectory: string = os.homedir();
+    // Construct a file path inside the home directory
+    const VCFilePath: string = path.join(homeDirectory, ".zk-firma-digital/credentials/credential.json");
   // Assumes credential is created in below path
   // The order of the public data in the credential is the following
   // 0 - PublicKeyHash (Goverment public key hash)
@@ -28,7 +34,7 @@ async function main() {
   // 2 - Reveal Age above 18
   // 3 - NullifierSeed
   // 4 - SignalHash
-  const verifiableCredential = require('../../build/example-credential/credential.json')
+  const verifiableCredential = require(VCFilePath)
 
   const addressesJson = require(
     `../deployed-contracts/ethereum.json`,

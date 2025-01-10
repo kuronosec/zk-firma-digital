@@ -45,7 +45,7 @@ contract ZKFirmaDigitalVote is IZKFirmaDigitalVote {
     /// @dev Register a vote in the contract.
     /// @param proposalIndex: Index of the proposal you want to vote for.
     /// @param nullifierSeed: Nullifier Seed used while generating the proof.
-    /// @param nullifier: Nullifier for the user's Aadhaar data.
+    /// @param nullifier: Nullifier for the user's ZK Firma Digital data.
     /// @param signal: signal used while generating the proof, should be equal to msg.sender.
     /// @param revealArray: Array of the values used to reveal data, if value is 1 data is revealed, not if 0.
     /// @param groth16Proof: SNARK Groth16 proof.
@@ -67,7 +67,7 @@ contract ZKFirmaDigitalVote is IZKFirmaDigitalVote {
         );
         require(
             isLessThan3HoursAgo(0),
-            '[ZKFirmaDigitalVote]: Proof must be generated with Aadhaar data signed less than 3 hours ago.'
+            '[ZKFirmaDigitalVote]: Proof must be generated with ZK Firma Digital data signed less than 3 hours ago.'
         );
         require(
             IZKFirmaDigital(ZKFirmaDigitalVerifierAddr).verifyZKFirmaDigitalProof(
