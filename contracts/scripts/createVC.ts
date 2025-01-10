@@ -6,6 +6,8 @@
 import '@nomiclabs/hardhat-ethers'
 import { Groth16Proof } from 'snarkjs'
 import { ethers } from 'hardhat'
+import * as os from "os"
+import * as path from "path"
 
 type BigNumberish = string | bigint
 
@@ -21,6 +23,10 @@ export type PackedGroth16Proof = [
 ]
 
 async function main() {
+  // Get the home directory
+    const homeDirectory: string = os.homedir();
+    // Construct a file path inside the home directory
+    const VCFilePath: string = path.join(homeDirectory, ".zk-firma-digital/credentials/credential.json");
   // Assumes credential is created in below path
   // The order of the public data in the credential is the following
   // 0 - PublicKeyHash (Goverment public key hash)
@@ -28,7 +34,7 @@ async function main() {
   // 2 - Reveal Age above 18
   // 3 - NullifierSeed
   // 4 - SignalHash
-  const verifiableCredential = require('../../build/example-credential/credential.json')
+  const verifiableCredential = require(VCFilePath)
 
   const addressesJson = require(
     `../deployed-contracts/ethereum.json`,
@@ -39,7 +45,8 @@ async function main() {
   const owner = (await ethers.getSigners())[0];
   const ownerAddress = await owner.getAddress();
 
-  const userId = ownerAddress;
+  // const userId = ownerAddress;
+  const userId = BigInt('26591510467413365423581463608483105278265869749887044347635609912909668609');
   const nullifierSeed = verifiableCredential.proof.signatureValue.public[3];
   const nullifier = verifiableCredential.proof.signatureValue.public[1];
   // Signal used when generating proof
@@ -55,31 +62,16 @@ async function main() {
   );
 
   try {
-    // Call the getUserCredentialIds function to retrieve the credentials for the user
-    const credential = await ZKFirmaDigitalCredentialIssuer.getCredential(
-      userId, 
-      0
-    );
-    
-    // Display the result
-    // Destructure the result
-    const credentialData = credential[0];  // INonMerklizedIssuer.CredentialData struct
-    const uintArray = credential[1];       // uint256[8] array
-    const subjectFields = credential[2];   // INonMerklizedIssuer.SubjectField[] array
-
-    // Format the result as JSON
-    const jsonResult = {
-      credentialData: {
-        credentialId: credentialData.id.toString(),
-        context: credentialData.context.toString(),
-        type: credentialData._type.toString(),
-        issuanceDate: credentialData.issuanceDate.toString(),
-      },
-      uintArray: uintArray.map((num) => num.toString())
-    };
-
-    // Print the result as JSON
-    console.log(JSON.stringify(jsonResult, null, 2));
+    console.log(
+      await ZKFirmaDigitalCredentialIssuer.issueCredential(
+        userId,
+        nullifierSeed,
+        nullifier,
+        signal,
+        revealArray,
+        packGroth16Proof(proof),
+      ),
+    )
   } catch (error) {
     // Catch and log the error
 
