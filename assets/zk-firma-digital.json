@@ -9,8 +9,10 @@
     "version": "1.0",
     "type": "ZKFirmaDigitalCredential",
     "iden3Serialization": {
-      "slotIndexA": "ageAbove18",
-      "slotValueB": "randomNonce"
+      "slotIndexA": "randomNonce",
+      "slotIndexB": "citizen",
+      "slotValueA": "organization",
+      "slotValueB": "ageAbove18"
     }
   },
   "description": "ZK Firma Digital schema",
@@ -38,6 +40,21 @@
         "ageAbove18": {
           "description": "Is the age above 18 years old",
           "title": "Age above 18",
+          "type": "string"
+        },
+        "citizen": {
+          "description": "Is the user a citizen",
+          "title": "citizen",
+          "type": "string"
+        },
+        "organization": {
+          "description": "Is the user an organization",
+          "title": "organization",
+          "type": "string"
+        },
+        "state": {
+          "description": "Random nonce of the credential",
+          "title": "Random nonce",
           "type": "string"
         }
       },
