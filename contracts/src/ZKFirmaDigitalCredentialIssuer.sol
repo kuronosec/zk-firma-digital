@@ -174,10 +174,10 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
             expirationDate: expirationDate,
             // data
             merklizedRoot: 0,
-            indexDataSlotA: revealArray[0],
-            indexDataSlotB: 0,
-            valueDataSlotA: 0,
-            valueDataSlotB: random_nonce
+            indexDataSlotA: random_nonce,
+            indexDataSlotB: revealArray[0],
+            valueDataSlotA: revealArray[0],
+            valueDataSlotB: revealArray[0]
         });
         uint256[8] memory claim = ClaimBuilder.build(claimData);
 
@@ -194,10 +194,10 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
             INonMerklizedIssuer.SubjectField({key: 'ageAbove18', value: revealArray[0], rawValue: ''})
         );
         $.idToCredentialSubject[$.countOfIssuedClaims].push(
-            INonMerklizedIssuer.SubjectField({key: 'indexDataSlotB', value: 0, rawValue: ''})
+            INonMerklizedIssuer.SubjectField({key: 'citizen', value: revealArray[0], rawValue: ''})
         );
         $.idToCredentialSubject[$.countOfIssuedClaims].push(
-            INonMerklizedIssuer.SubjectField({key: 'valueDataSlotA', value: 0, rawValue: ''})
+            INonMerklizedIssuer.SubjectField({key: 'organization', value: revealArray[0], rawValue: ''})
         );
         $.idToCredentialSubject[$.countOfIssuedClaims].push(
             INonMerklizedIssuer.SubjectField({key: 'randomNonce', value: random_nonce, rawValue: ''})
