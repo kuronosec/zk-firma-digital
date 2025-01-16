@@ -10,7 +10,6 @@ import webbrowser
 from urllib.parse import urlencode
 
 # We will use the PyQt6 to provide a grafical interface for the user
-# TODO: test that it works on Windows
 from PyQt6.QtWidgets import ( QMainWindow,
                               QWidget,
                               QVBoxLayout,
@@ -81,10 +80,10 @@ class AuthenticationWindow(QMainWindow):
     def on_submit_generate_credential(self):
         if not self.payload:
             # Redirect back to the browser with failure status
-            return_url = "http://localhost:5000/confirm-authorize"
+            return_url = "https://app.sakundi.io/confirm-authorize"
             webbrowser.open(return_url)
             return
-        
+
         user_id = self.payload['user_id']
 
         self.generate_credential_button.setEnabled(False)
@@ -150,7 +149,7 @@ class AuthenticationWindow(QMainWindow):
 
             QMessageBox.information(self, "Validación de identidad exitosa",
                                     "La validación de identidad fue exitosa.")
-            
+
             # Dictionary of parameters to include in the URL
             params = {
                 'user_id': self.payload['user_id'],
@@ -163,12 +162,12 @@ class AuthenticationWindow(QMainWindow):
             query_string = urlencode(params)
 
             # Redirect back to the browser with success status
-            return_url = f"http://localhost:5000/confirm-authorize?{query_string}"
+            return_url = f"https://app.sakundi.io/confirm-authorize?{query_string}"
             webbrowser.open(return_url)
         self.generate_credential_button.setEnabled(True)
         self.generate_credential_button.setStyleSheet("background-color : green")
         self.close()
-    
+
     def verifiable_credential_template(self):
         verifiable_credential = {
             "@context": [
