@@ -62,7 +62,7 @@ install_system_libs() {
             ;;
     esac
 }
-
+# Install npm dependencies
 check_and_install_npm_libs(){
     echo "Checking required node libs"
     local installed_libs=()
@@ -119,7 +119,7 @@ check_zk_package(){
 create_temp_dir() {
     if [[ ! -d $TMP_DIR ]]; then 
         echo "Creating $TMP_DIR"
-        mkdir /tmp/zk-firma-digital/
+        mkdir $TMP_DIR
     fi
 }
 
