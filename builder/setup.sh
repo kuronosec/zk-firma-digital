@@ -3,10 +3,12 @@
 set -e  # Exit on any error
 set -u  # Treat unset variables as an error
 
-# Required but now installed using the dockerFile pcsdc, libxcd-xinerama0, libpcre3
-#Node, Circom (And cargo & Rust) & SnarkJS
 
-REQUIRED_SYS_LIBS=("pcscd" "libxcb-xinerama0" "libpcre3" "curl") # nodejs npm
+#Node, Circom (And cargo & Rust) & SnarkJS within the host machine
+
+
+# Download dependencies to the target dir.
+REQUIRED_SYS_LIBS=("pcscd" "libccid" "libxcb-xinerama0" "libpcre3" "curl" "nodejs" "pcsc-tools" "libasedrive-usb") # nodejs npm
 REQUIRED_DEPENDENCIES=("")
 
 # Detect the package manager
