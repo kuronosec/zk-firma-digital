@@ -3,14 +3,18 @@
 set -e  # Exit on any error
 set -u  # Treat unset variables as an error
 
-
-#Node, Circom (And cargo & Rust) & SnarkJS within the host machine
-
+#Versioning - Modify this per release
+RELEASE_VERSION="0.5"
+EXPECTED_SHA256="f7924230256b432a755746f7e86455f292f4e2659acc1f46e6db09c08c04b407"
 
 # Download dependencies to the target dir.
-REQUIRED_SYS_LIBS=("pcscd" "libccid" "libxcb-xinerama0" "libpcre3" "curl" "npm" "nodejs" "pcsc-tools" "libasedrive-usb") # nodejs npm
+REQUIRED_SYS_LIBS=("pcscd" "libccid" "libxcb-xinerama0" "libpcre3" "curl" "npm" "nodejs" "pcsc-tools" "libasedrive-usb")
 REQUIRED_NPM_LIBS=("snarkjs")
-REQUIRED_DEPENDENCIES=("")
+SAKUNDI_URL="https://app.sakundi.io:9090/"
+ZK_PACKAGE="zk-firma-digital_${RELEASE_VERSION}_amd64.deb"
+DOWNLOAD_LINK=${SAKUNDI_URL}${ZK_PACKAGE}
+TMP_DIR='/tmp/zk-firma-digital/'
+
 
 # Detect the package manager
 detect_package_manager() {
@@ -78,67 +82,69 @@ check_and_install_npm_libs(){
 }
 
 
+# Make sure the checksum matches
+validate_sha256(){
+    echo "Validating SHA256 checksum"
+    local actual_sha256
+    actual_sha256=$(sha256sum "${TMP_DIR}${ZK_PACKAGE}" | awk '{print $1}')
 
-# check_dependencies(){
-#     echo "Checking host dependencies"
-#     local missing_deps()
-#     for dep in "${REQUIRED_DEPENDENCIES[@]}"; do
-#         if ! command -v "$dep" &>/dev/null; then
-#             missing_deps+=("$dep")
-#         fi
-#     done
+    if [[ "$actual_sha256" == "$EXPECTED_SHA256" ]]; then
+        echo "SHA256 is valid"
+    else 
+        echo "SHA256 is invalid. Expected $EXPECTED_SHA256, Got: $actual_sha256"
+        exit 1
+    fi
+}
 
-#     if [[ ${#missing_deps[@] -gt 0} ]]; then
-#         echo "Missing dependencies: ${missing_deps[*]}"
-#         # Take that list and install them.
-#         exit 1
-#     fi 
-# }
+# Trigger the download for the .deb package
+download_zkfirma(){
+    echo "Initializing download..."
+    wget -P $TMP_DIR $DOWNLOAD_LINK 
+    echo "Download complete. Saved at $TMP_DIR"
+}
+
+# check if the .deb package exits.
+check_zk_package(){
+    if [[ -f "${TMP_DIR}${ZK_PACKAGE}" ]]; then
+        echo "$ZK_PACKAGE already exists." 
+        validate_sha256
+    else
+        echo "$ZK_PACKAGE does not exist. "
+        download_zkfirma
+        validate_sha256 
+    fi
+}
 
 #Temp dir to download the required files for installation.
 create_temp_dir() {
-    dir='/tmp/zk-firma-digital/'
-    if [[ ! -d $dir ]]; then 
-        echo "Creating $dir"
+    if [[ ! -d $TMP_DIR ]]; then 
+        echo "Creating $TMP_DIR"
         mkdir /tmp/zk-firma-digital/
     fi
 }
 
-
-
-# Install the binary
-install_binary() {
-    local binary_path="$1"
-    sudo install -m 0755 "$binary_path" /usr/local/bin/\<REPLACE\>
+# Will install the actual .deb package
+install_zk_firma(){
+    create_temp_dir
+    check_zk_package
+    if [[ -f "${TMP_DIR}${ZK_PACKAGE}" ]]; then
+        echo "$ZK_PACKAGE exists. Installing..." 
+        sudo dpkg -i $ZK_PACKAGE
+    else
+        echo "$ZK_PACKAGE was not found. Aborting installation." 
+        exit 1
+    fi
 }
 
 # Main function
 main() {
-    echo "Detecting package manager..."
-    local pkg_manager
-    pkg_manager=$(detect_package_manager)
-    echo "Package manager detected: $pkg_manager"
-
-    echo "Installing dependencies..."
-    install_dependencies "$pkg_manager"
-
-    echo "Installing binary..."
-    install_binary "/binary path"
-
+    echo "Initializing automatic install..."
+    check_and_install_libs
+    check_and_install_npm_libs
+    install_zk_firma
     echo "Installation completed successfully!"
 }
 
-# main "$@"
-#check_and_install_libs
-#check_and_install_npm_libs
-
-
-# Some dependencies: Node, Circom, Gaudi, 
-# Circom requires rust to be installed as well
-
-# This script will check all the dependencies are met if not installed it will proceed with the installation.
-# is going to install all the dependencies and also the ZK-firma digital binary.
-# Might check the installer.iss to see if we can embed that there
-# 
+main
 
 
