@@ -8,7 +8,8 @@ set -u  # Treat unset variables as an error
 
 
 # Download dependencies to the target dir.
-REQUIRED_SYS_LIBS=("pcscd" "libccid" "libxcb-xinerama0" "libpcre3" "curl" "nodejs" "pcsc-tools" "libasedrive-usb") # nodejs npm
+REQUIRED_SYS_LIBS=("pcscd" "libccid" "libxcb-xinerama0" "libpcre3" "curl" "npm" "nodejs" "pcsc-tools" "libasedrive-usb") # nodejs npm
+REQUIRED_NPM_LIBS=("snarkjs")
 REQUIRED_DEPENDENCIES=("")
 
 # Detect the package manager
@@ -20,6 +21,7 @@ detect_package_manager() {
         exit 1
     fi
 }
+#check OS libs
 check_and_install_libs(){
     echo "Checking required system libs"
     local installed_libs=()
@@ -37,7 +39,7 @@ check_and_install_libs(){
         install_system_libs $(detect_package_manager) $dep
     done
 }
-# Install dependencies based on the package manager
+# Install OS dependencies based on the package manager
 install_system_libs() {
     local pkg_manager="$1"
     local library="$2"
@@ -46,6 +48,10 @@ install_system_libs() {
             echo "Installing: $2"
             sudo apt-get install -y $2
             ;;
+        npm)
+            echo "Installing: $2"
+            sudo npm install -g $2
+            ;;
         *)
             echo "Unsupported package manager: $pkg_manager" >&2
             exit 1
@@ -53,7 +59,23 @@ install_system_libs() {
     esac
 }
 
-
+check_and_install_npm_libs(){
+    echo "Checking required node libs"
+    local installed_libs=()
+    local missing_libs=()
+    for lib in "${REQUIRED_NPM_LIBS[@]}"; do
+        if npm list -g --depth=0 | grep -qw "$lib"; then 
+            installed_libs+=("$lib")
+        else
+            missing_libs+=("$lib")
+        fi
+    done
+    echo "Required npm libs that are already satisfied: ${installed_libs[*]}"
+    echo "Required & missing  npm libs: ${missing_libs[*]}"
+    for lib in "${missing_libs[@]}"; do
+        install_system_libs npm $lib
+    done
+}
 
 
 
@@ -107,8 +129,8 @@ main() {
 }
 
 # main "$@"
-
-check_and_install_libs
+#check_and_install_libs
+#check_and_install_npm_libs
 
 
 # Some dependencies: Node, Circom, Gaudi, 
