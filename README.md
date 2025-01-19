@@ -34,6 +34,15 @@ Our project aims to address these privacy issues by developing a zero-knowledge 
 * Wallet Recovery
 * And many more!
 
+
+## Hardware Requirements
+To run ZK-Firma-Digital, ensure your system meets at least the following hardware requirements:
+
+| **Component** | **Specification**          |
+|---------------|-----------------------------|
+| CPU           | 2 Cores + 2 Threads per Core |
+| RAM           | 16 GB                        |
+
 ## Installation
 
 ### Windows
