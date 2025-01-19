@@ -129,7 +129,7 @@ install_zk_firma(){
     check_zk_package
     if [[ -f "${TMP_DIR}${ZK_PACKAGE}" ]]; then
         echo "$ZK_PACKAGE exists. Installing..." 
-        sudo dpkg -i $ZK_PACKAGE
+        sudo dpkg -i ${TMP_DIR}$ZK_PACKAGE
     else
         echo "$ZK_PACKAGE was not found. Aborting installation." 
         exit 1
@@ -143,6 +143,7 @@ main() {
     check_and_install_npm_libs
     install_zk_firma
     echo "Installation completed successfully!"
+    echo "To execute run the following command: /usr/share/zk-firma-digital/zk-firma-digital.bin"
 }
 
 main
