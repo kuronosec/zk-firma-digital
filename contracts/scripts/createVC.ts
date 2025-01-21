@@ -75,7 +75,7 @@ async function main() {
     // Catch and log the error
 
     // Display a user-friendly message
-    console.error("Error during proxy deployment:");
+    console.error("Error during VC creation:");
 
     // If there's a revert reason, log it
     if (error.message) {

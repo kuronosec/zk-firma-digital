@@ -48,14 +48,6 @@ async function main() {
   const ownerAddress = await owner.getAddress();
 
   const userId = ownerAddress;
-  const nullifierSeed = verifiableCredential.proof.signatureValue.public[3];
-  const nullifier = verifiableCredential.proof.signatureValue.public[1];
-  // Signal used when generating proof
-  const signal = process.env.ETHEREUM_ADDRESS || '1';
-  // For the moment this is assumed always the case that age > 18
-  const revealArray = [verifiableCredential.proof.signatureValue.public[2]];
-  // Get proof from credential
-  const proof = verifiableCredential.proof.signatureValue.proof;
 
   const ZKFirmaDigitalCredentialIssuer = await ethers.getContractAt(
     'ZKFirmaDigitalCredentialIssuer',
@@ -63,12 +55,18 @@ async function main() {
   );
 
   try {
+    // Get list of credentials
+    const credentialIds: BigNumberish[] = await ZKFirmaDigitalCredentialIssuer.getUserCredentialIds(
+      userId
+    );
+    const formattedIds = credentialIds.map((id) => id.toString());
+    console.log("User Credential IDs:", formattedIds);
     // Call the getUserCredentialIds function to retrieve the credentials for the user
     const credential = await ZKFirmaDigitalCredentialIssuer.getCredential(
       userId, 
-      0
+      1
     );
-    
+    console.log(credential);
     // Display the result
     // Destructure the result
     const credentialData = credential[0];  // INonMerklizedIssuer.CredentialData struct
