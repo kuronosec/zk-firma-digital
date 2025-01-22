@@ -43,7 +43,7 @@ class MainWindow(QMainWindow):
         # Create a QLabel
         self.file_label = QLabel()
         # HTML link to the local file
-        self.file_label.setText(self.tr(f'<a href="file:///{self.config.credential_file}">Haga click aquí para ver el archivo de credencial generado</a>'))
+        self.file_label.setText(f'<a href="file:///{self.config.credential_file}">{self.tr("Haga click aquí para ver el archivo de credencial generado</a>")}')
 
         # Allow the QLabel to open external links
         self.file_label.setOpenExternalLinks(True)
@@ -142,9 +142,9 @@ class MainWindow(QMainWindow):
 
         (valid, info) = verification.verify_certificate(self.config.certificate_path)
         if not valid:
-            QMessageBox.information(self, self.tr("Validación"), self.tr(f"{info}\n\n Firma de certificado inválida!!!"))
+            QMessageBox.information(self, self.tr("Validación"), f"{info}\n\n {self.tr('Firma de certificado inválida!!!')}")
         else:
-            QMessageBox.information(self, self.tr("Validación"), self.tr(f"{info}\n\n Firma de certificado válida!!!"))
+            QMessageBox.information(self, self.tr("Validación"), f"{info}\n\n {self.tr('Firma de certificado válida!!!')}")
             try:
                 circom = Circom()
                 circom.generate_witness()
@@ -256,13 +256,23 @@ class MainWindow(QMainWindow):
             self.browser_label.setText(self.tr("No file selected"))
 
 def load_language(language_code):
-    translator = QTranslator()
-    if translator.load(f"translations_{language_code}.qm"):
-        print(f"Loaded language: translations_{language_code}.qm")
-        return translator
-    else:
-        print(f"Could not load language: translations_{language_code}.qm")
-        return None
+    config = Configuration()
+    try:
+        translator = QTranslator()
+        if translator.load(
+            os.path.join( config.installation_path,
+                        f"translations_{language_code}.qm")
+        ):
+            logging.info(f"Loaded language: translations_{language_code}.qm")
+            return translator
+        else:
+            logging.info(f"Could not load language: translations_{language_code}.qm")
+            return None
+    except Exception:
+        logging.error(
+                "Error Loading Language.",
+                exc_info=True
+            )
 
 # Main entry point for our app
 if __name__ == "__main__":

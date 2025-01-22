@@ -63,6 +63,8 @@ cp /data/zk-firma-digital $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-firma-digit
 cp /zk-firma-digital/os_libs/Athena/IDPClientDB.xml $DEB_HOMEDIR/etc/Athena/zk-firma-digital_IDPClientDB.xml
 cp /zk-firma-digital/os_libs/linux/${ARCH}/libASEP11.so \
     $DEB_HOMEDIR/usr/share/zk-firma-digital/os_libs/linux/${ARCH}/libASEP11.so
+cp -a /zk-firma-digital/translations_en.qm \
+    $DEB_HOMEDIR/usr/share/zk-firma-digital/translations_en.qm
 cp -a /zk-firma-digital/CA-certificates/ $DEB_HOMEDIR/usr/share/zk-firma-digital/
 cp -a /zk-artifacts/firma-verifier_js $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-artifacts
 cp -a /zk-artifacts/vkey.json $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-artifacts
