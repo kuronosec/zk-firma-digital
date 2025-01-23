@@ -67,7 +67,7 @@ class MainWindow(QMainWindow):
 
         # Create a vertical layout
         self.verification_layout = QVBoxLayout()
-
+    #This comment is to create a change for the pull request
         # Create the password field
         self.password_field = QLineEdit()
         self.password_field.setEchoMode(QLineEdit.EchoMode.Password)
