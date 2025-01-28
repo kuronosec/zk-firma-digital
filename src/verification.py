@@ -13,8 +13,9 @@ from signature import Signature
 # This class helps to validate the certificate extracted from the smart card
 # to see if it actually was signed by the goverment chain of trust
 class Verification:
-    def __init__(self, pin, signal_hash=None):
+    def __init__(self, pin, nullifier_seed=None, signal_hash=None):
         self.pin = pin
+        self.nullifier_seed = nullifier_seed
         self.signal_hash = signal_hash
         self.config = Configuration()
         self.user_path = self.config.user_path
@@ -91,8 +92,12 @@ class Verification:
         except errors as error:
             logging.error(error, exc_info=True)
 
-        # Nullifier seed
-        nullifier_seed = int.from_bytes(os.urandom(4), sys.byteorder)
+        # Set nullifier seed
+        if self.nullifier_seed:
+            nullifier_seed = self.nullifier_seed
+        else:
+            nullifier_seed = int.from_bytes(os.urandom(4), sys.byteorder)
+
         self.user_signature.load_library()
         user_signature = self.user_signature.sign_data(tbs_bytes)
         # Convert the signature to a big integer
