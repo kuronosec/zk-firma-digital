@@ -30,7 +30,7 @@ Version: ${VERSION}
 Architecture: ${ARCH}
 Priority: optional
 Section: non-free
-Depends: pcscd, libxcb-xinerama0,  libxcb-util1 | libxcb-util0
+Depends: pcscd, libxcb-xinerama0,  libxcb-util1 | libxcb-util0, libccid, libpcre3, npm, nodejs
 Homepage: https://github.com/kuronosec/zk-firma-digital
 Maintainer: Andrés Gómez Ramírez <andresgomezram7@gmail.com>
 Description: Cliente para obtener credenciales de Zero-Knowledge basados
