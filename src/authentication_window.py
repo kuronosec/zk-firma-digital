@@ -89,7 +89,7 @@ class AuthenticationWindow(QMainWindow):
             return
 
         user_id = self.payload['user_id']
-        nullifier_seed = self.payload['nullifier_seed']
+        nullifier_seed = self.payload['auth_data']['nullifier_seed']
 
         self.generate_credential_button.setEnabled(False)
         self.generate_credential_button.setStyleSheet("background-color : gray")

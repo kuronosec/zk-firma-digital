@@ -93,6 +93,7 @@ class Verification:
             logging.error(error, exc_info=True)
 
         # Set nullifier seed
+        nullifier_seed = None
         if self.nullifier_seed:
             nullifier_seed = self.nullifier_seed
         else:
