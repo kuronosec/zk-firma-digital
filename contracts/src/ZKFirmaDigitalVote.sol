@@ -73,7 +73,7 @@ contract ZKFirmaDigitalVote is IZKFirmaDigitalVote {
         );
         require(
             voteScope == nullifierSeed,
-            '[ZKFirmaDigitalCredentialIssuer]: Wrong nullifierSeed, you must generate proof with the right seed.'
+            '[ZKFirmaDigitalVote]: Wrong nullifierSeed, you must generate proof with the right seed.'
         );
         require(
             isLessThan3HoursAgo(0),

@@ -265,12 +265,8 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
         uint[1] calldata revealArray,
         uint[8] calldata groth16Proof) internal view {
         require(
-            addressToUint256(msg.sender) == signal,
-            '[ZKFirmaDigitalCredentialIssuer]: Wrong user signal sent.'
-        );
-        require(
             IZKFirmaDigital(ZKFirmaDigitalVerifierAddr).verifyZKFirmaDigitalProof(
-                nullifierSeed, // nullifier seed
+                nullifierSeed,
                 nullifier,
                 signal,
                 revealArray,
