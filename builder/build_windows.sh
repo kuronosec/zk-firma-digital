@@ -2,7 +2,7 @@
 
 set -xe
 
-VERSION=0.5
+VERSION=0.6.0
 
 OLD_PATH=$(pwd)
 echo $OLD_PATH
