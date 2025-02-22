@@ -9,9 +9,6 @@ async function main() {
 
   const addresses = addressesJson.amoyAddresses;
 
-  const owner = (await ethers.getSigners())[0];
-  const ownerAddress = await owner.getAddress();
-
   const ZKFirmaDigitalCredentialIssuer = addresses.ZKFirmaDigitalCredentialIssuer;
   const voteScope = Math.floor(Math.random() * 100000);
 

@@ -13,7 +13,7 @@ from signature import Signature
 # This class helps to validate the certificate extracted from the smart card
 # to see if it actually was signed by the goverment chain of trust
 class Verification:
-    def __init__(self, pin, nullifier_seed=None, signal_hash=None):
+    def __init__(self, pin, nullifier_seed=0, signal_hash=None):
         self.pin = pin
         self.nullifier_seed = nullifier_seed
         self.signal_hash = signal_hash
@@ -93,8 +93,8 @@ class Verification:
             logging.error(error, exc_info=True)
 
         # Set nullifier seed
-        nullifier_seed = None
-        if self.nullifier_seed:
+        nullifier_seed = 0
+        if self.nullifier_seed != 0:
             nullifier_seed = self.nullifier_seed
         else:
             nullifier_seed = int.from_bytes(os.urandom(4), sys.byteorder)

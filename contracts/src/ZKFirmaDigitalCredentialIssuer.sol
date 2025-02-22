@@ -146,7 +146,7 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
      */
     function issueCredential(
         uint _userId,
-        uint64 nullifierSeed,
+        uint nullifierSeed,
         uint nullifier,
         uint signal,
         uint[1] calldata revealArray, 
@@ -170,7 +170,7 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
             merklizedRootPosition: 0,
             version: 0,
             id: _userId,
-            revocationNonce: nullifierSeed,
+            revocationNonce: uint64(nullifierSeed),
             expirationDate: expirationDate,
             // data
             merklizedRoot: 0,
@@ -205,7 +205,7 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
 
         $.nullifierToUser[nullifier] = _userId;
         addClaimHashAndTransit(hashIndex, hashValue);
-        saveClaim(nullifierSeed, _userId, claimToSave);
+        saveClaim(uint64(nullifierSeed), _userId, claimToSave);
     }
 
     // saveClaim save a claim to storage
@@ -249,7 +249,7 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
             keccak256(
                 abi.encodePacked(
                     block.timestamp,  // Current block timestamp
-                    block.difficulty, // Current block difficulty
+                    block.prevrandao, // Current block difficulty
                     msg.sender        // Address of the sender
                 )
             )

@@ -51,6 +51,10 @@ export class ZKFirmaDigitalCredentialIssuerDeployHelper {
 
     const _verifierAddress = await verifier.getAddress();
 
+    this.log(
+      `Verifier contract deployed to address ${await _verifierAddress} from ${owner_address}`
+    );
+
     const pubkeyHashBigInt = BigInt("15100764808137121660160871414130376377652473835020058565951744372715764457760").toString();
 
     const ZKFirmaDigitalContract = await ethers.getContractFactory('ZKFirmaDigital');
@@ -60,6 +64,10 @@ export class ZKFirmaDigitalCredentialIssuerDeployHelper {
     );
 
     const _ZKFirmaDigitalAddress = await ZKFirmaDigitalVerifier.getAddress();
+
+    this.log(
+      `ZKFirmaDigital contract deployed to address ${await _ZKFirmaDigitalAddress} from ${owner_address}`
+    );
 
     const credentialIssuerFactory = await ethers.getContractFactory(
       'ZKFirmaDigitalCredentialIssuer',
@@ -71,8 +79,6 @@ export class ZKFirmaDigitalCredentialIssuerDeployHelper {
         }
       }
     );
-
-    // this.log(artifacts.getArtifactPaths());
 
     const ZKFirmaDigitalCredentialIssuer = await upgrades.deployProxy(
       credentialIssuerFactory,
@@ -87,12 +93,12 @@ export class ZKFirmaDigitalCredentialIssuerDeployHelper {
     const _credentialIssuerAddr = ZKFirmaDigitalCredentialIssuer.getAddress()
 
     this.log(
-      `credentialIssuer contract deployed to address ${await _credentialIssuerAddr} from ${owner_address}`
+      `ZKFirmaDigitalCredentialIssuer contract deployed to address ${await _credentialIssuerAddr} from ${owner_address}`
     );
 
     this.log('======== Credential issuer: deploy completed ========');
 
-    this.log('======== Medical Certificate Issuer: deploying ========');
+    /*this.log('======== Medical Certificate Issuer: deploying ========');
     const MedicalCertificateIssuer = await ethers.getContractFactory(
       'MedicalCertificateIssuer'
     );
@@ -103,7 +109,7 @@ export class ZKFirmaDigitalCredentialIssuerDeployHelper {
 
     this.log(
       `Medical Certificate Issuer contract deployed to address ${await ZKFirmaDigitalVerifierDeployed.getAddress()} from ${owner_address}`
-    );
+    );*/
 
     return {
       ZKFirmaDigitalCredentialIssuer,
