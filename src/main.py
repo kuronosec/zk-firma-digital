@@ -278,7 +278,7 @@ def load_language(language_code):
 if __name__ == "__main__":
 
     logging.info("Starting ZK-Firma-Digital")
-    language_code = "en"
+    language_code = "es"
     translator = load_language(language_code)
 
     if len(sys.argv) > 1:
