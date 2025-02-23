@@ -5,10 +5,6 @@
 
 import '@nomiclabs/hardhat-ethers'
 import { ethers } from 'hardhat'
-import * as os from "os"
-import * as path from "path"
-
-type BigNumberish = string | bigint
 
 async function main() {
   const addressesJson = require(
@@ -22,7 +18,7 @@ async function main() {
     addresses.ZKFirmaDigitalCredentialIssuer,
   );
 
-  const revoke_nonce = 3;
+  const revoke_nonce = 40960;
 
   try {
     // Call the revokeClaimAndTransit function to retrieve the credentials for the user

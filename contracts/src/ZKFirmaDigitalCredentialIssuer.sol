@@ -17,7 +17,7 @@ import {IZKFirmaDigital} from '../interfaces/IZKFirmaDigital.sol';
 contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepUpgradeable {
     using IdentityLib for IdentityLib.Data;
     address public ZKFirmaDigitalVerifierAddr;
-    uint256 public constant storedNullifierSeed = 253091582028213;
+    uint256 public constant contractNullifierSeed = 253091582028213;
 
     /// @custom:storage-location erc7201:polygonid.storage.CredentialIssuer
     struct CredentialIssuerStorage {
@@ -144,7 +144,7 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
      * @param revealArray: Array of the values used to reveal data, if value is 1 data is revealed, not if 0.
      * @param groth16Proof: SNARK Groth16 proof.
      */
-    function issueCredential( 
+    function issueCredential(
         uint _userId,
         uint nullifierSeed,
         uint nullifier,
@@ -170,7 +170,7 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
             merklizedRootPosition: 0,
             version: 0,
             id: _userId,
-            revocationNonce: $.countOfIssuedClaims,
+            revocationNonce: uint64(nullifierSeed),
             expirationDate: expirationDate,
             // data
             merklizedRoot: 0,
@@ -185,35 +185,35 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
         uint256 hashValue = PoseidonUnit4L.poseidon([claim[4], claim[5], claim[6], claim[7]]);
 
         ClaimItem memory claimToSave = ClaimItem({
-            id: $.countOfIssuedClaims,
+            id: nullifierSeed,
             issuanceDate: convertTime(block.timestamp),
             claim: claim
         });
 
-        $.idToCredentialSubject[$.countOfIssuedClaims].push(
+        $.idToCredentialSubject[nullifierSeed].push(
             INonMerklizedIssuer.SubjectField({key: 'ageAbove18', value: revealArray[0], rawValue: ''})
         );
-        $.idToCredentialSubject[$.countOfIssuedClaims].push(
+        $.idToCredentialSubject[nullifierSeed].push(
             INonMerklizedIssuer.SubjectField({key: 'citizen', value: revealArray[0], rawValue: ''})
         );
-        $.idToCredentialSubject[$.countOfIssuedClaims].push(
+        $.idToCredentialSubject[nullifierSeed].push(
             INonMerklizedIssuer.SubjectField({key: 'organization', value: revealArray[0], rawValue: ''})
         );
-        $.idToCredentialSubject[$.countOfIssuedClaims].push(
+        $.idToCredentialSubject[nullifierSeed].push(
             INonMerklizedIssuer.SubjectField({key: 'randomNonce', value: random_nonce, rawValue: ''})
         );
 
         $.nullifierToUser[nullifier] = _userId;
         addClaimHashAndTransit(hashIndex, hashValue);
-        saveClaim(_userId, claimToSave);
+        saveClaim(uint64(nullifierSeed), _userId, claimToSave);
     }
 
     // saveClaim save a claim to storage
-    function saveClaim(uint256 _userId, ClaimItem memory _claim) private {
+    function saveClaim(uint64 _nullifierSeed, uint256 _userId, ClaimItem memory _claim) private {
         CredentialIssuerStorage storage $ = _getCredentialIssuerStorage();
 
-        $.userClaims[_userId].push($.countOfIssuedClaims);
-        $.idToClaim[$.countOfIssuedClaims] = _claim;
+        $.userClaims[_userId].push(_nullifierSeed);
+        $.idToClaim[_nullifierSeed] = _claim;
         $.countOfIssuedClaims++;
     }
 
@@ -249,7 +249,7 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
             keccak256(
                 abi.encodePacked(
                     block.timestamp,  // Current block timestamp
-                    block.difficulty, // Current block difficulty
+                    block.prevrandao, // Current block difficulty
                     msg.sender        // Address of the sender
                 )
             )
@@ -265,16 +265,8 @@ contract ZKFirmaDigitalCredentialIssuer is NonMerklizedIssuerBase, Ownable2StepU
         uint[1] calldata revealArray,
         uint[8] calldata groth16Proof) internal view {
         require(
-            addressToUint256(msg.sender) == signal,
-            '[ZKFirmaDigitalCredentialIssuer]: Wrong user signal sent.'
-        );
-        require(
-            storedNullifierSeed == nullifierSeed,
-            '[ZKFirmaDigitalCredentialIssuer]: Wrong nullifierSeed, you must generate proof with the right seed.'
-        );
-        require(
             IZKFirmaDigital(ZKFirmaDigitalVerifierAddr).verifyZKFirmaDigitalProof(
-                nullifierSeed, // nullifier seed
+                nullifierSeed,
                 nullifier,
                 signal,
                 revealArray,

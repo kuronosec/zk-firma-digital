@@ -89,6 +89,7 @@ class AuthenticationWindow(QMainWindow):
             return
 
         user_id = self.payload['user_id']
+        nullifier_seed = self.payload['auth_data']['nullifier_seed']
 
         self.generate_credential_button.setEnabled(False)
         self.generate_credential_button.setStyleSheet("background-color : gray")
@@ -116,6 +117,7 @@ class AuthenticationWindow(QMainWindow):
             signal_hash = user_id
         verification = Verification(
             password,
+            nullifier_seed,
             signal_hash
         )
 

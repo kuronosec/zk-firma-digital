@@ -24,16 +24,16 @@ export type PackedGroth16Proof = [
 
 async function main() {
   // Get the home directory
-  const homeDirectory: string = os.homedir();
-  // Construct a file path inside the home directory
-  const VCFilePath: string = path.join(homeDirectory, ".zk-firma-digital/credentials/credential.json");
+    const homeDirectory: string = os.homedir();
+    // Construct a file path inside the home directory
+    const VCFilePath: string = path.join(homeDirectory, ".zk-firma-digital/credentials/credential.json");
   // Assumes credential is created in below path
   // The order of the public data in the credential is the following
   // 0 - PublicKeyHash (Goverment public key hash)
   // 1 - Nullifier
   // 2 - Reveal Age above 18
   // 3 - NullifierSeed
-  // 4 - SignalHash
+  // 4 - Signal
   const verifiableCredential = require(VCFilePath)
 
   const addressesJson = require(
@@ -45,6 +45,7 @@ async function main() {
   const owner = (await ethers.getSigners())[0];
   const ownerAddress = await owner.getAddress();
 
+  const proposalIndex = BigInt(1).toString();
   const userId = ownerAddress;
   const nullifierSeed = verifiableCredential.proof.signatureValue.public[3];
   const nullifier = verifiableCredential.proof.signatureValue.public[1];
@@ -55,11 +56,12 @@ async function main() {
   // Get proof from credential
   const proof = verifiableCredential.proof.signatureValue.proof;
 
-  const ZKFirmaDigitalCredentialIssuer = await ethers.getContractAt(
-    'ZKFirmaDigitalCredentialIssuer',
-    addresses.ZKFirmaDigitalCredentialIssuer,
+  const ZKFirmaDigitalVote = await ethers.getContractAt(
+    'ZKFirmaDigitalVote',
+    addresses.ZKFirmaDigitalVote,
   );
 
+  console.log("proposalIndex: ", proposalIndex);
   console.log("userId: ", userId);
   console.log("nullifierSeed: ", nullifierSeed);
   console.log("nullifier: ", nullifier);
@@ -69,13 +71,13 @@ async function main() {
 
   try {
     console.log(
-      await ZKFirmaDigitalCredentialIssuer.issueCredential(
-        userId,
+      await ZKFirmaDigitalVote.voteForProposal(
+        proposalIndex,
         nullifierSeed,
         nullifier,
         signal,
         revealArray,
-        packGroth16Proof(proof),
+        packGroth16Proof(proof)
       ),
     )
   } catch (error) {

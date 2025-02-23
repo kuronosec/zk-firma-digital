@@ -34,4 +34,21 @@ interface IZKFirmaDigitalCredentialIssuer {
      * @param _revocationNonce  - revocation nonce
      */
     function revokeClaimAndTransit(uint64 _revocationNonce) external;
+
+        /**
+     * @dev Issue credential based on ZK Firma Digital Proof.
+     * @param _userId: user identification this credential is assigned to
+     * @param nullifierSeed: Nullifier Seed used while generating the proof.
+     * @param nullifier: Nullifier for the user's Firma Digital data, used as user id for which the claim is issued.
+     * @param signal: signal used while generating the proof, should be equal to msg.sender.
+     * @param revealArray: Array of the values used to reveal data, if value is 1 data is revealed, not if 0.
+     * @param groth16Proof: SNARK Groth16 proof.
+     */
+    function issueCredential(
+        uint _userId,
+        uint nullifierSeed,
+        uint nullifier,
+        uint signal,
+        uint[1] calldata revealArray,
+        uint[8] calldata groth16Proof) external;
 }
