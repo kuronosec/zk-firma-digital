@@ -48,15 +48,15 @@ To run ZK-Firma-Digital, ensure your system meets at least the following hardwar
 ### Windows
 
 1. Download the installer:
-[Windows Installer](https://app.sakundi.io:9090/zk-firma-digital-0.5.exe)
+[Windows Installer](https://app.sakundi.io:9090/zk-firma-digital-0.6.0.exe)
 
 2. Verify the sha256 hash:
     ```bash
-    certutil -hashfile "C:\file\path\zk-firma-digital-0.5.exe" SHA256
+    certutil -hashfile "C:\file\path\zk-firma-digital-0.6.0.exe" SHA256
     ```
     The result should match:
     ```bash
-    a12d82222533d546b0364a2589ced1ecc024ce49d89881ad94b48c4f2e2b4c61  zk-firma-digital-0.5.exe
+    de89ec14d1c196826492d8bdafb35f6fce0631493f2d7eccf44544ba89911133  zk-firma-digital-0.6.0.exe
     ```
 3. Run the installer if the hash matches.
 
