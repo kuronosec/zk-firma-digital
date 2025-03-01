@@ -74,19 +74,19 @@ To run ZK-Firma-Digital, ensure your system meets at least the following hardwar
 
 1. Download the installer:
     ```bash
-    wget https://app.sakundi.io:9090/zk-firma-digital_0.5_amd64.deb
+    wget https://app.sakundi.io:9090/zk-firma-digital_0.6.0_amd64.deb
     ```
 2. Verify the sha256 hash:
     ```bash
-    sha256sum zk-firma-digital_0.5_amd64.deb
+    sha256sum zk-firma-digital_0.6.0_amd64.deb
     ```
     The result should match:
     ```bash
-    f7924230256b432a755746f7e86455f292f4e2659acc1f46e6db09c08c04b407  zk-firma-digital_0.5_amd64.deb
+    08a9de0a6d7f71d5a24506558b99fb73ae26121da03ba9c29f69f60d0db2fe3a  zk-firma-digital_0.6.0_amd64.deb
     ```
 3. Install the Debian package:
     ```bash
-    sudo dpkg -i zk-firma-digital_0.5_amd64.deb
+    sudo dpkg -i zk-firma-digital_0.6.0_amd64.deb
     ```
 4. Launch the program:
     * Insert your smart card into a USB port.
