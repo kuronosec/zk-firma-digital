@@ -28,3 +28,10 @@ Source: "zk-firma-digital.exe"; DestDir: "{app}"; DestName: "zk-firma-digital.ex
 
 [Icons]
 Name: "{group}\ZK Firma Digital"; Filename: "{app}\zk-firma-digital.exe"
+
+[Registry]
+; Register custom URL protocol for zk-firma-digital
+Root: HKCR; Subkey: "zk-firma-digital"; ValueType: string; ValueName: ""; ValueData: "URL:zk-firma-digital Protocol"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "zk-firma-digital"; ValueType: string; ValueName: "URL Protocol"; ValueData: ""; Flags: uninsdeletevalue
+; Set the command to launch your application using the installation directory
+Root: HKCR; Subkey: "zk-firma-digital\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\zk-firma-digital.exe"" ""%1"""; Flags: uninsdeletekey
