@@ -1,5 +1,6 @@
 import subprocess
 import os
+import sys
 from zkpy.ptau import PTau
 import zkpy.utils as utils
 
@@ -62,6 +63,13 @@ class Circuit:
         self.wtns_file = witness
         self.zkey_file = zkey
         self.vkey_file = vkey
+
+        base_dir = os.path.dirname(sys.executable)
+        snarkjs_dir = base_dir
+
+        # Add this directory to the PATH environment variable.
+        os.environ["PATH"] = snarkjs_dir + os.pathsep + os.environ.get("PATH", "")
+
         # Check what operation system we re running on
         self.snarkjs_command = "snarkjs"
         if os.name == 'nt':
