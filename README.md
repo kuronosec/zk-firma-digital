@@ -152,6 +152,6 @@ To run ZK-Firma-Digital, ensure your system meets at least the following hardwar
 ## See it working
 Once you generate a ZK credential (a JSON file) using your Firma Digital card, you can test it by authenticating on this Proof of Concept (PoC) website:
 
-* Website: http://app.sakundi.io:8080/
+* Website: [https://voto.sakundi.io](https://voto.sakundi.io)
 * Source code: [GitHub Repository](https://github.com/kuronosec/zk-firma-web)
 * Example credential: [residence-credential.json](https://github.com/kuronosec/zk-firma-digital/blob/main/src/examples/residence-credential.json)
