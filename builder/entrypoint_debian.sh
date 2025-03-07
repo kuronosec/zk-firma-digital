@@ -6,8 +6,8 @@ cd /zk-firma-digital/
 
 # Create binary installer for the app
 pyinstaller --clean --onefile -n zk-firma-digital --upx-dir=/usr/local/share/  \
-    --noconfirm --log-level=WARN --windowed --distpath=/data/ --workpath=/tmp/zk-firma-digital_build \
-    --hidden-import 'pkcs11.defaults' main.py
+    --noconfirm --log-level=WARN --windowed --distpath=/data/ \
+    --workpath=/tmp/zk-firma-digital_build main.py
 
 mkdir -p /data/build/
 cd  /data/build/
@@ -30,7 +30,7 @@ Version: ${VERSION}
 Architecture: ${ARCH}
 Priority: optional
 Section: non-free
-Depends: pcscd, libxcb-xinerama0,  libxcb-util1 | libxcb-util0
+Depends: pcscd, libxcb-xinerama0,  libxcb-util1 | libxcb-util0, libccid, libpcre3, npm, nodejs
 Homepage: https://github.com/kuronosec/zk-firma-digital
 Maintainer: Andrés Gómez Ramírez <andresgomezram7@gmail.com>
 Description: Cliente para obtener credenciales de Zero-Knowledge basados
@@ -63,10 +63,12 @@ cp /data/zk-firma-digital $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-firma-digit
 cp /zk-firma-digital/os_libs/Athena/IDPClientDB.xml $DEB_HOMEDIR/etc/Athena/zk-firma-digital_IDPClientDB.xml
 cp /zk-firma-digital/os_libs/linux/${ARCH}/libASEP11.so \
     $DEB_HOMEDIR/usr/share/zk-firma-digital/os_libs/linux/${ARCH}/libASEP11.so
+cp -a /zk-firma-digital/translations_en.qm \
+    $DEB_HOMEDIR/usr/share/zk-firma-digital/translations_en.qm
 cp -a /zk-firma-digital/CA-certificates/ $DEB_HOMEDIR/usr/share/zk-firma-digital/
 cp -a /zk-artifacts/firma-verifier_js $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-artifacts
 cp -a /zk-artifacts/vkey.json $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-artifacts
-# cp -a /zk-artifacts/firma-verifier.zkey $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-artifacts
+cp -a /zk-artifacts/firma-verifier.zkey $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-artifacts
 
 dpkg-deb --build --root-owner-group $DEB_HOMEDIR
 alien -t $DEB_HOMEDIR.deb --scripts

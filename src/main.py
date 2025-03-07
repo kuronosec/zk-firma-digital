@@ -6,7 +6,6 @@ import os
 import json
 import datetime
 import logging
-import jwt
 from urllib.parse import urlparse, parse_qs
 
 # We will use the PyQt6 to provide a grafical interface for the user
@@ -21,6 +20,7 @@ from PyQt6.QtWidgets import ( QApplication,
                               QTabWidget,
                               QLabel,
                               QFileDialog )
+from PyQt6.QtCore import QTranslator
 
 # Import our own libraries
 from certificate import Certificate
@@ -43,7 +43,7 @@ class MainWindow(QMainWindow):
         # Create a QLabel
         self.file_label = QLabel()
         # HTML link to the local file
-        self.file_label.setText(f'<a href="file:///{self.config.credential_file}">Haga click aquí para ver el archivo de credencial generado</a>')
+        self.file_label.setText(f'<a href="file:///{self.config.credential_file}">{self.tr("Haga click aquí para ver el archivo de credencial generado</a>")}')
 
         # Allow the QLabel to open external links
         self.file_label.setOpenExternalLinks(True)
@@ -58,8 +58,8 @@ class MainWindow(QMainWindow):
         # Add tabs
         self.verification_tab = self.create_verification_tab()
         self.signing_tab = self.create_signing_tab()
-        self.tabs.addTab(self.verification_tab, "Creación de credencial ZK")
-        self.tabs.addTab(self.signing_tab, "Firma de credenciales verificables")
+        self.tabs.addTab(self.verification_tab, self.tr("Creación de credencial ZK"))
+        # self.tabs.addTab(self.signing_tab, self.tr("Firma de credenciales verificables")
 
     def create_verification_tab(self):
         # Create the first tab's content
@@ -71,11 +71,11 @@ class MainWindow(QMainWindow):
         # Create the password field
         self.password_field = QLineEdit()
         self.password_field.setEchoMode(QLineEdit.EchoMode.Password)
-        self.password_field.setPlaceholderText("Introduzca el PIN de su tarjeta")
+        self.password_field.setPlaceholderText(self.tr("Introduzca el PIN de su tarjeta"))
         self.verification_layout.addWidget(self.password_field)
 
         # Create the "Obtener certificados Firma Digital" button
-        self.generate_credential_button = QPushButton("Generar credencial JSON")
+        self.generate_credential_button = QPushButton(self.tr("Generar credencial JSON"))
         self.generate_credential_button.clicked.connect(self.on_submit_generate_credential)
         self.generate_credential_button.setStyleSheet("background-color : green")
         self.verification_layout.addWidget(self.generate_credential_button)
@@ -88,26 +88,26 @@ class MainWindow(QMainWindow):
         # Create the signature tab's content
         self.signature_tab = QWidget()
         self.signature_layout = QVBoxLayout()
-        self.signature_layout.addWidget(QLabel("Firmar archivo JSON"))
+        self.signature_layout.addWidget(QLabel(self.tr("Firmar archivo JSON")))
 
         # Create the password field
         self.password_field_sign = QLineEdit()
         self.password_field_sign.setEchoMode(QLineEdit.EchoMode.Password)
-        self.password_field_sign.setPlaceholderText("Introduzca el PIN de su tarjeta")
+        self.password_field_sign.setPlaceholderText(self.tr("Introduzca el PIN de su tarjeta"))
         self.signature_layout.addWidget(self.password_field_sign)
 
         # Create a button to open the file dialog
-        button_browser = QPushButton("Escoger archivo a firmar")
+        button_browser = QPushButton(self.tr("Escoger archivo a firmar"))
         button_browser.clicked.connect(self.browse_files)
         self.signature_layout.addWidget(button_browser)
 
         # Label to display the selected file
-        self.browser_label = QLabel("Selected file: None")
+        self.browser_label = QLabel(self.tr("Selected file: None"))
         self.signature_layout.addWidget(self.browser_label)
         self.signature_tab.setLayout(self.signature_layout)
 
         # Create a button to sign the file
-        button_sign = QPushButton("Firmar archivo")
+        button_sign = QPushButton(self.tr("Firmar archivo"))
         button_sign.clicked.connect(self.sign_files)
         self.signature_layout.addWidget(button_sign)
 
@@ -120,7 +120,7 @@ class MainWindow(QMainWindow):
         password = self.password_field.text()
         certificate = Certificate(password)
         (valid, info) = certificate.get_certificates()
-        QMessageBox.information(self, "Certificados", f"{info}")
+        QMessageBox.information(self, self.tr("Certificados"), f"{info}")
         if not valid:
             self.generate_credential_button.setEnabled(True)
             self.generate_credential_button.setStyleSheet("background-color : green")
@@ -128,7 +128,7 @@ class MainWindow(QMainWindow):
         # If the certificates were stored in disk then provide the option
         # to verify them
         if not os.path.exists(self.config.certificate_path):
-            QMessageBox.information(self, "Certificado", "No se pudo obtener el certificado")
+            QMessageBox.information(self, self.tr("Certificado"), self.tr("No se pudo obtener el certificado"))
             self.generate_credential_button.setEnabled(True)
             self.generate_credential_button.setStyleSheet("background-color : green")
             return
@@ -142,16 +142,16 @@ class MainWindow(QMainWindow):
 
         (valid, info) = verification.verify_certificate(self.config.certificate_path)
         if not valid:
-            QMessageBox.information(self, "Validación", f"{info}\n\n Firma de certificado inválida!!!")
+            QMessageBox.information(self, self.tr("Validación"), f"{info}\n\n {self.tr('Firma de certificado inválida!!!')}")
         else:
-            QMessageBox.information(self, "Validación", f"{info}\n\n Firma de certificado válida!!!")
+            QMessageBox.information(self, self.tr("Validación"), f"{info}\n\n {self.tr('Firma de certificado válida!!!')}")
             try:
                 circom = Circom()
                 circom.generate_witness()
                 circom.prove()
                 circom.verify()
             except Exception as error:
-                message ="Hubo un error al crear la credencial verificable"
+                message = self.tr("Hubo un error al crear la credencial verificable")
                 QMessageBox.information(self, "Circom", message)
                 logging.error(message+" "+str(error), exc_info=True)
                 self.generate_credential_button.setEnabled(True)
@@ -183,8 +183,8 @@ class MainWindow(QMainWindow):
 
             self.verification_layout.addWidget(self.file_label)
 
-            QMessageBox.information(self, "Creación de credencial válida",
-                                    "Encontrar credencial verificable en el enlace.")
+            QMessageBox.information(self, self.tr("Creación de credencial válida"),
+                                    self.tr("Encontrar credencial verificable en el enlace."))
         self.generate_credential_button.setEnabled(True)
         self.generate_credential_button.setStyleSheet("background-color : green")
     
@@ -227,7 +227,7 @@ class MainWindow(QMainWindow):
     def browse_files(self):
         # Open a file dialog and select a file
         file_name, _ = QFileDialog.getOpenFileName(self,
-                                                   "Open File",
+                                                   self.tr("Open File"),
                                                    "",
                                                    "JSON Files (*.json)")
 
@@ -235,7 +235,7 @@ class MainWindow(QMainWindow):
             self.browser_label.setText(f"Selected file: {file_name}")
             self.file_to_sign = file_name
         else:
-            self.browser_label.setText("No file selected")
+            self.browser_label.setText(self.tr("No file selected"))
 
     # This code is not being used at the moment
     # Do we really need it?
@@ -249,16 +249,37 @@ class MainWindow(QMainWindow):
             file_only_path = os.path.dirname(self.file_to_sign)
             signed_name = file_only_path+"/"+"signed-"+file_name
             info = signature.sign_file(self.file_to_sign)
-            QMessageBox.information(self, "Firma de archivo JSON",
+            QMessageBox.information(self, self.tr("Firma de archivo JSON"),
                                     f"{info}\n\nArchivo JSON firmado:\n\n {signed_name}")
             self.browser_label.setText(f"Archivo JSON firmado: {signed_name}")
         else:
-            self.browser_label.setText("No file selected")
+            self.browser_label.setText(self.tr("No file selected"))
+
+def load_language(language_code):
+    config = Configuration()
+    try:
+        translator = QTranslator()
+        if translator.load(
+            os.path.join( config.installation_path,
+                        f"translations_{language_code}.qm")
+        ):
+            logging.info(f"Loaded language: translations_{language_code}.qm")
+            return translator
+        else:
+            logging.info(f"Could not load language: translations_{language_code}.qm")
+            return None
+    except Exception:
+        logging.error(
+                "Error Loading Language.",
+                exc_info=True
+            )
 
 # Main entry point for our app
 if __name__ == "__main__":
 
     logging.info("Starting ZK-Firma-Digital")
+    language_code = "es"
+    translator = load_language(language_code)
 
     if len(sys.argv) > 1:
         uri = sys.argv[1]
@@ -273,7 +294,7 @@ if __name__ == "__main__":
 
         if parsed_uri.netloc == "authentication" and token:
             app = QApplication(sys.argv)
-
+            app.installTranslator(translator)
             window = AuthenticationWindow(token)
             window.show()
 
@@ -285,6 +306,7 @@ if __name__ == "__main__":
             )
     else:
         app = QApplication(sys.argv)
+        app.installTranslator(translator)
         window = MainWindow()
         window.show()
         sys.exit(app.exec())

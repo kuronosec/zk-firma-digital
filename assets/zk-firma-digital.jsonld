@@ -13,10 +13,18 @@
           "id": "@id",
           "type": "@type",
           "vocab": "https://github.com/kuronosec/zk-firma-digital/main/assets/zk-firma-digital-vocab.md#",
-          "iden3_serialization": "iden3:v1:slotIndexA=ageAbove18&slotValueB=randomNonce",
+          "iden3_serialization": "iden3:v1:slotIndexA=randomNonce&slotIndexB=citizen&slotValueA=organization&slotValueB=ageAbove18",
           "xsd": "http://www.w3.org/2001/XMLSchema#",
           "ageAbove18": {
             "@id": "vocab:ageAbove18",
+            "@type": "xsd:positiveInteger"
+          },
+          "citizen": {
+            "@id": "vocab:citizen",
+            "@type": "xsd:positiveInteger"
+          },
+          "organization": {
+            "@id": "vocab:organization",
             "@type": "xsd:positiveInteger"
           },
           "randomNonce": {

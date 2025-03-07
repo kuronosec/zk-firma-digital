@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.19;
 
-import '../interfaces/IZKFirmaDigital.sol';
+import '../interfaces/IZKFirmaDigitalCredentialIssuer.sol';
 import '../interfaces/IZKFirmaDigitalVote.sol';
 
 contract ZKFirmaDigitalVote is IZKFirmaDigitalVote {
     string public votingQuestion;
-    address public ZKFirmaDigitalVerifierAddr;
+    address public ZKFirmaDigitalCredentialIssuerAddr;
+    // A random number to use as nullifier seed.
+    // We need a different number for each vote contract to avoid double voting
+    uint64 public voteScope;
 
     // List of proposals
     Proposal[] public proposals;
@@ -18,13 +21,15 @@ contract ZKFirmaDigitalVote is IZKFirmaDigitalVote {
     constructor(
         string memory _votingQuestion,
         string[] memory proposalDescriptions,
-        address _verifierAddr
+        address _credentialIssuerAddr,
+        uint64 _voteScope
     ) {
-        ZKFirmaDigitalVerifierAddr = _verifierAddr;
+        ZKFirmaDigitalCredentialIssuerAddr = _credentialIssuerAddr;
         votingQuestion = _votingQuestion;
         for (uint256 i = 0; i < proposalDescriptions.length; i++) {
             proposals.push(Proposal(proposalDescriptions[i], 0));
         }
+        voteScope = _voteScope;
     }
 
     /// @dev Convert an address to uint256, used to check against signal.
@@ -45,7 +50,7 @@ contract ZKFirmaDigitalVote is IZKFirmaDigitalVote {
     /// @dev Register a vote in the contract.
     /// @param proposalIndex: Index of the proposal you want to vote for.
     /// @param nullifierSeed: Nullifier Seed used while generating the proof.
-    /// @param nullifier: Nullifier for the user's Aadhaar data.
+    /// @param nullifier: Nullifier for the user's ZK Firma Digital data.
     /// @param signal: signal used while generating the proof, should be equal to msg.sender.
     /// @param revealArray: Array of the values used to reveal data, if value is 1 data is revealed, not if 0.
     /// @param groth16Proof: SNARK Groth16 proof.
@@ -57,32 +62,39 @@ contract ZKFirmaDigitalVote is IZKFirmaDigitalVote {
         uint[1] calldata revealArray, 
         uint[8] calldata groth16Proof
     ) public {
+        uint256 userId = addressToUint256(msg.sender);
         require(
             proposalIndex < proposals.length,
             '[ZKFirmaDigitalVote]: Invalid proposal index'
         );
         require(
-            addressToUint256(msg.sender) == signal,
+            userId == signal,
             '[ZKFirmaDigitalVote]: Wrong user signal sent.'
         );
         require(
-            isLessThan3HoursAgo(0),
-            '[ZKFirmaDigitalVote]: Proof must be generated with Aadhaar data signed less than 3 hours ago.'
+            voteScope == nullifierSeed,
+            '[ZKFirmaDigitalVote]: Wrong nullifierSeed, you must generate proof with the right seed.'
         );
         require(
-            IZKFirmaDigital(ZKFirmaDigitalVerifierAddr).verifyZKFirmaDigitalProof(
-                nullifierSeed, // nullifier seed
-                nullifier,
-                signal,
-                revealArray,
-                groth16Proof
-            ),
-            '[ZKFirmaDigitalVote]: The proof sent is not valid.'
+            isLessThan3HoursAgo(0),
+            '[ZKFirmaDigitalVote]: Proof must be generated with ZK Firma Digital data signed less than 3 hours ago.'
         );
         // Check that user hasn't already voted
         require(
             !hasVoted[nullifier],
             '[ZKFirmaDigitalVote]: User has already voted'
+        );
+
+        // Issue credential for this voting campaign
+        IZKFirmaDigitalCredentialIssuer(
+            ZKFirmaDigitalCredentialIssuerAddr
+            ).issueCredential(
+                userId,
+                nullifierSeed,
+                nullifier,
+                signal,
+                revealArray,
+                groth16Proof
         );
 
         proposals[proposalIndex].voteCount++;

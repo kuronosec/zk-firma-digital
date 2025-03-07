@@ -6,6 +6,8 @@
 import '@nomiclabs/hardhat-ethers'
 import { Groth16Proof } from 'snarkjs'
 import { ethers } from 'hardhat'
+import * as os from "os"
+import * as path from "path"
 
 type BigNumberish = string | bigint
 
@@ -21,14 +23,18 @@ export type PackedGroth16Proof = [
 ]
 
 async function main() {
+  // Get the home directory
+    const homeDirectory: string = os.homedir();
+    // Construct a file path inside the home directory
+    const VCFilePath: string = path.join(homeDirectory, ".zk-firma-digital/credentials/credential.json");
   // Assumes credential is created in below path
   // The order of the public data in the credential is the following
   // 0 - PublicKeyHash (Goverment public key hash)
   // 1 - Nullifier
   // 2 - Reveal Age above 18
   // 3 - NullifierSeed
-  // 4 - SignalHash
-  const verifiableCredential = require('../../build/example-credential/credential.json')
+  // 4 - Signal
+  const verifiableCredential = require(VCFilePath)
 
   const addressesJson = require(
     `../deployed-contracts/ethereum.json`,
@@ -39,37 +45,46 @@ async function main() {
   const owner = (await ethers.getSigners())[0];
   const ownerAddress = await owner.getAddress();
 
+  const proposalIndex = BigInt(1).toString();
   const userId = ownerAddress;
   const nullifierSeed = verifiableCredential.proof.signatureValue.public[3];
   const nullifier = verifiableCredential.proof.signatureValue.public[1];
   // Signal used when generating proof
-  const signal = process.env.ETHEREUM_ADDRESS || '1';
+  const signal = BigInt(ownerAddress).toString();
   // For the moment this is assumed always the case that age > 18
   const revealArray = [verifiableCredential.proof.signatureValue.public[2]];
   // Get proof from credential
   const proof = verifiableCredential.proof.signatureValue.proof;
 
-  const ZKFirmaDigitalCredentialIssuer = await ethers.getContractAt(
-    'ZKFirmaDigitalCredentialIssuer',
-    addresses.ZKFirmaDigitalCredentialIssuer,
+  const ZKFirmaDigitalVote = await ethers.getContractAt(
+    'ZKFirmaDigitalVote',
+    addresses.ZKFirmaDigitalVote,
   );
+
+  console.log("proposalIndex: ", proposalIndex);
+  console.log("userId: ", userId);
+  console.log("nullifierSeed: ", nullifierSeed);
+  console.log("nullifier: ", nullifier);
+  console.log("signal: ", signal);
+  console.log("revealArray: ", revealArray);
+  console.log("packGroth16Proof(proof): ", packGroth16Proof(proof));
 
   try {
     console.log(
-      await ZKFirmaDigitalCredentialIssuer.issueCredential(
-        userId,
+      await ZKFirmaDigitalVote.voteForProposal(
+        proposalIndex,
         nullifierSeed,
         nullifier,
         signal,
         revealArray,
-        packGroth16Proof(proof),
+        packGroth16Proof(proof)
       ),
     )
   } catch (error) {
     // Catch and log the error
 
     // Display a user-friendly message
-    console.error("Error during proxy deployment:");
+    console.error("Error during VC creation:");
 
     // If there's a revert reason, log it
     if (error.message) {

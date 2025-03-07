@@ -2,6 +2,8 @@
 
 set -xe
 
+VERSION=0.6.1
+
 OLD_PATH=$(pwd)
 echo $OLD_PATH
 
@@ -21,5 +23,5 @@ cp -r $OLD_PATH/src/CA-certificates $OLD_PATH/build
 
 iscc installer.iss
 mkdir -p $OLD_PATH/release/
-cp Output/mysetup.exe $OLD_PATH/release/zk-firma-digital.exe
+cp Output/mysetup.exe $OLD_PATH/release/zk-firma-digital-$VERSION.exe
 exit 0

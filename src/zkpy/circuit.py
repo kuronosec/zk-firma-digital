@@ -1,5 +1,6 @@
 import subprocess
 import os
+import sys
 from zkpy.ptau import PTau
 import zkpy.utils as utils
 
@@ -42,15 +43,17 @@ class Circuit:
         circ_file,
         output_dir="./",
         working_dir="./",
+        node_module_dir=None,
         r1cs=None,
         sym_file=None,
         js_dir=None,
         wasm=None,
         witness=None,
         zkey=None,
-        vkey=None,
+        vkey=None
     ):
         self.circ_file = circ_file
+        self.node_modules_dir = node_module_dir
         self.output_dir = output_dir
         self.working_dir = working_dir
         self.r1cs_file = r1cs
@@ -60,6 +63,13 @@ class Circuit:
         self.wtns_file = witness
         self.zkey_file = zkey
         self.vkey_file = vkey
+
+        base_dir = os.path.dirname(sys.executable)
+        snarkjs_dir = base_dir
+
+        # Add this directory to the PATH environment variable.
+        os.environ["PATH"] = snarkjs_dir + os.pathsep + os.environ.get("PATH", "")
+
         # Check what operation system we re running on
         self.snarkjs_command = "snarkjs"
         if os.name == 'nt':
@@ -68,11 +78,14 @@ class Circuit:
     def compile(self):
         """Compiles the circuit and generates an r1cs file, a symbols file, a wasm file, and a js dir"""
 
-        subprocess.run(
-            ["circom", self.circ_file, "--r1cs", "--sym", "--wasm", '-o', self.output_dir],
+        proc = subprocess.run(
+            ["circom", self.circ_file, "--r1cs", "--sym", "--wasm",
+             '-o', self.output_dir, '-l' , self.node_modules_dir],
             capture_output=True,
             cwd=self.working_dir,
+            text=True
         )
+        print(proc.stdout)
         self.r1cs_file = utils.get_r1cs_file(self.circ_file, self.output_dir)
         self.sym_file = utils.get_sym_file(self.circ_file, self.output_dir)
         self.wasm_file = utils.get_wasm_file(self.circ_file, self.output_dir)
@@ -217,7 +230,8 @@ class Circuit:
         if public_out is None:
             public_out = os.path.join(self.output_dir, "public.json")
         proc = subprocess.run(
-            [self.snarkjs_command, scheme, "prove", self.zkey_file, self.wtns_file, proof_out, public_out],
+            [self.snarkjs_command, scheme, "prove",
+            self.zkey_file, self.wtns_file, proof_out, public_out],
             capture_output=True,
             cwd=self.working_dir,
             check=True,
@@ -236,7 +250,8 @@ class Circuit:
         if zkey_file is None:
             zkey_file = self.zkey_file
         proc = subprocess.run(
-            [self.snarkjs_command, "zkey", "verify", self.r1cs_file, ptau.ptau_file, zkey_file],
+            [self.snarkjs_command, "zkey", "verify",
+              self.r1cs_file, ptau.ptau_file, zkey_file],
             capture_output=True,
             cwd=self.working_dir,
             check=True,
@@ -259,7 +274,8 @@ class Circuit:
         if output_file is None:
             output_file = os.path.join(self.output_dir, utils.gen_rand_filename() + '.json')
         subprocess.run(
-            [self.snarkjs_command, "zkey", "export", "verificationkey", zkey_file, output_file],
+            [self.snarkjs_command, "zkey", "export", "verificationkey",
+             zkey_file, output_file],
             capture_output=True,
             cwd=self.working_dir,
             check=True,
@@ -284,7 +300,8 @@ class Circuit:
         if proof_file is None:
             proof_file = self.proof_file
         proc = subprocess.run(
-            [self.snarkjs_command, scheme, "verify", vkey_file, public_file, proof_file],
+            [self.snarkjs_command, scheme, "verify",
+             vkey_file, public_file, proof_file],
             capture_output=True,
             cwd=self.working_dir,
             check=True,
@@ -326,7 +343,8 @@ class Circuit:
         if self.zkey_file is None or not utils.exists(self.zkey_file):
             raise ValueError(f"zkey file {self.zkey_file} does not exist")
         proc = subprocess.run(
-            [self.snarkjs_command, "zkey", "export", "solidityverifier", self.zkey_file, output_file],
+            [self.snarkjs_command, "zkey", "export", "solidityverifier",
+             self.zkey_file, output_file],
             capture_output=True,
             cwd=self.working_dir,
             check=True,

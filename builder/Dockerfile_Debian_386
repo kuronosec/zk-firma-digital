@@ -5,8 +5,9 @@ ENV DEBIAN_FRONTEND noninteractive
 MAINTAINER Andres Gomez Ramirez @kuronosec
 
 RUN apt-get update && \
-    apt-get install -y  build-essential libssl1.1 libnss3 libssl-dev libffi-dev libnss3-dev dh-make gem2deb npm2deb
-
+    apt-get install -y  build-essential libssl1.1 libnss3 libssl-dev libffi-dev libnss3-dev \ 
+    pcscd libxcb-xinerama0 libpcre3 dh-make gem2deb npm2deb
+    
 RUN pip install --trusted-host pypi.python.org --no-cache-dir  --upgrade pip && \
     pip install pyinstaller
 

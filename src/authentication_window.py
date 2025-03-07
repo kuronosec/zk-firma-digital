@@ -10,7 +10,6 @@ import webbrowser
 from urllib.parse import urlencode
 
 # We will use the PyQt6 to provide a grafical interface for the user
-# TODO: test that it works on Windows
 from PyQt6.QtWidgets import ( QMainWindow,
                               QWidget,
                               QVBoxLayout,
@@ -46,7 +45,7 @@ class AuthenticationWindow(QMainWindow):
 
         # Add tabs
         self.verification_tab = self.create_verification_tab()
-        self.tabs.addTab(self.verification_tab, "Validación de autenticación")
+        self.tabs.addTab(self.verification_tab, self.tr("Validación de autenticación"))
 
     def create_verification_tab(self):
         # Create the first tab's content
@@ -59,17 +58,21 @@ class AuthenticationWindow(QMainWindow):
 
         # Create a user verification label QLabel
         user_id = self.payload['user_id']
-        self.verification_label = QLabel(f"Autenticarse como usuario: {user_id}. Por favor verifique que sea correcto.")
+        first_message = self.tr('Autenticarse como usuario')
+        second_message = self.tr('Por favor verifique que sea correcto.')
+        self.verification_label = QLabel(
+            f"{first_message}: {user_id}. {second_message}"
+        )
         self.verification_layout.addWidget(self.verification_label)
 
         # Create the password field
         self.password_field = QLineEdit()
         self.password_field.setEchoMode(QLineEdit.EchoMode.Password)
-        self.password_field.setPlaceholderText("Introduzca el PIN de su tarjeta")
+        self.password_field.setPlaceholderText(self.tr("Introduzca el PIN de su tarjeta"))
         self.verification_layout.addWidget(self.password_field)
 
         # Create the "Obtener certificados Firma Digital" button
-        self.generate_credential_button = QPushButton("Validar autenticación de usuario.")
+        self.generate_credential_button = QPushButton(self.tr("Validar autenticación de usuario."))
         self.generate_credential_button.clicked.connect(self.on_submit_generate_credential)
         self.generate_credential_button.setStyleSheet("background-color : green")
         self.verification_layout.addWidget(self.generate_credential_button)
@@ -81,11 +84,12 @@ class AuthenticationWindow(QMainWindow):
     def on_submit_generate_credential(self):
         if not self.payload:
             # Redirect back to the browser with failure status
-            return_url = "http://localhost:5000/confirm-authorize"
+            return_url = "https://app.sakundi.io/confirm-authorize"
             webbrowser.open(return_url)
             return
-        
+
         user_id = self.payload['user_id']
+        nullifier_seed = self.payload['auth_data']['nullifier_seed']
 
         self.generate_credential_button.setEnabled(False)
         self.generate_credential_button.setStyleSheet("background-color : gray")
@@ -93,7 +97,7 @@ class AuthenticationWindow(QMainWindow):
         password = self.password_field.text()
         certificate = Certificate(password)
         (valid, info) = certificate.get_certificates()
-        QMessageBox.information(self, "Certificados", f"{info}")
+        QMessageBox.information(self, self.tr("Certificados"), f"{info}")
         if not valid:
             self.generate_credential_button.setEnabled(True)
             self.generate_credential_button.setStyleSheet("background-color : green")
@@ -101,29 +105,36 @@ class AuthenticationWindow(QMainWindow):
         # If the certificates were stored in disk then provide the option
         # to verify them
         if not os.path.exists(self.config.certificate_path):
-            QMessageBox.information(self, "Certificado", "No se pudo obtener el certificado")
+            QMessageBox.information(self, self.tr("Certificado"), self.tr("No se pudo obtener el certificado"))
             self.generate_credential_button.setEnabled(True)
             self.generate_credential_button.setStyleSheet("background-color : green")
             return
         # Verify the stored certificates using the Goverment chain of trust
         password = self.password_field.text()
+        if not user_id.startswith('0x'):
+            signal_hash = '0x' + bytes(user_id, 'utf-8').hex()
+        else:
+            signal_hash = user_id
         verification = Verification(
             password,
-            signal_hash = '0x' + bytes(user_id, 'utf-8').hex()
+            nullifier_seed,
+            signal_hash
         )
 
         (valid, info) = verification.verify_certificate(self.config.certificate_path)
         if not valid:
-            QMessageBox.information(self, "Validación", f"{info}\n\n Firma de certificado inválida!!!")
+            first_message = self.tr('Firma de certificado inválida!!!')
+            QMessageBox.information(self, self.tr("Validación"), f"{info}\n\n {first_message}")
         else:
-            QMessageBox.information(self, "Validación", f"{info}\n\n Firma de certificado válida!!!")
+            first_message = self.tr('Firma de certificado válida!!!')
+            QMessageBox.information(self, self.tr("Validación"), f"{info}\n\n {first_message}")
             try:
                 circom = Circom()
                 circom.generate_witness()
                 circom.prove()
                 circom.verify()
             except Exception as error:
-                message ="Hubo un error al crear la credencial verificable"
+                message = self.tr("Hubo un error al crear la credencial verificable")
                 QMessageBox.information(self, "Circom", message)
                 logging.error(message+" "+str(error), exc_info=True)
                 self.generate_credential_button.setEnabled(True)
@@ -148,9 +159,9 @@ class AuthenticationWindow(QMainWindow):
             # Convert the JSON data to a string and URL-encode it
             json_str = json.dumps(verifiable_credential)
 
-            QMessageBox.information(self, "Validación de identidad exitosa",
-                                    "La validación de identidad fue exitosa.")
-            
+            QMessageBox.information(self, self.tr("Validación de identidad exitosa"),
+                                    self.tr("La validación de identidad fue exitosa."))
+
             # Dictionary of parameters to include in the URL
             params = {
                 'user_id': self.payload['user_id'],
@@ -159,16 +170,24 @@ class AuthenticationWindow(QMainWindow):
                 'verifiable_credential': json_str
             }
 
+            # Create credential and store it in a file for the user to utilize
+            with open(self.config.credential_file, 'w', encoding='utf-8') as json_file:
+                json.dump(verifiable_credential,
+                          json_file,
+                          ensure_ascii=False,
+                          indent=4,
+                          default=str)
+
             # Encode the parameters and append them to the base URL
             query_string = urlencode(params)
 
             # Redirect back to the browser with success status
-            return_url = f"http://localhost:5000/confirm-authorize?{query_string}"
+            return_url = f"https://app.sakundi.io/confirm-authorize?{query_string}"
             webbrowser.open(return_url)
         self.generate_credential_button.setEnabled(True)
         self.generate_credential_button.setStyleSheet("background-color : green")
         self.close()
-    
+
     def verifiable_credential_template(self):
         verifiable_credential = {
             "@context": [
