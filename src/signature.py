@@ -5,8 +5,12 @@ import os
 import datetime
 import binascii
 import logging
+import platform
 
 from PyKCS11 import *
+
+# Get the OS type
+os_type = platform.system()
 
 # This class helps us to check the Firma Digital certificate signature
 # before even trying to create a ZK proof based on it
@@ -17,12 +21,16 @@ class Signature():
         """
         self.pin = pin
 
+        # Define OS specific paths
         # Check what operation system we re running on
-        if os.name == 'nt':
+        if os_type == 'Windows':
             self.library_path = 'C:/Windows/System32/asepkcs.dll'
-        # Linux
-        else:
+        elif os_type == "Linux":
             self.library_path = '/usr/lib/x64-athena/libASEP11.so'
+        elif os_type == "Darwin":
+            self.library_path = '/Library/SCMiddleware/libidop11.dylib'
+        else:
+            print("Unknown operating system")
 
     def load_library(self):
         """
