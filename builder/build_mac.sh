@@ -15,8 +15,11 @@ mkdir -p dist/package/usr/local/zk-firma-digital/etc/Athena
 mkdir -p dist/package/usr/local/zk-firma-digital/zk-artifacts
 mkdir -p dist/scripts
 
-wget -qO- https://nodejs.org/dist/v22.12.0/node-v22.12.0-darwin-x64.tar.gz\
- | tar -xJf - --strip-components=1 -C dist/package/usr/local/zk-firma-digital
+if [ ! -d dist/package/usr/local/zk-firma-digital/bin ];
+then
+    wget -qO- https://nodejs.org/dist/v22.12.0/node-v22.12.0-darwin-x64.tar.gz\
+    | tar -xJf - --strip-components=1 -C dist/package/usr/local/zk-firma-digital
+fi
 
 cp -a dist/zk-firma-digital.app dist/package/usr/local/zk-firma-digital/
 cp -a CA-certificates/ dist/package/usr/local/zk-firma-digital/CA-certificates/
@@ -25,7 +28,25 @@ cp -a os_libs/Athena/IDPClientDB.xml  dist/package/usr/local/zk-firma-digital/et
 cp -a ../build/firma-verifier.zkey dist/package/usr/local/zk-firma-digital/zk-artifacts/firma-verifier.zkey
 cp -a ../build/firma-verifier_js dist/package/usr/local/zk-firma-digital/zk-artifacts/firma-verifier_js
 cp -a ../build/vkey.json dist/package/usr/local/zk-firma-digital/zk-artifacts/vkey.json
-cp -R $(npm root -g)/snarkjs dist/package/usr/local/zk-firma-digital/lib/node_modules/
+
+# Install snarkjs
+if [ ! -d snarkjs_bundle ];
+then
+    mkdir -p snarkjs_bundle
+    cd snarkjs_bundle
+    npm init -y
+    npm install snarkjs
+    cd ..
+fi
+
+cp -a ./snarkjs_bundle/node_modules/ dist/package/usr/local/zk-firma-digital/lib/node_modules
+
+if [ ! -e  dist/package/usr/local/zk-firma-digital/lib/snarkjs];
+then
+    cd dist/package/usr/local/zk-firma-digital/lib
+    ln -s node_modules/.bin/snarkjs snarkjs
+    cd ../../../../../../
+fi
 
 tar -C dist/ -cf dist/package/usr/local/zk-firma-digital/zk-firma-digital.app.tar zk-firma-digital.app
 

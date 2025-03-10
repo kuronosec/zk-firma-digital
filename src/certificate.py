@@ -10,6 +10,7 @@ os_type = platform.system()
 from asn1crypto import pem, x509
 from PyKCS11 import *
 from configuration import Configuration
+from pathlib import Path
 
 # This class interacts with the Smart Card and extracts the autentication certificate
 class Certificate:
@@ -30,6 +31,18 @@ class Certificate:
             self.library_path = '/usr/lib/x64-athena/libASEP11.so'
         elif os_type == "Darwin":
             self.library_path = '/Library/SCMiddleware/libidop11.dylib'
+            # Prepend the directory where node is located to the PATH
+            os.environ["PATH"] = os.path.join(
+                self.config.installation_path,
+                Path('bin/')
+            ) + ":" + os.path.join(
+                self.config.installation_path,
+                Path('lib/')
+            ) + ":"+os.environ.get("PATH", "")
+            os.environ["NODE_PATH"] = os.path.join(
+                self.config.installation_path,
+                Path('lib/node_modules')
+            )
         else:
             print("Unknown operating system")
 
