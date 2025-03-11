@@ -30,7 +30,7 @@ class Certificate:
         elif os_type == "Linux":
             self.library_path = '/usr/lib/x64-athena/libASEP11.so'
         elif os_type == "Darwin":
-            self.library_path = '/Library/SCMiddleware/libidop11.dylib'
+            self.library_path = '/usr/local/lib/libidop11.dylib'
             # Prepend the directory where node is located to the PATH
             os.environ["PATH"] = os.path.join(
                 self.config.installation_path,
