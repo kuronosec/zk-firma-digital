@@ -5,6 +5,7 @@ set -xe
 
 source /etc/profile
 export LC_ALL="en_US.UTF-8"
+VERSION='0.6.2'
 
 cd src
 pyinstaller zk-firma-digital.spec
@@ -43,12 +44,15 @@ fi
 
 cp -a ./snarkjs_bundle/node_modules/ dist/package/usr/local/zk-firma-digital/lib/node_modules
 
-if [ ! -e  dist/package/usr/local/zk-firma-digital/lib/snarkjs];
+if [ ! -e  dist/package/usr/local/zk-firma-digital/lib/snarkjs ];
 then
     cd dist/package/usr/local/zk-firma-digital/lib
     ln -s node_modules/.bin/snarkjs snarkjs
     cd ../../../../../../
 fi
+
+cp  -a os_libs/macos/Info.plist \
+    dist/zk-firma-digital.app/Contents/Info.plist
 
 tar -C dist/ -cf dist/package/usr/local/zk-firma-digital/zk-firma-digital.app.tar zk-firma-digital.app
 
@@ -72,5 +76,5 @@ chmod u+x dist/scripts/postinstall
 
 cd dist
 
-pkgbuild --root ./package --identifier cr.zk-firma-digital  --script ./scripts --version 0.2 --install-location / ./zk-firma-digital.pkg
+pkgbuild --root ./package --identifier cr.zk-firma-digital  --script ./scripts --version 0.6.2 --install-location / ./zk-firma-digital.pkg
 

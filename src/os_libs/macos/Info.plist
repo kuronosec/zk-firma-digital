@@ -3,39 +3,33 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>Cliente FVA</string>
+	<string>zk-firma-digital</string>
 	<key>CFBundleExecutable</key>
-	<string>MacOS/client_fva</string>
-    <key>description</key>
-    <string>Cliente para la gestión de Firma Digital de Costa Rica</string>
+	<string>zk-firma-digital</string>
 	<key>CFBundleIconFile</key>
-	<string>icon.icns</string>
+	<string>icon-windowed.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>Cliente FVA</string>
-    <key>items_to_copy</key>
-    <array>
-        <dict>
-            <key>destination_path</key>
-            <string>/etc/Athena/IDPClientDB.xml</string>
-            <key>source_item</key>
-            <string>Contents/etc/Athena/IDPClientDB.xml</string>
-        </dict>
-        <dict>
-            <key>destination_path</key>
-            <string>/usr/local/lib/libASEP11.dylib</string>
-            <key>source_item</key>
-            <string>Contents/Resources/os_libs/macos/libASEP11.dylib</string>
-        </dict>
-    </array>
+	<string>zk-firma-digital</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Cliente FVA</string>
+	<string>zk-firma-digital</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.2.0</string>
+	<string>0.6.2</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+	<dict>
+		<key>CFBundleURLName</key>
+		<string>com.mycompany.zkfirmadigital</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+		<string>zk-firma-digital</string>
+		</array>
+	</dict>
+	</array>
 </dict>
 </plist>
