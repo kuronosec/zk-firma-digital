@@ -8,7 +8,9 @@ export LC_ALL="en_US.UTF-8"
 VERSION='0.6.2'
 
 cd src
-pyinstaller zk-firma-digital.spec
+python setup.py py2app
+
+cp -R /opt/anaconda3/envs/firma/lib/* dist/zk-firma-digital.app/Contents/Frameworks/
 
 mkdir -p dist/package/usr/local/zk-firma-digital/os_libs/macos
 mkdir -p dist/package/usr/local/zk-firma-digital/CA-certificates
@@ -23,6 +25,7 @@ then
 fi
 
 cp -a dist/zk-firma-digital.app dist/package/usr/local/zk-firma-digital/
+cp -a translations_en.qm dist/package/usr/local/zk-firma-digital/
 cp -a CA-certificates/ dist/package/usr/local/zk-firma-digital/CA-certificates/
 cp -a os_libs/macos/libASEP11.dylib dist/package/usr/local/zk-firma-digital/os_libs/macos/
 cp -a os_libs/macos/libidop11.dylib dist/package/usr/local/zk-firma-digital/os_libs/macos/
@@ -50,9 +53,6 @@ then
     ln -s node_modules/.bin/snarkjs snarkjs
     cd ../../../../../../
 fi
-
-cp  -a os_libs/macos/Info.plist \
-    dist/zk-firma-digital.app/Contents/Info.plist
 
 tar -C dist/ -cf dist/package/usr/local/zk-firma-digital/zk-firma-digital.app.tar zk-firma-digital.app
 
