@@ -10,8 +10,6 @@ VERSION='0.6.2'
 cd src
 python setup.py py2app
 
-cp -R /opt/anaconda3/envs/firma/lib/* dist/zk-firma-digital.app/Contents/Frameworks/
-
 mkdir -p dist/package/usr/local/zk-firma-digital/os_libs/macos
 mkdir -p dist/package/usr/local/zk-firma-digital/CA-certificates
 mkdir -p dist/package/usr/local/zk-firma-digital/etc/Athena
