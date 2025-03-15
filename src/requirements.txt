@@ -8,4 +8,3 @@ https://github.com/wbond/oscrypto/archive/d5f3437ed24257895ae1edd9e503cfb352e635
 web3==7.4.0
 cryptography
 pyinstaller
-jwt

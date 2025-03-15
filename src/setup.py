@@ -10,14 +10,11 @@ OPTIONS = {
     'includes': [
         'asn1crypto',
         'certvalidator',
-        'PyJWT',
         'PyKCS11',
         'PyQt6',
-        'PyQt6_sip',
         'oscrypto',
         'web3',
         'jaraco.text',
-        'jwt',
         'Crypto',
         'Crypto.Hash',
         'Crypto.Hash.keccak',
@@ -32,7 +29,6 @@ OPTIONS = {
         'oscrypto',
         'web3',
         'cryptography',
-        'jwt',
         'Crypto',
         'eth_hash'
     ],
@@ -67,5 +63,8 @@ setup(
     app=APP,
     data_files=DATA_FILES,
     options={'py2app': OPTIONS},
+    install_requires=[
+         'PyJWT==2.9.0'  # Specify the exact version you require
+    ],
     setup_requires=['py2app'],
 )
