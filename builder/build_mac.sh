@@ -8,6 +8,8 @@ export LC_ALL="en_US.UTF-8"
 VERSION='0.6.2'
 
 cd src
+pip install -r requirements.txt
+pip install -r requirements-macos.txt
 python setup.py py2app
 
 mkdir -p dist/package/usr/local/zk-firma-digital/os_libs/macos

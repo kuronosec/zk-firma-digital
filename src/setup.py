@@ -7,9 +7,35 @@ DATA_FILES = []
 
 OPTIONS = {
     'argv_emulation': True,
-    'includes': ['PyQt6', 'jaraco.text'],
+    'includes': [
+        'asn1crypto',
+        'certvalidator',
+        'PyJWT',
+        'PyKCS11',
+        'PyQt6',
+        'PyQt6_sip',
+        'oscrypto',
+        'web3',
+        'jaraco.text',
+        'jwt',
+        'Crypto',
+        'Crypto.Hash',
+        'Crypto.Hash.keccak',
+        'eth_hash'
+    ],
     'excludes': ['typing_extensions', 'packaging'],
-    'packages': [],
+    'packages': [
+        'asn1crypto',
+        'certvalidator',
+        'PyKCS11',
+        'PyQt6',
+        'oscrypto',
+        'web3',
+        'cryptography',
+        'jwt',
+        'Crypto',
+        'eth_hash'
+    ],
     'plist': {
         'CFBundleDisplayName': 'zk-firma-digital',
         'CFBundleExecutable': 'zk-firma-digital',
