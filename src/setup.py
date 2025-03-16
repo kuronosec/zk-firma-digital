@@ -6,6 +6,7 @@ APP = ['main.py']
 DATA_FILES = []
 
 OPTIONS = {
+    'iconfile': 'sakundi.icns',
     'argv_emulation': True,
     'includes': [
         'asn1crypto',
