@@ -10,7 +10,8 @@ import webbrowser
 from urllib.parse import urlencode
 
 # We will use the PyQt6 to provide a grafical interface for the user
-from PyQt6.QtWidgets import ( QMainWindow,
+from PyQt6.QtWidgets import ( QApplication,
+                              QMainWindow,
                               QWidget,
                               QVBoxLayout,
                               QLineEdit,
@@ -235,9 +236,18 @@ class AuthenticationWindow(QMainWindow):
         try:
             payload = jwt.decode(token, public_key, algorithms=["RS256"])
             return payload
+        except jwt.exceptions.ExpiredSignatureError:
+            logging.error("Signature has expired.", exc_info=True)
+            QMessageBox.information(self, "Circom",
+                                    "Signature has expired.")
+            QApplication.instance().quit()
         except jwt.ExpiredSignatureError:
             logging.error("Token has expired.", exc_info=True)
-            return None
+            QMessageBox.information(self, "Circom",
+                                    "Token has expired.")
+            QApplication.instance().quit()
         except jwt.InvalidTokenError:
             logging.error("Invalid token.", exc_info=True)
-            return None
+            QMessageBox.information(self, "Circom",
+                                    "Invalid token.")
+            QApplication.instance().quit()
