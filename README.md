@@ -95,6 +95,31 @@ To run ZK-Firma-Digital, ensure your system meets at least the following hardwar
         /usr/share/zk-firma-digital/zk-firma-digital.bin
         ```
     * Alternatively, search for the app in your application launcher.
+  
+### MacOS
+
+1. Download the installer:
+[MacOs Installer](https://app.sakundi.io:9090/zk-firma-digital.pkg)
+
+2. Verify the sha256 hash:
+    ```bash
+    sha256sum zk-firma-digital.pkg
+    ```
+    The result should match:
+    ```bash
+    91afe584a892f965529805492aa9e7df4c8e2211f61d57449400b4f5198fe4c1  zk-firma-digital.pkg
+    ```
+3. Run the installer if the hash matches.
+
+    Note: The MacOS installer includes a couple of Javascript dependencies, Nodejs and Snarkjs. The installer also includes the zkey necessary for generating valid ZK proofs, which makes it a bit heavy.
+
+4. Launch the program: 
+    * Insert your smart card into a USB port.
+    * Run: 
+        ```bash
+        "open /Applications/zk-firma-digital.app/Contents/MacOS/zk-firma-digital"
+        ```
+    * Alternatively, search for ZK Firma Digital in the Finder menu.
 
 ## Build
 
