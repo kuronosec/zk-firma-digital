@@ -38,6 +38,8 @@ OPTIONS = {
         'CFBundleExecutable': 'zk-firma-digital',
         'CFBundleIconFile': 'icon-windowed.icns',
         'CFBundleIdentifier': 'zk-firma-digital',
+        'NSQuitAlwaysKeepsWindows': False,
+        'NSRestorableState': False,  # Disables state restoration
         'CFBundleInfoDictionaryVersion': '6.0',
         'CFBundleName': 'zk-firma-digital',
         'CFBundlePackageType': 'APPL',
