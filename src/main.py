@@ -6,6 +6,7 @@ import os
 import json
 import datetime
 import logging
+import shutil
 from urllib.parse import urlparse, parse_qs
 
 # We will use the PyQt6 to provide a grafical interface for the user
@@ -30,6 +31,19 @@ from configuration import Configuration
 from circom import Circom
 from authentication_window import AuthenticationWindow
 
+
+def clear_saved_state():
+    state_path = os.path.expanduser(
+        r"~/Library/Saved Application State/io.sakundi.zk-firma-digital.savedState/")
+    logging.info("Clearing saved application state.")
+    if os.path.exists(state_path):
+        try:
+            shutil.rmtree(state_path)
+            logging.info("Cleared saved application state.")
+        except Exception as e:
+            logging.info("Failed to clear saved state:", e)
+
+clear_saved_state()
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -298,7 +312,9 @@ if __name__ == "__main__":
             window = AuthenticationWindow(token)
             window.show()
 
-            sys.exit(app.exec())
+            code = app.exec()
+            clear_saved_state()
+            sys.exit(code)
         else:
             logging.error(
                 "Invalid KYC request or missing parameters.",
@@ -309,4 +325,7 @@ if __name__ == "__main__":
         app.installTranslator(translator)
         window = MainWindow()
         window.show()
-        sys.exit(app.exec())
+
+        code = app.exec()
+        clear_saved_state()
+        sys.exit(code)

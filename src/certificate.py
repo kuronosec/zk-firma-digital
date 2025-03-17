@@ -2,10 +2,15 @@
 import pprint
 import os
 import logging
+import platform
+
+# Get the OS type
+os_type = platform.system()
 
 from asn1crypto import pem, x509
 from PyKCS11 import *
 from configuration import Configuration
+from pathlib import Path
 
 # This class interacts with the Smart Card and extracts the autentication certificate
 class Certificate:
@@ -18,12 +23,28 @@ class Certificate:
         self.credentials_path = self.config.credentials_path
         self.pin = pin
 
+        # Define OS specific paths
         # Check what operation system we re running on
-        if os.name == 'nt':
+        if os_type == 'Windows':
             self.library_path = 'C:/Windows/System32/asepkcs.dll'
-        # Linux
-        else:
+        elif os_type == "Linux":
             self.library_path = '/usr/lib/x64-athena/libASEP11.so'
+        elif os_type == "Darwin":
+            self.library_path = '/usr/local/lib/libidop11.dylib'
+            # Prepend the directory where node is located to the PATH
+            os.environ["PATH"] = os.path.join(
+                self.config.installation_path,
+                Path('bin/')
+            ) + ":" + os.path.join(
+                self.config.installation_path,
+                Path('lib/')
+            ) + ":"+os.environ.get("PATH", "")
+            os.environ["NODE_PATH"] = os.path.join(
+                self.config.installation_path,
+                Path('lib/node_modules')
+            )
+        else:
+            print("Unknown operating system")
 
     def get_certificates(self):
         """
