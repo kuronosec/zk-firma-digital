@@ -45,6 +45,7 @@ tee -a $DEB_HOMEDIR/usr/share/applications/zk-firma-digital.desktop << END
 Name=ZK Firma Digital
 Comment=Firma Digital para Costa Rica
 Exec=/usr/share/zk-firma-digital/zk-firma-digital.bin %u
+Icon=/usr/share/zk-firma-digital/sakundi.png
 Terminal=false
 Type=Application
 Categories=Network;Application;
@@ -69,6 +70,7 @@ cp -a /zk-firma-digital/CA-certificates/ $DEB_HOMEDIR/usr/share/zk-firma-digital
 cp -a /zk-artifacts/firma-verifier_js $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-artifacts
 cp -a /zk-artifacts/vkey.json $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-artifacts
 cp -a /zk-artifacts/firma-verifier.zkey $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-artifacts
+cp /zk-firma-digital/sakundi.png $DEB_HOMEDIR/usr/share/zk-firma-digital/
 
 dpkg-deb --build --root-owner-group $DEB_HOMEDIR
 alien -t $DEB_HOMEDIR.deb --scripts

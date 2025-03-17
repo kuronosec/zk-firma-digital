@@ -14,7 +14,7 @@ cd src
 
 # Create binary installer for the app
 pyinstaller --clean --onefile -n zk-firma-digital --noconfirm \
-    --log-level=WARN --windowed --distpath=$OLD_PATH/build \
+    --log-level=WARN --windowed --icon=sakundi.ico --distpath=$OLD_PATH/build \
     --workpath=$OLD_PATH/build --noconsole main.py
 
 cd $OLD_PATH/build
