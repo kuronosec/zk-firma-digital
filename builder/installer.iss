@@ -8,7 +8,7 @@
 
 [Setup]
 AppName=ZK Firma Digital
-AppVersion=0.5
+AppVersion=0.6.3
 WizardStyle=modern
 DefaultDirName={autopf}\zk-firma-digital
 DefaultGroupName=ZK Firma Digital
@@ -21,6 +21,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 [Files]
 Source: "zk-artifacts\*"; DestDir: "{app}\zk-artifacts"; Flags: recursesubdirs createallsubdirs
 Source: "CA-certificates\*"; DestDir: "{app}\CA-certificates";
+Source: "spinner.gif" ; DestDir: "{app}";
 Source: "node.exe" ; DestDir: "{app}"; Flags: ignoreversion
 Source: "snarkjs.cmd" ; DestDir: "{app}"; Flags: ignoreversion
 Source: "node_modules\*"; DestDir: "{app}\node_modules"; Flags: recursesubdirs createallsubdirs
