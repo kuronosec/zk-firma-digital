@@ -21,14 +21,15 @@ from PyQt6.QtWidgets import ( QApplication,
                               QTabWidget,
                               QLabel,
                               QFileDialog )
-from PyQt6.QtCore import QTranslator
+from PyQt6.QtCore import QTranslator, Qt
+from PyQt6.QtGui import QMovie
 
 # Import our own libraries
 from certificate import Certificate
 from verification import Verification
 from signature import Signature
 from configuration import Configuration
-from circom import Circom
+from circom import Circom, ProcessWorker
 from authentication_window import AuthenticationWindow
 
 
@@ -69,6 +70,13 @@ class MainWindow(QMainWindow):
         self.tabs = QTabWidget()
         self.setCentralWidget(self.tabs)
 
+        # Animated spinner using an animated GIF
+        self.spinnerLabel = QLabel()
+        self.spinnerMovie = QMovie(self.config.spinner_path)  # Make sure spinner.gif exists
+        self.spinnerLabel.setMovie(self.spinnerMovie)
+        self.spinnerLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.spinnerLabel.hide()  # Hide initially
+
         # Add tabs
         self.verification_tab = self.create_verification_tab()
         self.signing_tab = self.create_signing_tab()
@@ -93,6 +101,8 @@ class MainWindow(QMainWindow):
         self.generate_credential_button.clicked.connect(self.on_submit_generate_credential)
         self.generate_credential_button.setStyleSheet("background-color : green")
         self.verification_layout.addWidget(self.generate_credential_button)
+
+        self.verification_layout.addWidget(self.spinnerLabel)
 
         # Set the layout for the central widget
         verification_tab.setLayout(self.verification_layout)
@@ -159,11 +169,9 @@ class MainWindow(QMainWindow):
             QMessageBox.information(self, self.tr("Validación"), f"{info}\n\n {self.tr('Firma de certificado inválida!!!')}")
         else:
             QMessageBox.information(self, self.tr("Validación"), f"{info}\n\n {self.tr('Firma de certificado válida!!!')}")
+            self.generate_credential_button.setText(self.tr("Creando credencial..."))
             try:
-                circom = Circom()
-                circom.generate_witness()
-                circom.prove()
-                circom.verify()
+                self.start_process()
             except Exception as error:
                 message = self.tr("Hubo un error al crear la credencial verificable")
                 QMessageBox.information(self, "Circom", message)
@@ -171,36 +179,6 @@ class MainWindow(QMainWindow):
                 self.generate_credential_button.setEnabled(True)
                 self.generate_credential_button.setStyleSheet("background-color : green")
                 return
-
-            # Create credential
-            public_input_data = None
-            proof_data = None
-
-            with open(self.config.public_signals_file, 'r') as json_file:
-                public_input_data = json.load(json_file)
-
-            with open(self.config.proof_file, 'r') as json_file:
-                proof_data = json.load(json_file)
-
-            # Structure json credential data
-            verifiable_credential = self.verifiable_credential_template()
-            verifiable_credential["proof"]["signatureValue"]["public"] = public_input_data
-            verifiable_credential["proof"]["signatureValue"]["proof"] = proof_data
-
-            # Create credential and store it in a file for the user to utilize
-            with open(self.config.credential_file, 'w', encoding='utf-8') as json_file:
-                json.dump(verifiable_credential,
-                          json_file,
-                          ensure_ascii=False,
-                          indent=4,
-                          default=str)
-
-            self.verification_layout.addWidget(self.file_label)
-
-            QMessageBox.information(self, self.tr("Creación de credencial válida"),
-                                    self.tr("Encontrar credencial verificable en el enlace."))
-        self.generate_credential_button.setEnabled(True)
-        self.generate_credential_button.setStyleSheet("background-color : green")
     
     def verifiable_credential_template(self):
         verifiable_credential = {
@@ -268,6 +246,52 @@ class MainWindow(QMainWindow):
             self.browser_label.setText(f"Archivo JSON firmado: {signed_name}")
         else:
             self.browser_label.setText(self.tr("No file selected"))
+
+    def start_process(self):
+        self.spinnerLabel.show()
+        self.spinnerMovie.start()
+
+        # Start the worker thread
+        self.worker = ProcessWorker(None)
+        self.worker.finished.connect(self.process_finished)
+        self.worker.output.connect(lambda out: logging.info("Output: %s", out))
+        self.worker.error.connect(lambda err: logging.error("Error: %s", err))
+        self.worker.start()
+
+    def process_finished(self, exit_code):
+        logging.info("Process finished with exit code %d", exit_code)
+        self.spinnerMovie.stop()
+        self.spinnerLabel.hide()
+        # Create credential
+        public_input_data = None
+        proof_data = None
+
+        with open(self.config.public_signals_file, 'r') as json_file:
+            public_input_data = json.load(json_file)
+
+        with open(self.config.proof_file, 'r') as json_file:
+            proof_data = json.load(json_file)
+
+        # Structure json credential data
+        verifiable_credential = self.verifiable_credential_template()
+        verifiable_credential["proof"]["signatureValue"]["public"] = public_input_data
+        verifiable_credential["proof"]["signatureValue"]["proof"] = proof_data
+
+        # Create credential and store it in a file for the user to utilize
+        with open(self.config.credential_file, 'w', encoding='utf-8') as json_file:
+            json.dump(verifiable_credential,
+                        json_file,
+                        ensure_ascii=False,
+                        indent=4,
+                        default=str)
+
+        self.verification_layout.addWidget(self.file_label)
+
+        QMessageBox.information(self, self.tr("Creación de credencial válida"),
+                                self.tr("Encontrar credencial verificable en el enlace."))
+        self.generate_credential_button.setText(self.tr("Generar credencial JSON"))
+        self.generate_credential_button.setEnabled(True)
+        self.generate_credential_button.setStyleSheet("background-color : green")
 
 def load_language(language_code):
     config = Configuration()

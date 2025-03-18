@@ -6,6 +6,28 @@ import os
 from zkpy.circuit import Circuit, GROTH, PLONK, FFLONK
 from zkpy.ptau import PTau
 from configuration import Configuration
+from PyQt6.QtCore import QThread, pyqtSignal
+
+# Worker thread to run the external process using subprocess.run
+class ProcessWorker(QThread):
+    finished = pyqtSignal(int)  # Emit exit code
+    output = pyqtSignal(str)    # Optionally, emit stdout
+    error = pyqtSignal(str)     # Optionally, emit stderr
+
+    def __init__(self, cmd, parent=None):
+        super().__init__(parent)
+        self.cmd = cmd
+
+    def run(self):
+        try:
+            circom = Circom()
+            circom.generate_witness()
+            circom.prove()
+            circom.verify()
+            self.finished.emit(0)
+        except Exception as e:
+            self.error.emit(str(e))
+            self.finished.emit(-1)
 
 # This class provides utilitis to compile the circom circuts
 # fot the Firma Digital
