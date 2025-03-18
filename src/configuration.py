@@ -33,6 +33,8 @@ class Configuration:
                                          Path('CA-certificates/JWT_public_key.pem'))
         self.credentials_path = self.credentials_path
 
+        self.spinner_path = os.path.join(self.installation_path, 'spinner.gif')
+
         # Define where to find the diferent components
         # of thew compilation process
         if type == "compile":

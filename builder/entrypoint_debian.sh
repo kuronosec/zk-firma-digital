@@ -71,6 +71,7 @@ cp -a /zk-artifacts/firma-verifier_js $DEB_HOMEDIR/usr/share/zk-firma-digital/zk
 cp -a /zk-artifacts/vkey.json $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-artifacts
 cp -a /zk-artifacts/firma-verifier.zkey $DEB_HOMEDIR/usr/share/zk-firma-digital/zk-artifacts
 cp /zk-firma-digital/sakundi.png $DEB_HOMEDIR/usr/share/zk-firma-digital/
+cp /zk-firma-digital/spinner.gif $DEB_HOMEDIR/usr/share/zk-firma-digital/
 
 dpkg-deb --build --root-owner-group $DEB_HOMEDIR
 alien -t $DEB_HOMEDIR.deb --scripts

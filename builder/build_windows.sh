@@ -2,7 +2,7 @@
 
 set -xe
 
-VERSION=0.6.1
+VERSION=0.6.3
 
 OLD_PATH=$(pwd)
 echo $OLD_PATH
@@ -20,6 +20,7 @@ pyinstaller --clean --onefile -n zk-firma-digital --noconfirm \
 cd $OLD_PATH/build
 cp $OLD_PATH/builder/installer.iss $OLD_PATH/build
 cp -r $OLD_PATH/src/CA-certificates $OLD_PATH/build
+cp $OLD_PATH/src/spinner.gif $OLD_PATH/build
 
 iscc installer.iss
 mkdir -p $OLD_PATH/release/

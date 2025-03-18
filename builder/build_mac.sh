@@ -26,6 +26,7 @@ fi
 
 cp -a dist/zk-firma-digital.app dist/package/usr/local/zk-firma-digital/
 cp -a translations_en.qm dist/package/usr/local/zk-firma-digital/
+cp spinner.gif dist/package/usr/local/zk-firma-digital/
 cp -a CA-certificates/ dist/package/usr/local/zk-firma-digital/CA-certificates/
 cp -a os_libs/macos/libASEP11.dylib dist/package/usr/local/zk-firma-digital/os_libs/macos/
 cp -a os_libs/macos/libidop11.dylib dist/package/usr/local/zk-firma-digital/os_libs/macos/
