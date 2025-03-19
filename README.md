@@ -48,15 +48,15 @@ To run ZK-Firma-Digital, ensure your system meets at least the following hardwar
 ### Windows
 
 1. Download the installer:
-[Windows Installer](https://app.sakundi.io:9090/zk-firma-digital-0.6.1.exe)
+[Windows Installer](https://app.sakundi.io:9090/zk-firma-digital-0.6.3.exe)
 
 2. Verify the sha256 hash:
     ```bash
-    certutil -hashfile "C:\file\path\zk-firma-digital-0.6.1.exe" SHA256
+    certutil -hashfile "C:\file\path\zk-firma-digital-0.6.3.exe" SHA256
     ```
     The result should match:
     ```bash
-    0d4688b4aef9531debe96bfa836c5d63b24588d364b61ad3092e0bf4ecc8e036  zk-firma-digital-0.6.1.exe
+    c116a271668e9e430116cd335f7bb4128d1af4d387ad7593330850932281cf07  zk-firma-digital-0.6.3.exe
     ```
 3. Run the installer if the hash matches.
 
@@ -74,19 +74,19 @@ To run ZK-Firma-Digital, ensure your system meets at least the following hardwar
 
 1. Download the installer:
     ```bash
-    wget https://app.sakundi.io:9090/zk-firma-digital_0.6.2_amd64.deb
+    wget https://app.sakundi.io:9090/zk-firma-digital_0.6.3_amd64.deb
     ```
 2. Verify the sha256 hash:
     ```bash
-    sha256sum zk-firma-digital_0.6.2_amd64.deb
+    sha256sum zk-firma-digital_0.6.3_amd64.deb
     ```
     The result should match:
     ```bash
-    fbe36f48edc93b81edc8c67536436f78d260451e4aa27751bfce540fc7b3ba53  zk-firma-digital_0.6.2_amd64.deb
+    8c8f38ceae2d6b99c07396156c7ea3ccb915e705360ba3cd8bbbe408574622c4  zk-firma-digital_0.6.3_amd64.deb
     ```
 3. Install the Debian package:
     ```bash
-    sudo dpkg -i zk-firma-digital_0.6.2_amd64.deb
+    sudo dpkg -i zk-firma-digital_0.6.3_amd64.deb
     ```
 4. Launch the program:
     * Insert your smart card into a USB port.
@@ -107,7 +107,7 @@ To run ZK-Firma-Digital, ensure your system meets at least the following hardwar
     ```
     The result should match:
     ```bash
-    91afe584a892f965529805492aa9e7df4c8e2211f61d57449400b4f5198fe4c1  zk-firma-digital.pkg
+    77a6505de759eb82660d5d293627afd668ffe3dda70f066cff5169a4cdf13402  zk-firma-digital.pkg
     ```
 3. Run the installer if the hash matches.
 
@@ -175,8 +175,11 @@ To run ZK-Firma-Digital, ensure your system meets at least the following hardwar
         2. Consult the repository's issues page or documentation for additional support.
 
 ## See it working
-Once you generate a ZK credential (a JSON file) using your Firma Digital card, you can test it by authenticating on this Proof of Concept (PoC) website:
+To try the system with a decentralized voting system go to:
 
-* Website: [https://voto.sakundi.io](https://voto.sakundi.io)
-* Source code: [GitHub Repository](https://github.com/kuronosec/zk-firma-web)
+* Website: [https://voto.sakundi.io/vote](https://voto.sakundi.io/vote)
+
+Other useful links:
+
+* PoC source code: [GitHub Repository](https://github.com/kuronosec/zk-voto-digital)
 * Example credential: [residence-credential.json](https://github.com/kuronosec/zk-firma-digital/blob/main/src/examples/residence-credential.json)
