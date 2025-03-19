@@ -107,7 +107,7 @@ To run ZK-Firma-Digital, ensure your system meets at least the following hardwar
     ```
     The result should match:
     ```bash
-    a4b0e5ddeaddbeb6e660f3e2d06f51502fb000c8da30cbf41a863126a73f24d8  zk-firma-digital.pkg
+    13c3c1457239428c58be454343697f9b07cf0c5565323a3408a4878a8a384c5a  zk-firma-digital.pkg
     ```
 3. Run the installer if the hash matches.
 
