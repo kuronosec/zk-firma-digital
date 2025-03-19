@@ -16,7 +16,6 @@ release/
 dist
 .DS_Store
 *.spec
-*.qm
 .env*
 *.pem
 env/
