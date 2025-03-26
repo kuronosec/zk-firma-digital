@@ -15,8 +15,8 @@ async function main() {
   console.log(`ZKFirmaDigitalCredentialIssuer contract deployed to ${ZKFirmaDigitalCredentialIssuer}`);
 
   const ZKFirmaDigitalVote = await ethers.deployContract('ZKFirmaDigitalVote', [
-    "Do you approve a 75% increment in the science and technology budget for this year in Costa Rica?",
-    ["No, I do not approve an increment.", "Yes, I do approve an increment."],
+    "¿Está usted de acuerdo con que se apruebe la LEY DE MERCADO DE CRIPTOACTIVOS en Costa Rica?",
+    ["Sí, estoy de acuerdo.", "No, no estoy de acuerdo."],
     ZKFirmaDigitalCredentialIssuer,
     voteScope
   ]);
