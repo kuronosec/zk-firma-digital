@@ -1,5 +1,6 @@
 import '@nomiclabs/hardhat-ethers'
-import { ethers } from 'hardhat'
+import '@openzeppelin/hardhat-upgrades'
+import { ethers, upgrades } from 'hardhat'
 
 async function main() {
 
@@ -8,40 +9,52 @@ async function main() {
   
   // Example timestamp upper bound (e.g., current time + 1 month)
   const identityCreationTimestampUpperBound = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
-  console.log("identityCreationTimestampUpperBound: ", identityCreationTimestampUpperBound);
 
-  // TODO: how does it work?
+  // Citizen whitelist example: ["CRI", "COL"]
   const citizenshipWhitelist = [0x435249, 0x434f4c];
 
   // Example birth date lower bound (e.g., 18 years ago)
   const birthDateLowerbound = Math.floor(Date.now() / 1000) - 18 * 365 * 24 * 60 * 60;
-  console.log("birthDateLowerbound: ", birthDateLowerbound);
 
   // Example expiration date lower bound (e.g., must expire after 2026)
   const expirationDateLowerBound = Math.floor(new Date("2026-01-01").getTime() / 1000);
-  console.log("expirationDateLowerBound: ", expirationDateLowerBound);
+
+  const identityCounterUpperBound = 1;
 
   const voteScope = Math.floor(Math.random() * 100000);
 
-  console.log(`verifier contract deployed to ${verifierAddress}`);
-
-  const ZKPassportVote = await ethers.deployContract('ZKPassportVote', [
-    "¿Está usted de acuerdo con que se apruebe la LEY DE MERCADO DE CRIPTOACTIVOS en Costa Rica?",
-    ["Sí, estoy de acuerdo.", "No, no estoy de acuerdo."],
+  const voteParams = {
+    votingQuestion: 
+      "¿Está usted de acuerdo con que se apruebe la LEY DE MERCADO DE CRIPTOACTIVOS en Costa Rica?",
+    proposalDescriptions: 
+      ["Sí, estoy de acuerdo.", "No, no estoy de acuerdo."],
     identityCreationTimestampUpperBound,
     citizenshipWhitelist,
     birthDateLowerbound,
     expirationDateLowerBound,
-    voteScope,
-    registrationSMTAddress,
-    verifierAddress,
-  ]);
+    identityCounterUpperBound,
+    voteScope
+  };
 
-  await ZKPassportVote.waitForDeployment()
+  console.log("Vote params: ", JSON.stringify(voteParams, null, 2));
 
-  console.log(
-    `ZKPassportVote contract deployed to ${await ZKPassportVote.getAddress()}`,
+  console.log(`verifier contract deployed to ${verifierAddress}`);
+
+  const ZKPassportVoteContract = await ethers.getContractFactory("ZKPassportVote");
+
+  const zkPassportVoteProxy = await upgrades.deployProxy(
+    ZKPassportVoteContract,
+    [
+      voteParams,
+      registrationSMTAddress,
+      verifierAddress,
+    ],
+    { initializer: "__ZKPassportVote_init" }
   );
+
+  await zkPassportVoteProxy.waitForDeployment();
+
+  console.log(`ZKPassportVote proxy deployed at ${await zkPassportVoteProxy.getAddress()}`);
 }
 
 main().catch(error => {

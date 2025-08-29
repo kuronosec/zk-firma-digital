@@ -6,22 +6,16 @@ import '../interfaces/IZKFirmaDigitalVote.sol';
 import {IPoseidonSMT} from "@rarimo/passport-contracts/interfaces/state/IPoseidonSMT.sol";
 import {PublicSignalsBuilder} from "@rarimo/passport-contracts/sdk/lib/PublicSignalsBuilder.sol";
 import {AQueryProofExecutor} from "@rarimo/passport-contracts/sdk/AQueryProofExecutor.sol";
+// For upgradeable contracts
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract ZKPassportVote is IZKFirmaDigitalVote, AQueryProofExecutor {
-    string public votingQuestion;
-    // A random number to use as nullifier seed.
-    // We need a different number for each vote contract to avoid double voting
-    uint64 public voteScope;
-
+contract ZKPassportVote is Initializable, IZKFirmaDigitalVote, AQueryProofExecutor {
     // List of proposals
     Proposal[] public proposals;
+    // Voting parameters
+    VoteParams public voteParams;
 
     uint256 selector;
-    // Voting restrictions
-    uint256 identityCreationTimestampUpperBound;
-    uint256[] citizenshipWhitelist;
-    uint256 birthDateLowerbound;
-    uint256 expirationDateLowerBound;
 
     // Mapping to track if a userNullifier has already voted
     mapping(uint256 => bool) public hasVoted;
@@ -32,26 +26,23 @@ contract ZKPassportVote is IZKFirmaDigitalVote, AQueryProofExecutor {
     uint256 public constant IDENTITY_LIMIT = type(uint32).max;
 
     // Constructor to initialize proposals
-    constructor(
-        string memory _votingQuestion,
-        string[] memory _proposalDescriptions,
-        uint256 _identityCreationTimestampUpperBound,
-        uint256[] memory _citizenshipWhitelist,
-        uint256 _birthDateLowerbound,
-        uint256 _expirationDateLowerBound,
-        uint64 _voteScope,
+    function __ZKPassportVote_init(
+        VoteParams memory _voteParams,
         address _registrationSMT,
         address _verifier
-    ) {
-        votingQuestion = _votingQuestion;
-        identityCreationTimestampUpperBound = _identityCreationTimestampUpperBound;
-        citizenshipWhitelist = _citizenshipWhitelist;
-        birthDateLowerbound = _birthDateLowerbound;
-        expirationDateLowerBound = _expirationDateLowerBound;
-        for (uint256 i = 0; i < _proposalDescriptions.length; i++) {
-            proposals.push(Proposal(_proposalDescriptions[i], 0));
+    ) external initializer {
+        voteParams.votingQuestion = _voteParams.votingQuestion;
+        voteParams.identityCreationTimestampUpperBound = 
+            _voteParams.identityCreationTimestampUpperBound;
+        voteParams.citizenshipWhitelist = _voteParams.citizenshipWhitelist;
+        voteParams.birthDateLowerbound = _voteParams.birthDateLowerbound;
+        voteParams.expirationDateLowerBound = _voteParams.expirationDateLowerBound;
+        voteParams.identityCounterUpperBound = _voteParams.identityCounterUpperBound;
+
+        for (uint256 i = 0; i < _voteParams.proposalDescriptions.length; i++) {
+            proposals.push(Proposal(_voteParams.proposalDescriptions[i], 0));
         }
-        voteScope = _voteScope;
+        voteParams.voteScope = _voteParams.voteScope;
         __AQueryProofExecutor_init(_registrationSMT, _verifier);
     }
 
@@ -72,7 +63,7 @@ contract ZKPassportVote is IZKFirmaDigitalVote, AQueryProofExecutor {
         );
         // Check for a predefined list of countires to be able to vote
         require(
-            _validateCitizenship(citizenshipWhitelist, _userData.citizenship),
+            _validateCitizenship(voteParams.citizenshipWhitelist, _userData.citizenship),
             "Voting: citizenship is not whitelisted"
         );
     }
@@ -97,14 +88,15 @@ contract ZKPassportVote is IZKFirmaDigitalVote, AQueryProofExecutor {
         );
 
         // Limit of time for creation of identity
-        uint256 _identityCreationTimestampUpperBound = identityCreationTimestampUpperBound -
+        uint256 _identityCreationTimestampUpperBound = 
+            voteParams.identityCreationTimestampUpperBound -
             IPoseidonSMT(getRegistrationSMT()).ROOT_VALIDITY();
         uint256 identityCounterUpperBound = IDENTITY_LIMIT;
 
         // Limit of number of identities created
         if (_userData.identityCreationTimestamp > 0) {
             _identityCreationTimestampUpperBound = _userData.identityCreationTimestamp;
-            identityCounterUpperBound = identityCounterUpperBound;
+            identityCounterUpperBound = voteParams.identityCounterUpperBound;
         }
 
         uint256 builder = PublicSignalsBuilder.newPublicSignalsBuilder(
@@ -113,7 +105,7 @@ contract ZKPassportVote is IZKFirmaDigitalVote, AQueryProofExecutor {
         );
         builder.withCurrentDate(_currentDate, 1 days);
         builder.withEventIdAndData(
-            voteScope,
+            voteParams.voteScope,
             uint256(uint248(uint256(keccak256(abi.encode(proposalIndex)))))
         );
         builder.withCitizenship(_userData.citizenship);
@@ -122,11 +114,11 @@ contract ZKPassportVote is IZKFirmaDigitalVote, AQueryProofExecutor {
         builder.withIdentityCounterLowerbound(0,
             identityCounterUpperBound);
         builder.withBirthDateLowerboundAndUpperbound(
-            birthDateLowerbound,
+            voteParams.birthDateLowerbound,
             PublicSignalsBuilder.ZERO_DATE
         );
         builder.withExpirationDateLowerboundAndUpperbound(
-            expirationDateLowerBound,
+            voteParams.expirationDateLowerBound,
             PublicSignalsBuilder.ZERO_DATE
         );
 

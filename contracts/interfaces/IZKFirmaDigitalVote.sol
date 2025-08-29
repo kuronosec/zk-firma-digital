@@ -14,5 +14,18 @@ interface IZKFirmaDigitalVote {
         uint256 identityCreationTimestamp;
     }
 
+    struct VoteParams {
+        string votingQuestion;
+        string[] proposalDescriptions;
+        uint256 identityCreationTimestampUpperBound;
+        uint256[] citizenshipWhitelist;
+        uint256 birthDateLowerbound;
+        uint256 expirationDateLowerBound;
+        uint256 identityCounterUpperBound;
+        // A random number to use as nullifier seed.
+        // We need a different number for each vote contract to avoid double voting
+        uint64 voteScope;
+    }
+
     event Voted(address indexed _from, uint256 indexed _propositionIndex);
 }

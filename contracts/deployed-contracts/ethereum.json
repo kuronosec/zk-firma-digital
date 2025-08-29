@@ -2,7 +2,8 @@
   "localAddresses": {
     "Verifier": "0x8464135c8F25Da09e49BC8782676a84730C318bC",
     "ZKFirmaDigital": "0x71C95911E9a5D330f4D621842EC243EE1343292e",
-    "ZKFirmaDigitalVote": "0x948B3c65b89DF0B4894ABE91E6D02FE579834F8F"
+    "ZKFirmaDigitalVote": "0x948B3c65b89DF0B4894ABE91E6D02FE579834F8F",
+    "ZKPassportVote": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
   },
   "amoyAddresses": {
     "MedicalCertificateIssuer": "0x8eFCBF90C23BEBb0bBbbA6C3F1Cec565b936b83b",
@@ -32,7 +33,8 @@
     "claimBuilder":  "0x497002D0180D631A262630A8406051EFFFEF40Fb",
     "identityLib":	"0x206b2C6Cb964aE11894984AEE68116a2645d82dC",
     "RegistrationSMTReplicator": "0x85e46721ED2eC04cc9Dfd02C385307cDa0133c32",
-    "TD3QueryProofVerifier": "0x5E49605FDC07F853b3f03b51e687A04e89B29cdF"
+    "TD3QueryProofVerifier": "0x5E49605FDC07F853b3f03b51e687A04e89B29cdF",
+    "ZKPassportVote": "0x9224f9f24a21CFaE69f8033c40cd06718D6e8C0C"
   },
   "productionAddresses": {
     "Verifier": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
