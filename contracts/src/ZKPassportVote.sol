@@ -25,11 +25,14 @@ contract ZKPassportVote is Initializable, IZKFirmaDigitalVote, AQueryProofExecut
 
     uint256 public constant IDENTITY_LIMIT = type(uint32).max;
 
+    address public erc1155;
+
     // Constructor to initialize proposals
     function __ZKPassportVote_init(
         VoteParams memory _voteParams,
         address _registrationSMT,
-        address _verifier
+        address _verifier,
+        uint256 _selector
     ) external initializer {
         voteParams.votingQuestion = _voteParams.votingQuestion;
         voteParams.identityCreationTimestampUpperBound = 
@@ -44,6 +47,11 @@ contract ZKPassportVote is Initializable, IZKFirmaDigitalVote, AQueryProofExecut
         }
         voteParams.voteScope = _voteParams.voteScope;
         __AQueryProofExecutor_init(_registrationSMT, _verifier);
+        erc1155 = _registrationSMT;
+
+        // Store selector bitmask used by the verifier circuit
+        // Must match the selector used when generating the proof off-chain
+        selector = _selector;
     }
 
     function _beforeVerify(bytes32, uint256, bytes memory _userPayload) internal view override {
@@ -106,21 +114,14 @@ contract ZKPassportVote is Initializable, IZKFirmaDigitalVote, AQueryProofExecut
         builder.withCurrentDate(_currentDate, 1 days);
         builder.withEventIdAndData(
             voteParams.voteScope,
-            uint256(uint248(uint256(keccak256(abi.encode(proposalIndex)))))
+            uint256(uint248(uint256(keccak256(abi.encode(msg.sender, erc1155)))))
         );
         builder.withCitizenship(_userData.citizenship);
         builder.withTimestampLowerboundAndUpperbound(0,
             _identityCreationTimestampUpperBound);
         builder.withIdentityCounterLowerbound(0,
             identityCounterUpperBound);
-        builder.withBirthDateLowerboundAndUpperbound(
-            voteParams.birthDateLowerbound,
-            PublicSignalsBuilder.ZERO_DATE
-        );
-        builder.withExpirationDateLowerboundAndUpperbound(
-            voteParams.expirationDateLowerBound,
-            PublicSignalsBuilder.ZERO_DATE
-        );
+        builder.withCitizenshipMask(_userData.citizenship);
 
         return builder;
     }

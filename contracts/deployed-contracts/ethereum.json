@@ -34,7 +34,7 @@
     "identityLib":	"0x206b2C6Cb964aE11894984AEE68116a2645d82dC",
     "RegistrationSMTReplicator": "0x85e46721ED2eC04cc9Dfd02C385307cDa0133c32",
     "TD3QueryProofVerifier": "0x5E49605FDC07F853b3f03b51e687A04e89B29cdF",
-    "ZKPassportVote": "0x9224f9f24a21CFaE69f8033c40cd06718D6e8C0C"
+    "ZKPassportVote": "0x5F5Da1f57e9A90a4836f6e5b5D1B62123651A6F9"
   },
   "productionAddresses": {
     "Verifier": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",

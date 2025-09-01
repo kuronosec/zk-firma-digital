@@ -48,6 +48,9 @@ async function main() {
       voteParams,
       registrationSMTAddress,
       verifierAddress,
+      // Selector bitmask must match the one used when building the proof
+      // 2593 decimal == 0xA21
+      2593,
     ],
     { initializer: "__ZKPassportVote_init" }
   );

@@ -86,6 +86,13 @@ async function main() {
     //console.log(
     //  await ZKPassportVote.voteParams(),
     // )
+    const chainSignals = await ZKPassportVote.getPublicSignals(registrationRoot, currentDate, userPayload);
+    console.log('contract public signals:', chainSignals);
+    // console.log('proof pubSignals:', proof.pubSignals);
+    console.log(
+      "proof pubSignals (hex):",
+      proof.pubSignals.map((s: string) => "0x" + BigInt(s).toString(16))
+    );
     console.log(
       await ZKPassportVote.execute(registrationRoot,
         currentDate,
