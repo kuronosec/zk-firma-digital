@@ -1,57 +1,100 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import '../interfaces/IZKFirmaDigitalVote.sol';
+// ZK Firma Digital imports
+import '../interfaces/IZikuaniVote.sol';
+import '../interfaces/IZKFirmaDigitalCredentialIssuer.sol';
+import './ZikuaniVoteBase.sol';
 
+// ZK Passport imports
 import {IPoseidonSMT} from "@rarimo/passport-contracts/interfaces/state/IPoseidonSMT.sol";
 import {PublicSignalsBuilder} from "@rarimo/passport-contracts/sdk/lib/PublicSignalsBuilder.sol";
 import {AQueryProofExecutor} from "@rarimo/passport-contracts/sdk/AQueryProofExecutor.sol";
-// For upgradeable contracts
-import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract ZKPassportVote is Initializable, IZKFirmaDigitalVote, AQueryProofExecutor {
-    // List of proposals
-    Proposal[] public proposals;
-    // Voting parameters
-    VoteParams public voteParams;
-
+contract ZikuaniVote is ZikuaniVoteBase, AQueryProofExecutor {
+    // Credenctial issuer for ZK Firma Digital
+    address public ZKFirmaDigitalCredentialIssuerAddr;
+    
+    // Bitmask for ZK passport
     uint256 selector;
 
-    // Mapping to track if a userNullifier has already voted
-    mapping(uint256 => bool) public hasVoted;
-    
     // PublicSignalsBuilder is a library for building public signals
     using PublicSignalsBuilder for uint256;
 
     uint256 public constant IDENTITY_LIMIT = type(uint32).max;
 
+    // Salt for event_data
     address public erc1155;
 
     // Constructor to initialize proposals
-    function __ZKPassportVote_init(
+    function __ZikuaniVote_init(
         VoteParams memory _voteParams,
+        address _credentialIssuerAddr,
         address _registrationSMT,
         address _verifier,
         uint256 _selector
     ) external initializer {
-        voteParams.votingQuestion = _voteParams.votingQuestion;
-        voteParams.identityCreationTimestampUpperBound = 
-            _voteParams.identityCreationTimestampUpperBound;
-        voteParams.citizenshipWhitelist = _voteParams.citizenshipWhitelist;
-        voteParams.birthDateLowerbound = _voteParams.birthDateLowerbound;
-        voteParams.expirationDateLowerBound = _voteParams.expirationDateLowerBound;
-        voteParams.identityCounterUpperBound = _voteParams.identityCounterUpperBound;
-
-        for (uint256 i = 0; i < _voteParams.proposalDescriptions.length; i++) {
-            proposals.push(Proposal(_voteParams.proposalDescriptions[i], 0));
-        }
-        voteParams.voteScope = _voteParams.voteScope;
+        __ZikuaniVoteBase_init(_voteParams);
         __AQueryProofExecutor_init(_registrationSMT, _verifier);
+
+        ZKFirmaDigitalCredentialIssuerAddr = _credentialIssuerAddr;
         erc1155 = _registrationSMT;
 
         // Store selector bitmask used by the verifier circuit
         // Must match the selector used when generating the proof off-chain
         selector = _selector;
+    }
+
+    /// @dev Register a vote in the contract.
+    /// @param proposalIndex: Index of the proposal you want to vote for.
+    /// @param nullifierSeed: Nullifier Seed used while generating the proof.
+    /// @param nullifier: Nullifier for the user's ZK Firma Digital data.
+    /// @param signal: signal used while generating the proof, should be equal to msg.sender.
+    /// @param revealArray: Array of the values used to reveal data, if value is 1 data is revealed, not if 0.
+    /// @param groth16Proof: SNARK Groth16 proof.
+    function voteForProposal(
+        uint256 proposalIndex,
+        uint nullifierSeed,
+        uint nullifier,
+        uint signal,
+        uint[1] calldata revealArray, 
+        uint[8] calldata groth16Proof
+    ) public {
+        uint256 userId = addressToUint256(msg.sender);
+        require(
+            proposalIndex < proposals.length,
+            '[ZKFirmaDigitalVote]: Invalid proposal index'
+        );
+        require(
+            userId == signal,
+            '[ZKFirmaDigitalVote]: Wrong user signal sent'
+        );
+        require(
+            voteParams.voteScope == nullifierSeed,
+            '[ZKFirmaDigitalVote]: Wrong nullifierSeed, you must generate proof with the right seed'
+        );
+        // Check that user hasn't already voted
+        require(
+            !checkVoted(nullifier),
+            '[ZKFirmaDigitalVote]: User has already voted'
+        );
+
+        // Issue credential for this voting campaign
+        IZKFirmaDigitalCredentialIssuer(
+            ZKFirmaDigitalCredentialIssuerAddr
+            ).issueCredential(
+                userId,
+                nullifierSeed,
+                nullifier,
+                signal,
+                revealArray,
+                groth16Proof
+        );
+
+        proposals[proposalIndex].voteCount++;
+        hasVoted[nullifier] = true;
+
+        emit Voted(msg.sender, proposalIndex);
     }
 
     function _beforeVerify(bytes32, uint256, bytes memory _userPayload) internal view override {
@@ -62,12 +105,12 @@ contract ZKPassportVote is Initializable, IZKFirmaDigitalVote, AQueryProofExecut
 
         require(
             proposalIndex < proposals.length,
-            '[ZKPassportVote]: Invalid proposal index'
+            '[ZikuaniVote]: Invalid proposal index'
         );
         // Check that user hasn't already voted
         require(
             !checkVoted(_userData.nullifier),
-            '[ZKPassportVote]: User has already voted'
+            '[ZikuaniVote]: User has already voted'
         );
         // Check for a predefined list of countires to be able to vote
         require(
@@ -124,42 +167,5 @@ contract ZKPassportVote is Initializable, IZKFirmaDigitalVote, AQueryProofExecut
         builder.withCitizenshipMask(_userData.citizenship);
 
         return builder;
-    }
-
-    // Function to get the total number of proposals
-    function getProposalCount() public view returns (uint256) {
-        return proposals.length;
-    }
-
-    // Function to get the total number of votes across all proposals
-    function getTotalVotes() public view returns (uint256) {
-        uint256 totalVotes = 0;
-        uint256 proposalLength = proposals.length;
-        for (uint256 i = 0; i < proposalLength; i++) {
-            totalVotes += proposals[i].voteCount;
-        }
-        return totalVotes;
-    }
-
-    // Function to check if a user has already voted
-    function checkVoted(uint256 _nullifier) public view returns (bool) {
-        return hasVoted[_nullifier];
-    }
-
-    function _validateCitizenship(
-        uint256[] memory whitelist_,
-        uint256 elem_
-    ) internal pure returns (bool) {
-        if (whitelist_.length == 0) {
-            return true;
-        }
-
-        for (uint256 i = 0; i < whitelist_.length; ++i) {
-            if (whitelist_[i] == elem_) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

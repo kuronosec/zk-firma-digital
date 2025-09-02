@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.20;
 
 import '../interfaces/IZKFirmaDigitalCredentialIssuer.sol';
 import '../interfaces/IZKFirmaDigitalVote.sol';
@@ -39,12 +39,14 @@ contract ZKFirmaDigitalVote is IZKFirmaDigitalVote {
         return uint256(uint160(_addr));
     }
 
-    /// @dev Check if the timestamp is more recent than (current time - 3 hours)
-    /// @param timestamp: msg.sender address.
-    /// @return bool
-    /// TODO: add an actual timestamp check
+    /// @dev Check if the timestamp is within the last 3 hours.
+    /// @param timestamp Timestamp in seconds since epoch.
+    /// @return bool True if timestamp <= now and now - timestamp <= 3 hours
     function isLessThan3HoursAgo(uint timestamp) public view returns (bool) {
-        return true;
+        if (timestamp > block.timestamp) return false;
+        unchecked {
+            return block.timestamp - timestamp <= 3 hours;
+        }
     }
 
     /// @dev Register a vote in the contract.
