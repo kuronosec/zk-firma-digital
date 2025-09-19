@@ -71,22 +71,23 @@ async function main() {
   const { args } = buildVoteArguments(proof, BigInt(1n));
   // Get proof from credential
 
-  const ZKPassportVote = await ethers.getContractAt(
-    'ZKPassportVote',
-    addresses.ZKPassportVote,
+  const ZikuaniVote = await ethers.getContractAt(
+    'ZikuaniVote',
+    addresses.ZikuaniVote,
   );
 
    // console.log("args: ", args);
    console.log("ownerAddress: ", ownerAddress);
-   console.log("addresses.ZKPassportVote: ", addresses.ZKPassportVote);
+   console.log("addresses.ZikuaniVote: ", addresses.ZikuaniVote);
 
   const [registrationRoot, currentDate, userPayload, zkPoints_] = args;
 
   try {
-    //console.log(
-    //  await ZKPassportVote.voteParams(),
-    // )
-    const chainSignals = await ZKPassportVote.getPublicSignals(registrationRoot, currentDate, userPayload);
+    console.log(
+      await ZikuaniVote.voteParams(),
+    )
+    console.log("Get public signals");
+    const chainSignals = await ZikuaniVote.getPublicSignals(registrationRoot, currentDate, userPayload);
     console.log('contract public signals:', chainSignals);
     // console.log('proof pubSignals:', proof.pubSignals);
     console.log(
@@ -94,7 +95,7 @@ async function main() {
       proof.pubSignals.map((s: string) => "0x" + BigInt(s).toString(16))
     );
     console.log(
-      await ZKPassportVote.execute(registrationRoot,
+      await ZikuaniVote.execute(registrationRoot,
         currentDate,
         userPayload,
         zkPoints_),
