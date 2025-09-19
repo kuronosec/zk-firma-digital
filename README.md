@@ -70,19 +70,19 @@ To run Zikuani, ensure your system meets at least the following hardware require
 
 1. Download the installer:
     ```bash
-    wget https://app.sakundi.io:9090/zikuani_0.7.0_amd64.deb
+    wget https://app.sakundi.io:9090/zikuani_0.8.1_amd64.deb
     ```
 2. Verify the sha256 hash:
     ```bash
-    sha256sum zikuani_0.7.0_amd64.deb
+    sha256sum zikuani_0.8.1_amd64.deb
     ```
     The result should match:
     ```bash
-    dea667d8e89c283c9dc5ee2cd79ec4d81c02b2aacae8f0dd7235c781d32b95cc  zikuani_0.7.0_amd64.deb
+    b02232886d0d130ff19d82f2bc6e58471f412a30671cacd28663f1f25c3e9217  zikuani_0.8.1_amd64.deb
     ```
 3. Install the Debian package:
     ```bash
-    sudo dpkg -i zikuani_0.7.0_amd64.deb
+    sudo dpkg -i zikuani_0.8.1_amd64.deb
     ```
 4. Launch the program:
     * Insert your smart card into a USB port.
@@ -179,3 +179,16 @@ Other useful links:
 
 * PoC source code: [GitHub Repository](https://github.com/kuronosec/zk-voto-digital)
 * Example credential: [residence-credential.json](https://github.com/kuronosec/Zikuani/blob/main/src/examples/residence-credential.json)
+
+## List of Iden3 Smart contracts deployed in BlockDag testnet
+
+|     Smart contract      |     Address                                |
+|:-----------------------:|:------------------------------------------:|
+|       **State***        | 0x769671b481BA59414733BA95fe8aD2731d6652E6 |
+|    **Validator MTP**    | 0x3998e052431e7008687ACEd665795dB4d33B1a10 |
+|    **Validator SIG**    | 0x1Cd67dE5790B7612BB5787fFaB319191fb90EDE7 |
+|    **Validator V3**     | 0xD3622eC51837a46C7979A4742Db81A647cd4EC14 |
+| **Universal Verifier**  | 0x1df35a82599809BEEa7f3c1Ce24e10d1F0a26914 |
+| **Universal Verifier V2****  | 0x1df35a82599809BEEa7f3c1Ce24e10d1F0a26914 |
+| **Identity Tree Store** | 0x5c9Ab5CFB628034987f8f083E3BC39dB09bb8DD1 |
+

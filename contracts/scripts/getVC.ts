@@ -42,7 +42,8 @@ async function main() {
     `../deployed-contracts/ethereum.json`,
   )
 
-  const addresses = addressesJson.amoyAddresses;
+  // const addresses = addressesJson.amoyAddresses;
+  const addresses = addressesJson.blockdagTestnetAddresses;
 
   const owner = (await ethers.getSigners())[0];
   const ownerAddress = await owner.getAddress();
