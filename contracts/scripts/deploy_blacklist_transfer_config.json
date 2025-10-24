@@ -1,0 +1,15 @@
+{
+  "identityCreationTimestampUpperBound": "0",
+  "identityCounterUpperBound": "0",
+  "birthDateLowerbound": "0",
+  "birthDateUpperbound": "0",
+  "expirationDateLowerBound": "0",
+  "expirationDateUpperBound": "0",
+  "transferScope": "0",
+  "selector": "0",
+  "nationalityWhitelist": [],
+  "senderBlacklist": [],
+  "destinationWhitelist": [],
+  "registrationSMT": "0x0000000000000000000000000000000000000000",
+  "verifier": "0x0000000000000000000000000000000000000000"
+}
