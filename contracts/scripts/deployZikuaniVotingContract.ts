@@ -8,8 +8,15 @@ async function main() {
     `../deployed-contracts/ethereum.json`,
   );
 
-  // const addresses = addressesJson.amoyAddresses;
-  const addresses = addressesJson.blockdagTestnetAddresses;
+  const networkName = process.env.HARDHAT_NETWORK || 'amoy';
+  const addressesByNetwork: Record<string, Record<string, string>> = {
+    amoy: addressesJson.amoyAddresses,
+    polygon: addressesJson.polygonMainnetAddresses,
+  };
+  const addresses = addressesByNetwork[networkName];
+  if (!addresses) {
+    throw new Error(`Unsupported network "${networkName}". Use "amoy" or "polygon".`);
+  }
 
   const ZKFirmaDigitalCredentialIssuer = addresses.ZKFirmaDigitalCredentialIssuer;
   const verifierAddress = addresses.TD3QueryProofVerifier;
