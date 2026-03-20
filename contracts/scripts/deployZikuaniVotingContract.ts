@@ -8,8 +8,16 @@ async function main() {
     `../deployed-contracts/ethereum.json`,
   );
 
-  // const addresses = addressesJson.amoyAddresses;
-  const addresses = addressesJson.blockdagTestnetAddresses;
+  const networkName = process.env.HARDHAT_NETWORK || 'amoy';
+  const addressesByNetwork: Record<string, Record<string, string>> = {
+    amoy: addressesJson.amoy,
+    polygon: addressesJson.polygon,
+  };
+  const addresses = addressesByNetwork[networkName];
+  console.log(addresses);
+  if (!addresses) {
+    throw new Error(`Unsupported network "${networkName}". Use "amoy" or "polygon".`);
+  }
 
   const ZKFirmaDigitalCredentialIssuer = addresses.ZKFirmaDigitalCredentialIssuer;
   const verifierAddress = addresses.TD3QueryProofVerifier;
@@ -24,8 +32,8 @@ async function main() {
   // Example birth date lower bound (e.g., 18 years ago)
   const birthDateLowerbound = Math.floor(Date.now() / 1000) - 18 * 365 * 24 * 60 * 60;
 
-  // Example expiration date lower bound (e.g., must expire after 2026)
-  const expirationDateLowerBound = Math.floor(new Date("2026-01-01").getTime() / 1000);
+  // Example expiration date lower bound (e.g., must expire after 2027)
+  const expirationDateLowerBound = Math.floor(new Date("2027-01-01").getTime() / 1000);
 
   const identityCounterUpperBound = 1;
 

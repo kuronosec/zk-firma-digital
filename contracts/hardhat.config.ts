@@ -5,6 +5,8 @@ import "@openzeppelin/hardhat-upgrades";
 import '@nomicfoundation/hardhat-verify';
 
 const privateKey = process.env.ETHEREUM_ADDRESS_PRIVATE_KEY || '1';
+const amoyRpcUrl = process.env.POLYGON_AMOY_RPC_URL || "https://rpc-amoy.polygon.technology/";
+const polygonRpcUrl = process.env.POLYGON_MAINNET_RPC_URL || "https://polygon-rpc.com";
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -31,19 +33,14 @@ const config: HardhatUserConfig = {
     },
     amoy: {
       // This is just a hardhat testing address, do not reuse in productionq
-      url: "https://rpc-amoy.polygon.technology/",
+      chainId: 80002,
+      url: amoyRpcUrl,
       accounts: [privateKey]
     },
-    "blockdag-testnet": {
-      chainId: 1043,
-      // A custom rpc node was used to deploy the contracts on blockdag testnet
-      // This is not the official rpc node for blockdag testnet
-      // You may use this one:  https://test-rpc.primordial.bdagscan.com/
-      // url: "http://65.21.121.242:18545",
-      url: "https://rpc.primordial.bdagscan.com/",
-      accounts: [privateKey],
-      // ledgerAccounts: [`${process.env.LEDGER_ACCOUNT}`],
-      gasPrice: 1_000_000_000, // 1 gwei in wei,
+    polygon: {
+      chainId: 137,
+      url: polygonRpcUrl,
+      accounts: [privateKey]
     },
   }
 };
