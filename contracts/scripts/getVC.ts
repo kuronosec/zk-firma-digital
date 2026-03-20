@@ -44,8 +44,8 @@ async function main() {
 
   const networkName = process.env.HARDHAT_NETWORK || 'amoy';
   const addressesByNetwork: Record<string, Record<string, string>> = {
-    amoy: addressesJson.amoyAddresses,
-    polygon: addressesJson.polygonMainnetAddresses,
+    amoy: addressesJson.amoy,
+    polygon: addressesJson.polygon,
   };
   const addresses = addressesByNetwork[networkName];
   if (!addresses) {

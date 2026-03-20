@@ -1,25 +1,28 @@
 {
-  "localAddresses": {
+  "local": {
     "Verifier": "0x8464135c8F25Da09e49BC8782676a84730C318bC",
     "ZKFirmaDigital": "0x71C95911E9a5D330f4D621842EC243EE1343292e",
     "ZKFirmaDigitalVote": "0x948B3c65b89DF0B4894ABE91E6D02FE579834F8F",
     "ZKPassportVote": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
   },
-  "amoyAddresses": {
+  "amoy": {
     "MedicalCertificateIssuer": "0x8eFCBF90C23BEBb0bBbbA6C3F1Cec565b936b83b",
-    "ZKFirmaDigitalCredentialIssuer": "0xF8684d3c4fCdD2e7F4ee0C7ED4670862B5369a24",
+    "ZKFirmaDigitalCredentialIssuer": "0x9108c8b0bD70F0279d979005e0a751FE9e44F099",
     "Verifier": "0xe09caad31FFFBE9e8F406E77bb5546b9B6bb41a7",
     "ZKFirmaDigital": "0x4Da5A6D555446317e6719AAa23C6182f3f8ae3B2",
     "ZKFirmaDigitalVote": "0x27194dEd07F97fC186b16dEd9Bb54577378725A3",
     "state":  "0x1a4cC30f2aA0377b0c3bc9848766D90cb4404124",
-    "poseidon2Elements":  "0x6AC3821a2cA519F23a7f9503Aa438c1498218F5d",
-    "poseidon3Elements":  "0xfcAe9cAA466A70b924648172557f8db7ADfc14D8",
-    "poseidon4Elements":  "0x772BeCAC5562A2d64e2CFAaD9f25F9a81226B996",
-    "smtLib":  "0xfDe776DcA2B4603A4248770867D1e071DEa42DD3",
+    "poseidon2Elements":  "0xb21632C29F5F3885F20d1bE68D265331B43f3680",
+    "poseidon3Elements":  "0xb770eb12EeE4cD32B748e0cCA490B293194d91D6",
+    "poseidon4Elements":  "0x77D5A12146A82bF9BAf0E61284c212fE904AD28A",
+    "smtLib":  "0x313A7Bc601C3315929F0735f0a105361E454f7eD",
     "claimBuilder":  "0x360e3FD6C963D9E055FCE3840a1dA06d04B4aE01",
-    "identityLib":	"0x36A8ec6dA5D0684265f3ecfa87F8193BFd2D1077"
+    "identityLib":	"0x36A8ec6dA5D0684265f3ecfa87F8193BFd2D1077",
+    "TD3QueryProofVerifier": "0xb9A4f17a51Bc69f5bd093169bcA1F104C275D828",
+    "RegistrationSMTReplicator": "0x184d66845158bba146894E7C8B3BceF3c9bBa4b0",
+    "ZikuaniVote": "0x11eE0dD78F07B550D32759A380C3E4215c0b63c8"
   },
-  "polygonMainnetAddresses": {
+  "polygon": {
     "MedicalCertificateIssuer": "",
     "ZKFirmaDigitalCredentialIssuer": "",
     "Verifier": "",
@@ -35,11 +38,6 @@
     "RegistrationSMTReplicator": "",
     "TD3QueryProofVerifier": "",
     "ZKPassportVote": "",
-    "ZikuaniVote": ""
-  },
-  "productionAddresses": {
-    "Verifier": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-    "ZKFirmaDigital": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-    "ZKFirmaDigitalVote": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
+    "ZikuaniVote": "0x11eE0dD78F07B550D32759A380C3E4215c0b63c8"
   }
 }
