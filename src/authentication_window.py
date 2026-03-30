@@ -2,11 +2,11 @@
 
 # Import the required libraries
 import os
+import sys
 import json
 import datetime
 import logging
 import jwt
-import webbrowser
 from urllib.parse import urlencode
 
 # We will use the PyQt6 to provide a grafical interface for the user
@@ -19,7 +19,7 @@ from PyQt6.QtWidgets import ( QApplication,
                               QMessageBox,
                               QTabWidget,
                               QLabel)
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QProcess, QProcessEnvironment
 from PyQt6.QtGui import QMovie
 
 # Import our own libraries
@@ -97,7 +97,7 @@ class AuthenticationWindow(QMainWindow):
         if not self.payload:
             # Redirect back to the browser with failure status
             return_url = "https://app.sakundi.io/confirm-authorize"
-            webbrowser.open(return_url)
+            self.open_return_url(return_url)
             return
 
         user_id = self.payload['user_id']
@@ -225,6 +225,32 @@ class AuthenticationWindow(QMainWindow):
         self.worker.error.connect(lambda err: logging.error("Error: %s", err))
         self.worker.start()
 
+    def open_return_url(self, return_url):
+        process = QProcess(self)
+        env = QProcessEnvironment.systemEnvironment()
+        for key in ("LD_LIBRARY_PATH", "PYTHONHOME", "PYTHONPATH"):
+            if env.contains(key):
+                env.remove(key)
+        process.setProcessEnvironment(env)
+
+        if sys.platform.startswith("linux"):
+            program = "/usr/bin/xdg-open"
+            args = [return_url]
+        elif sys.platform == "darwin":
+            program = "/usr/bin/open"
+            args = [return_url]
+        elif sys.platform.startswith("win"):
+            program = "cmd"
+            args = ["/c", "start", "", return_url]
+        else:
+            logging.error("Unsupported platform for browser launch: %s", sys.platform)
+            return
+
+        process.setProgram(program)
+        process.setArguments(args)
+        result = process.startDetached()
+        logging.info("QProcess.startDetached returned: %s", result)
+
     def process_finished(self, exit_code):
         logging.info("Process finished with exit code %d", exit_code)
         self.spinnerMovie.stop()
@@ -272,7 +298,7 @@ class AuthenticationWindow(QMainWindow):
 
         # Redirect back to the browser with success status
         return_url = f"https://app.sakundi.io/confirm-authorize?{query_string}"
-        webbrowser.open(return_url)
+        self.open_return_url(return_url)
         self.generate_credential_button.setText(self.tr("Generar credencial JSON"))
         self.generate_credential_button.setEnabled(True)
         self.generate_credential_button.setStyleSheet("background-color : green")
