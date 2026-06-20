@@ -55,6 +55,7 @@ async function buildOFACTree(blacklistedAddresses) {
  * @returns {object} Inputs ready for snarkjs.groth16.fullProve
  */
 async function generateProofInputs(tree, poseidon, addressBigInt) {
+    const F = poseidon.F;
     const { addressLo, addressHi } = splitAddress(addressBigInt);
     const addressHash = poseidon([addressLo, addressHi]);
 
@@ -64,18 +65,19 @@ async function generateProofInputs(tree, poseidon, addressBigInt) {
         throw new Error(`Address ${addressBigInt} IS in the OFAC blacklist — proof refused`);
     }
 
-    // Pad siblings to N_LEVELS (proof path may be shallower than the max tree depth)
-    const siblings = (res.siblings ?? []).map(s => s ?? 0n);
+    // poseidon()/tree.find() return values in the field's internal (non-BigInt)
+    // representation; snarkjs needs plain BigInts for circuit inputs.
+    const siblings = (res.siblings ?? []).map(s => F.toObject(s));
     while (siblings.length < N_LEVELS) siblings.push(0n);
 
     return {
-        ofacRoot:    tree.root,
-        addressHash: addressHash,
+        ofacRoot:    F.toObject(tree.root),
+        addressHash: F.toObject(addressHash),
         addressLo:   addressLo,
         addressHi:   addressHi,
         siblings:    siblings,
-        oldKey:      res.notFoundKey   ?? 0n,
-        oldValue:    res.notFoundValue ?? 0n,
+        oldKey:      res.notFoundKey   !== undefined ? F.toObject(res.notFoundKey)   : 0n,
+        oldValue:    res.notFoundValue !== undefined ? F.toObject(res.notFoundValue) : 0n,
         isOld0:      res.isOld0 ? 1n : 0n,
     };
 }

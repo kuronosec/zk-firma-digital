@@ -6,6 +6,10 @@ const urlLD =
   "https://raw.githubusercontent.com/kuronosec/zk-firma-digital/main/assets/zk-firma-digital.jsonld";
 const schemaType = "ZKFirmaDigital";
 
+const n = 5627502993135470984068140122652169668094156030052888777750599668712104829183n;
+const hex = n.toString(16).padStart(64, '0');
+console.log(hex);
+
 const getStorageHash = (inputStr: string) => {
   // Step 1: Compute keccak256 hash of the string "polygonid.storage.BalanceCredentialIssuer"
   const hash1 = keccak256(ethers.toUtf8Bytes(inputStr));
