@@ -1,5 +1,31 @@
 {
+  "name": "zikuani-ofac-circuits",
+  "version": "1.0.0",
+  "description": "OFAC blacklist non-membership ZK circuit for Zikuani",
+  "private": true,
+  "scripts": {
+    "compile": "yarn compile:firma && yarn compile:ofac",
+    "compile:firma": "circom firma-verifier.circom --r1cs --wasm --sym -o build/ -l node_modules",
+    "compile:ofac": "circom ofac-blacklist.circom --r1cs --wasm --sym -o build/ -l node_modules",
+    "setup": "yarn setup:firma && yarn setup:ofac",
+    "setup:firma": "snarkjs groth16 setup build/firma-verifier.r1cs build/pot21_final.ptau build/firma-verifier_0.zkey",
+    "setup:ofac": "snarkjs groth16 setup build/ofac-blacklist.r1cs build/pot13_final.ptau build/ofac-blacklist_0.zkey",
+    "contribute": "yarn contribute:firma && yarn contribute:ofac",
+    "contribute:firma": "snarkjs zkey contribute build/firma-verifier_0.zkey build/firma-verifier_final.zkey --name='contributor' -v",
+    "contribute:ofac": "snarkjs zkey contribute build/ofac-blacklist_0.zkey build/ofac-blacklist_final.zkey --name='contributor' -v",
+    "export-vkey": "yarn export-vkey:firma && yarn export-vkey:ofac",
+    "export-vkey:firma": "snarkjs zkey export verificationkey build/firma-verifier_final.zkey build/firma_verification_key.json",
+    "export-vkey:ofac": "snarkjs zkey export verificationkey build/ofac-blacklist_final.zkey build/verification_key.json",
+    "export-solidity": "yarn export-solidity:firma && yarn export-solidity:ofac",
+    "export-solidity:firma": "snarkjs zkey export solidityverifier build/firma-verifier_final.zkey ../contracts/src/Verifier.sol",
+    "export-solidity:ofac": "snarkjs zkey export solidityverifier build/ofac-blacklist_final.zkey ../contracts/src/OFACVerifier.sol",
+    "prove": "node helpers/prove.js"
+  },
   "dependencies": {
-    "circomlib": "^2.0.5"
+    "circomlibjs": "^0.1.7",
+    "snarkjs": "^0.7.4"
+  },
+  "devDependencies": {
+    "circomlib": "github:iden3/circomlib"
   }
 }
