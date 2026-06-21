@@ -19,18 +19,13 @@ include "circomlib/circuits/bitify.circom";
  * any address up to 256 bits — Ethereum (160 bits), Stellar (256 bits), or
  * other chains — with no network-specific assumptions.
  *
- * Binding with Zikuani Firma Digital circuit:
- *   Set `signalHash = addressHash` in the Firma proof. The on-chain
- *   verifier then asserts both proofs share the same addressHash,
- *   cryptographically linking them to the same address without revealing it.
- *
  * nLevels = 20 supports up to 2^20 (~1M) blacklisted entries.
  * The OFAC SDN crypto address list has ~15k entries as of 2025.
  */
 template NotInOFACBlacklist(nLevels) {
     // ── Public inputs ─────────────────────────────────────────────────────
     signal input ofacRoot;    // SMT root of the OFAC blacklist, published on-chain
-    signal input addressHash; // Poseidon(addressLo, addressHi); used to bind with Zikuani signalHash
+    signal input addressHash; // Poseidon(addressLo, addressHi);
 
     // ── Private inputs ────────────────────────────────────────────────────
     signal input addressLo;          // Low 128 bits of the user's address (never revealed)
