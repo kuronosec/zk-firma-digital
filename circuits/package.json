@@ -19,7 +19,8 @@
     "export-solidity": "yarn export-solidity:firma && yarn export-solidity:ofac",
     "export-solidity:firma": "snarkjs zkey export solidityverifier build/firma-verifier_final.zkey ../contracts/src/Verifier.sol",
     "export-solidity:ofac": "snarkjs zkey export solidityverifier build/ofac-blacklist_final.zkey ../contracts/src/OFACVerifier.sol",
-    "prove": "node helpers/prove.js"
+    "prove": "node helpers/prove.js",
+    "prove:ofac": "node helpers/prove-ofac.js"
   },
   "dependencies": {
     "circomlibjs": "^0.1.7",

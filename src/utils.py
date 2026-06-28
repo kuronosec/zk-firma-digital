@@ -1,3 +1,4 @@
+import re
 import struct
 import logging
 import os
@@ -6,6 +7,99 @@ from web3 import Web3
 import hashlib
 
 from pathlib import Path
+
+from poseidon_bn254_t3_constants import C as POSEIDON_C, M as POSEIDON_M
+
+STELLAR_ADDRESS_PATTERN = re.compile(r'^G[A-Z2-7]{55}$')
+
+# Minimal Stellar StrKey codec (SEP-0023) for ed25519 public keys ("G..."
+# addresses), ported from zikuani-stellar's prover/helpers (and circuits/
+# helpers/stellar.js before that) so this app has no extra runtime
+# dependency for it. Layout: 1 version byte (0x30) + 32-byte raw ed25519
+# public key + 2-byte CRC16/XMODEM checksum, all base32-encoded (RFC 4648,
+# no padding) -> 56 characters starting with "G".
+_STELLAR_BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
+_ED25519_PUBLIC_KEY_VERSION_BYTE = 6 << 3  # 0x30
+
+def _base32_decode(value):
+    bits = 0
+    acc = 0
+    out = bytearray()
+    for ch in value:
+        idx = _STELLAR_BASE32_ALPHABET.find(ch)
+        if idx == -1:
+            continue
+        acc = (acc << 5) | idx
+        bits += 5
+        if bits >= 8:
+            bits -= 8
+            out.append((acc >> bits) & 0xff)
+    return bytes(out)
+
+def _crc16_xmodem(data):
+    crc = 0x0000
+    for byte in data:
+        crc ^= byte << 8
+        for _ in range(8):
+            if crc & 0x8000:
+                crc = ((crc << 1) ^ 0x1021) & 0xffff
+            else:
+                crc = (crc << 1) & 0xffff
+    return crc
+
+def decode_stellar_address(g_address):
+    full = _base32_decode(g_address)
+    if len(full) != 35:
+        raise ValueError("invalid StrKey length")
+    if full[0] != _ED25519_PUBLIC_KEY_VERSION_BYTE:
+        raise ValueError("not an ed25519 public key StrKey (unexpected version byte)")
+    payload = full[0:33]
+    crc_given = full[33] | (full[34] << 8)
+    if crc_given != _crc16_xmodem(payload):
+        raise ValueError("bad StrKey checksum")
+    return full[1:33]
+
+def stellar_address_to_bigint(g_address):
+    return int.from_bytes(decode_stellar_address(g_address), byteorder='big')
+
+# Poseidon hash (BN254 scalar field, t=3 i.e. 2 inputs), ported from
+# circomlibjs's poseidon_reference.js using the exact same published
+# constants (see poseidon_bn254_t3_constants.py) -- produces bit-identical
+# output to circomlibjs's buildPoseidon() for the same inputs, verified
+# against known test vectors.
+_BN254_FR_MODULUS = 21888242871839275222246405745257275088548364400416034343698204186575808495617
+_POSEIDON_N_ROUNDS_F = 8
+_POSEIDON_N_ROUNDS_P = 57  # N_ROUNDS_P[t-2] for t=3
+_POSEIDON_T = 3
+
+def _pow5(a):
+    a2 = (a * a) % _BN254_FR_MODULUS
+    a4 = (a2 * a2) % _BN254_FR_MODULUS
+    return (a4 * a) % _BN254_FR_MODULUS
+
+def poseidon2(in0, in1):
+    p = _BN254_FR_MODULUS
+    t = _POSEIDON_T
+    state = [0, in0 % p, in1 % p]
+    for r in range(_POSEIDON_N_ROUNDS_F + _POSEIDON_N_ROUNDS_P):
+        state = [(state[i] + POSEIDON_C[r * t + i]) % p for i in range(t)]
+        if r < _POSEIDON_N_ROUNDS_F // 2 or r >= _POSEIDON_N_ROUNDS_F // 2 + _POSEIDON_N_ROUNDS_P:
+            state = [_pow5(a) for a in state]
+        else:
+            state[0] = _pow5(state[0])
+        state = [
+            sum(POSEIDON_M[i][j] * state[j] for j in range(t)) % p
+            for i in range(t)
+        ]
+    return state[0]
+
+# Splits an address (as an int, up to 256 bits) into two 128-bit limbs --
+# matches splitAddress() in zikuani-stellar's prover/helpers/generate-inputs.js.
+_LIMB_BITS = 128
+_LIMB_MASK = (1 << _LIMB_BITS) - 1
+
+def split_address(address_int):
+    return address_int & _LIMB_MASK, address_int >> _LIMB_BITS
 
 # Some utility libraries to process the input data as the
 # Circom circuit requires
@@ -76,6 +170,28 @@ def hash_message(message):
 
     # Return the result as a string
     return str(result)
+
+def is_stellar_address(value):
+    return bool(STELLAR_ADDRESS_PATTERN.match(value))
+
+# Hash function for Stellar addresses: Poseidon(addressLo, addressHi), the
+# same address-binding hash the Stellar-side OFAC non-membership circuit
+# (ofac-blacklist.circom, in the zikuani-stellar repo's prover/) embeds as
+# its public `addressHash` output. This is deliberately a *different* hash
+# family/encoding than hash_message()'s keccak256 -- that one matches the
+# EVM verifying contracts' on-chain `_hash(signal)` recomputation, which
+# expects keccak256 over the raw EVM address. Stellar's identity_gate
+# contract has no such on-chain recomputation step, so this just needs to
+# match whatever the OFAC proof for the same address already produces.
+#
+# Implemented entirely in Python (poseidon2/split_address/
+# stellar_address_to_bigint above) so this app needs no extra runtime
+# dependency (no Node, no bundled JS/node_modules) -- verified to produce
+# bit-identical output to circomlibjs's buildPoseidon() for the same inputs.
+def compute_stellar_signal_hash(address):
+    address_int = stellar_address_to_bigint(address)
+    address_lo, address_hi = split_address(address_int)
+    return str(poseidon2(address_lo, address_hi))
 
 # Create a logs directory if it doesn't exist (cross-platform)
 user_path = os.path.join(Path.home(), Path('.zk-firma-digital/'))
