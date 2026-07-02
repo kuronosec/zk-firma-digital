@@ -28,6 +28,7 @@ from verification import Verification
 from signature import Signature
 from configuration import Configuration
 from circom import Circom, ProcessWorker
+from utils import is_stellar_address, compute_stellar_signal_hash
 
 
 class AuthenticationWindow(QMainWindow):
@@ -123,14 +124,29 @@ class AuthenticationWindow(QMainWindow):
             return
         # Verify the stored certificates using the Goverment chain of trust
         password = self.password_field.text()
-        if not user_id.startswith('0x'):
-            signal_hash = '0x' + bytes(user_id, 'utf-8').hex()
-        else:
-            signal_hash = user_id
+        signal_hash_already_computed = False
+        try:
+            if is_stellar_address(user_id):
+                # Stellar identity_gate flows need this to match the OFAC proof's
+                # addressHash for the same address -- see compute_stellar_signal_hash.
+                signal_hash = compute_stellar_signal_hash(user_id)
+                signal_hash_already_computed = True
+            elif not user_id.startswith('0x'):
+                signal_hash = '0x' + bytes(user_id, 'utf-8').hex()
+            else:
+                signal_hash = user_id
+        except Exception as error:
+            message = self.tr("No se pudo calcular el signal hash para el identificador de usuario")
+            logging.error(message + " " + str(error), exc_info=True)
+            QMessageBox.information(self, self.tr("Error"), message)
+            self.generate_credential_button.setEnabled(True)
+            self.generate_credential_button.setStyleSheet("background-color : green")
+            return
         verification = Verification(
             password,
             nullifier_seed,
-            signal_hash
+            signal_hash,
+            signal_hash_already_computed
         )
 
         (valid, info) = verification.verify_certificate(self.config.certificate_path)

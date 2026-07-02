@@ -13,10 +13,16 @@ from signature import Signature
 # This class helps to validate the certificate extracted from the smart card
 # to see if it actually was signed by the goverment chain of trust
 class Verification:
-    def __init__(self, pin, nullifier_seed=0, signal_hash=None):
+    def __init__(self, pin, nullifier_seed=0, signal_hash=None, signal_hash_already_computed=False):
         self.pin = pin
         self.nullifier_seed = nullifier_seed
         self.signal_hash = signal_hash
+        # When True, `signal_hash` is already the final value to embed as
+        # the proof's public signalHash (e.g. a Poseidon hash computed by
+        # the caller for a Stellar address) -- skip hash_message()'s
+        # keccak256 step, which would otherwise re-hash an already-final
+        # value and produce something neither side expects.
+        self.signal_hash_already_computed = signal_hash_already_computed
         self.config = Configuration()
         self.user_path = self.config.user_path
         self.credentials_path=self.config.credentials_path
@@ -88,7 +94,10 @@ class Verification:
         # the verifiable credential (Ethereum addres, email, etc)
         signal_hash = None
         try:
-            signal_hash = hash_message(self.signal_hash)
+            if self.signal_hash_already_computed:
+                signal_hash = self.signal_hash
+            else:
+                signal_hash = hash_message(self.signal_hash)
         except errors as error:
             logging.error(error, exc_info=True)
 
